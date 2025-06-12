@@ -6,12 +6,17 @@
 #include <vector>
 #include <unordered_map>
 #include "Location.hpp"
+#include <memory>
 
 class Map {
 private:
     // std::string namePlayer;
-    std::unordered_map<std::string, Location*> locations;
-    std::unordered_map<std::string, Location*> playerPositions;
+    // std::unordered_map<std::string, Location*> locations;
+    // std::unordered_map<std::string, Location*> playerPositions;
+
+    std::unordered_map<std::string, std::shared_ptr<Location>> locations; 
+    std::unordered_map<std::string, std::shared_ptr<Location>> playerPositions;  
+
     void addLoation(const std::string&);
     void connectLocaiton(const std::string&, const std::string&);
 public:
