@@ -1,88 +1,156 @@
-#include "..\include\Map.hpp"
+#include "Map.hpp"
+#include <iostream>
+#include <queue>
+#include <unordered_map>
+#include <algorithm>
 
-Map::Map(int w, int h) : width(w) , height(h) , grid(h, std::vector<char>(w, '.')) {}
+Map::Map() {
+    totalLocation();
+    negiborLocation();
+}
 
-void Map::clear()
-{
+Map& Map::getInstance() {
+    static Map instance;
+    return instance;
+}
 
-    for (int y = 0; y < height; ++y)
-    {
-
-        for (int x = 0; x < width; ++x)
-        {
-
-            grid[y][x] = '.';
-        
-        }
+void Map::addLoation(const std::string& nameLocation) {
+    if(locations.find(nameLocation) == locations.end()) {
+        locations[nameLocation] = new Location(nameLocation);
+    }
     
-    }
+}
 
+void Map::connectLocaiton(const std::string& start, const std::string& end) {
+    addLoation(start);
+    addLoation(end);
+    locations[start]->addNeighbor(locations[end]);
+    locations[end]->addNeighbor(locations[start]);
+}
+
+void Map::totalLocation() {
+    addLoation("cave");               addLoation("museum");             addLoation("hospital");
+    addLoation("camp");               addLoation("crypt");              addLoation("church");
+    addLoation("precinct");           addLoation("abbey");              addLoation("laboratory");
+    addLoation("inn");                addLoation("mansion");            addLoation("graveyard");
+    addLoation("barn");               addLoation("shop");               addLoation("institute");
+    addLoation("dungeon");            addLoation("docks");              addLoation("theatre");           
+    addLoation("tower"); 
 
 }
 
-void Map::placeItem(const Item& item)
-{
+void Map::negiborLocation() {
+    connectLocaiton("cave", "camp");
+    connectLocaiton("camp", "precinct");
+    connectLocaiton("camp", "mansion");
+    connectLocaiton("camp", "theatre");
+    connectLocaiton("camp", "inn");
+    connectLocaiton("precinct", "inn");
+    connectLocaiton("precinct", "mansion");
+    connectLocaiton("precinct", "theatre");
+    connectLocaiton("inn", "theatre");
+    connectLocaiton("inn", "mansion");
+    connectLocaiton("theatre", "barn");
+    connectLocaiton("theatre", "tower");
+    connectLocaiton("theatre", "shop");
+    connectLocaiton("theatre", "mansion");
+    connectLocaiton("mansion", "abbey");
+    connectLocaiton("mansion", "shop");
+    connectLocaiton("mansion", "church");
+    connectLocaiton("mansion", "museum");
+    connectLocaiton("abbey", "crypt");
+    connectLocaiton("museum", "shop");
+    connectLocaiton("museum", "church");
+    connectLocaiton("church", "hospital");
+    connectLocaiton("church", "graveyard");
+    connectLocaiton("church", "shop");
+    connectLocaiton("shop", "laboratory");
+    connectLocaiton("laboratory", "institute");
+    connectLocaiton("tower", "dungeon");
+    connectLocaiton("tower", "docks");
 
-    if (!item.isCollected())
-    {
+}
 
-        Position pos = item.getPosition();
-        char symbol = '?';
 
-        switch (item.getType())
-        {
+void Map::getPlayersLocation(const std::string& locationName) {  
+    std::cout << "People in location: " << locationName << "\n";
 
-            case itemType::RED:    symbol = 'R'; break;
-            case itemType::BLUE:   symbol = 'B'; break;
-            case itemType::YELLOW: symbol = 'Y'; break;
-        
+    bool found = false;
+    for (const auto& pair : playerPositions) {
+        const std::string& playerName = pair.first;
+        Location* loc = pair.second;
+
+        if (loc && loc->getName() == locationName) {
+            std::cout << " - " << playerName << "\n";
+            found = true;
         }
+    }
 
-        if (isValidPosition(pos))
-        {
+    if (!found) {
+        std::cout << " (no one is here)\n";
+    }
+}
 
-            grid[pos.getY()][pos.getX()] = symbol;
+std::string Map::findShortestPath(const std::string& start, const std::string& end) {
+   
+    std::unordered_map<std::string, std::string> parent;
+    std::queue<Location*> loc;
+    loc.push(locations[start]);
+    parent[start] = "";
 
+    while (!loc.empty()) {
+        Location* current = loc.front();
+        loc.pop();
+        std::string currentName = current->getName();
+        if(currentName == end) 
+            break;
+        for (Location* neighbor : current->getNeighbors()) {
+            std::string neighName = neighbor->getName();
+            if(parent.find(neighName) == parent.end()) {
+                parent[neighName] = currentName;
+                loc.push(neighbor);
+            }
         }
-
     }
 
-}
-
-void Map::placeChar(const Position& pos, char symbol)
-{
-
-    if (isValidPosition(pos))
-    {
-
-        grid[pos.getY()][pos.getX()] = symbol;
-
+    
+    std::vector<std::string> path;
+    for(std::string at = end; !at.empty(); at = parent[at]) {
+        path.push_back(at);
     }
 
-
+    std::reverse(path.begin(), path.end());
+    return path[1];
 }
 
-void Map::display() const
-{
+void Map::setPlayerPosition(const std::string& PlayerName, const std::string& locationName) {
+    if(locations.find(locationName) != locations.end()) {
+        playerPositions[PlayerName] = locations[locationName];
+    }
+}
 
-    for (int y = 0; y < height; ++y)
-    {
+Location* Map::getPlayerPosition(const std::string& playerName) const {
+    auto it = playerPositions.find(playerName);
+    if(it != playerPositions.end()) {
+        return it->second;
+    }
+    return nullptr;
+}
+void Map::printPlayers() const {
+    std::cout << "\nPlayer Positions:\n";
+    for (const auto& pair : playerPositions) {
+        std::cout << " " << pair.first << " → " << pair.second->getName() << "\n";
+    }
+}
 
-        for (int x = 0; x < width; ++x)
-        {
-
-            std::cout << grid[y][x] << ' ';
-
+void Map::print() {
+    for(const auto& pair : locations) {
+        Location* loc = pair.second;
+        std::cout << "Location: " << loc->getName() << "\n";
+        std::cout << " Neighbors: ";
+        for(Location* neighbor : loc->getNeighbors()) {
+            std::cout << neighbor->getName() << " ";
         }
-        std::cout << '\n';
-
+        std::cout << "\n";
     }
-
-}
-
-bool Map::isValidPosition(const Position& pos) const
-{
-
-    return (pos.getX() >= 0 && pos.getX() < width && pos.getY() >= 0 && pos.getY() < height);
-
 }
