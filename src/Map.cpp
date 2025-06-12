@@ -3,6 +3,7 @@
 #include <queue>
 #include <unordered_map>
 #include <algorithm>
+#include <memory>
 
 Map::Map() {
     totalLocation();
@@ -16,7 +17,9 @@ Map& Map::getInstance() {
 
 void Map::addLoation(const std::string& nameLocation) {
     if(locations.find(nameLocation) == locations.end()) {
-        locations[nameLocation] = new Location(nameLocation);
+        // locations[nameLocation] = new Location(nameLocation);
+        locations[nameLocation] = std::make_shared<Location>(nameLocation);
+
     }
     
 }
@@ -24,8 +27,8 @@ void Map::addLoation(const std::string& nameLocation) {
 void Map::connectLocaiton(const std::string& start, const std::string& end) {
     addLoation(start);
     addLoation(end);
-    locations[start]->addNeighbor(locations[end]);
-    locations[end]->addNeighbor(locations[start]);
+    locations[start]->addNeighbor(locations[end].get());
+    locations[end]->addNeighbor(locations[start].get());
 }
 
 void Map::totalLocation() {
@@ -78,7 +81,7 @@ void Map::getPlayersLocation(const std::string& locationName) {
     bool found = false;
     for (const auto& pair : playerPositions) {
         const std::string& playerName = pair.first;
-        Location* loc = pair.second;
+        auto loc = pair.second;
 
         if (loc && loc->getName() == locationName) {
             std::cout << " - " << playerName << "\n";
@@ -95,7 +98,7 @@ std::string Map::findShortestPath(const std::string& start, const std::string& e
    
     std::unordered_map<std::string, std::string> parent;
     std::queue<Location*> loc;
-    loc.push(locations[start]);
+    loc.push(locations[start].get());
     parent[start] = "";
 
     while (!loc.empty()) {
@@ -132,7 +135,7 @@ void Map::setPlayerPosition(const std::string& PlayerName, const std::string& lo
 Location* Map::getPlayerPosition(const std::string& playerName) const {
     auto it = playerPositions.find(playerName);
     if(it != playerPositions.end()) {
-        return it->second;
+        return it->second.get();
     }
     return nullptr;
 }
@@ -145,7 +148,7 @@ void Map::printPlayers() const {
 
 void Map::print() {
     for(const auto& pair : locations) {
-        Location* loc = pair.second;
+        auto loc = pair.second;
         std::cout << "Location: " << loc->getName() << "\n";
         std::cout << " Neighbors: ";
         for(Location* neighbor : loc->getNeighbors()) {
