@@ -29,12 +29,12 @@ public:
 
     void totalLocation();
     void negiborLocation();
-    void getPlayersLocation(const std::string&);
+    std::vector<std::string> getPlayersLocation(const std::string&) const;
     std::string findShortestPath(const std::string&, const std::string&);
     
     void setPlayerPosition(const std::string&, const std::string&);
-    Location* getPlayerPosition(const std::string&) const;
-
+    std::string getPlayerPosition(const std::string&) const;
+    Location* getPlayerPositionPtr(const std::string&) const;
     void printNeighbors();
     void print();
     void printPlayers() const;
