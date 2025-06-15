@@ -1,4 +1,4 @@
-#include "..\include\InvisibleMan.hpp"
+#include "InvisibleMan.hpp"
 
 InvisibleMan::InvisibleMan() : Monster("InvisibleMan" , 6){}
 

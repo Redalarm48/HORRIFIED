@@ -1,4 +1,4 @@
-#include "..\include\Position.hpp"
+#include "Position.hpp"
 
 Position::Position() : X(0) , Y(0){}
 

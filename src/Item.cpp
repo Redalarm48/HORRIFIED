@@ -1,4 +1,4 @@
-#include "..\include\Item.hpp"
+#include "Item.hpp"
 
 Item::Item(itemType type , Position position) : type(type) , position(position) , collected(false){}
 

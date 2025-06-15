@@ -1,44 +1,64 @@
-#include "..\include\Monster.hpp"
+#include "Monster.hpp"
 
 Monster::Monster(const std:: string& name , int frenzyorder) : Name(name) , FrenzyOrder(frenzyorder) , position(0 , 0) , Dead(false) {}
 
-        std::string Monster::getName() const
-        {
+Monster::~Monster(){
 
-            return Name;
+}
 
-        }
+std::string Monster::getName() const
+{
 
-        int Monster::getFrenzyOrder() const
-        {
+    return Name;
 
-            return FrenzyOrder;
+}
 
-        }
+int Monster::getFrenzyOrder() const
+{
 
-        Position Monster::getPosition() const{
+    return FrenzyOrder;
 
-            return position;
+}
 
-        }
+Position Monster::getPosition() const{
 
-        bool Monster::isDead() const
-        {
+    return position;
 
-            return Dead;
+}
 
-        }
+bool Monster::isDead() const
+{
 
-        void Monster::setPosition(const Position& newPos)
-        {
+    return Dead;
 
-            position = newPos;
+}
 
-        }
+void Monster::setPosition(const Position& newPos)
+{
 
-        void Monster::Defeated()
-        {
+    position = newPos;
 
-            Dead = true;
+}
 
-        }
+void Monster::Defeated()
+{
+
+    Dead = true;
+
+}
+
+void Monster::usePower() {
+
+}
+
+void Monster::move(const Position& target) {
+
+}
+
+void Monster::attack() {
+
+}
+
+void Monster::applyItem(const std::vector<Item>& items) {
+
+}

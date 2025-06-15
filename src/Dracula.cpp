@@ -1,4 +1,4 @@
-#include "..\include\Dracula.hpp"
+#include "Dracula.hpp"
 
 Dracula::Dracula() : Monster("Dracula" , 1) {}
 

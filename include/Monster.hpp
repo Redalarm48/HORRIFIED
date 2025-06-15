@@ -18,9 +18,9 @@ class Monster
 
     public :
 
-        Monster(const std:: string& name , int frenzyorder){}
+        Monster(const std:: string& name , int frenzyorder);
 
-        virtual ~Monster(){}
+        virtual ~Monster();
 
         std::string getName() const;
         int getFrenzyOrder() const;
