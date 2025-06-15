@@ -38,7 +38,7 @@ void Map::totalLocation() {
     addLoation("inn");                addLoation("mansion");            addLoation("graveyard");
     addLoation("barn");               addLoation("shop");               addLoation("institute");
     addLoation("dungeon");            addLoation("docks");              addLoation("theatre");           
-    addLoation("tower"); 
+    addLoation("tower");              addLoation("brake");
 
 }
 
@@ -74,24 +74,19 @@ void Map::negiborLocation() {
 
 }
 
+std::vector<std::string> Map::getPlayersLocation(const std::string& locationName) const {
+    std::vector<std::string> playersAtLocation;
 
-void Map::getPlayersLocation(const std::string& locationName) {  
-    std::cout << "People in location: " << locationName << "\n";
-
-    bool found = false;
     for (const auto& pair : playerPositions) {
         const std::string& playerName = pair.first;
         auto loc = pair.second;
 
         if (loc && loc->getName() == locationName) {
-            std::cout << " - " << playerName << "\n";
-            found = true;
+            playersAtLocation.push_back(playerName);
         }
     }
 
-    if (!found) {
-        std::cout << " (no one is here)\n";
-    }
+    return playersAtLocation;
 }
 
 std::string Map::findShortestPath(const std::string& start, const std::string& end) {
@@ -132,13 +127,23 @@ void Map::setPlayerPosition(const std::string& PlayerName, const std::string& lo
     }
 }
 
-Location* Map::getPlayerPosition(const std::string& playerName) const {
+std::string Map::getPlayerPosition(const std::string& playerName) const {
     auto it = playerPositions.find(playerName);
     if(it != playerPositions.end()) {
+        return it->second->getName();
+        
+    }
+    return "";
+}
+
+Location* Map::getPlayerPositionPtr(const std::string& name) const {
+    auto it = playerPositions.find(name);
+    if (it != playerPositions.end()) {
         return it->second.get();
     }
     return nullptr;
 }
+
 void Map::printPlayers() const {
     std::cout << "\nPlayer Positions:\n";
     for (const auto& pair : playerPositions) {
