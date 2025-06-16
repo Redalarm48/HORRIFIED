@@ -8,9 +8,9 @@ class Dracula : public Monster
 
     public :
 
-        Dracula();
+        Dracula(Map& map);
 
-        void usePower() override;
+        void usePower(Heroes &h) override;
         void move(const Position& target) override;
         void attack() override;
         void applyItem(const std::vector<Item>& items) override;

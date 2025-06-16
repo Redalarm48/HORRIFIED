@@ -1,8 +1,10 @@
 #ifndef MONSTER_HPP
 #define MONSTER_HPP
 
-#include "Position.hpp"
 #include "Item.hpp"
+#include "Map.hpp"
+#include "Villagers.hpp"
+#include "Hero.hpp"
 #include <iostream>
 #include <vector>
 
@@ -14,23 +16,24 @@ class Monster
         std::string Name;
         int FrenzyOrder;
         Position position;
+        Map& locationMonster;
         bool Dead;
 
     public :
 
-        Monster(const std:: string& name , int frenzyorder){}
+        Monster(const std:: string& name , int frenzyorder , Map& locationmonster);
 
-        virtual ~Monster(){}
+        virtual ~Monster();
 
-        std::string getName() const;
+        std::string getNameM() const;
         int getFrenzyOrder() const;
-        Position getPosition() const;
         bool isDead() const;
 
-        void setPosition(const Position& newPos);
         void Defeated();
+        Location* getLocationMonsterPtr() const;
+        std::string getLocationMonster() const;
 
-        virtual void usePower();
+        virtual void usePower(Heroes &h);
         virtual void move(const Position& target);
         virtual void attack();
         virtual void applyItem(const std::vector<Item>& items);

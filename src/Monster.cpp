@@ -1,44 +1,50 @@
 #include "..\include\Monster.hpp"
 
-Monster::Monster(const std:: string& name , int frenzyorder) : Name(name) , FrenzyOrder(frenzyorder) , position(0 , 0) , Dead(false) {}
+Monster::Monster(const std:: string& name , int frenzyorder , Map& locationmonster) : Name(name) , FrenzyOrder(frenzyorder) , position(0 , 0) , Dead(false) , locationMonster(locationmonster){}
 
-        std::string Monster::getName() const
-        {
+Monster::~Monster(){
 
-            return Name;
+}
 
-        }
+std::string Monster::getNameM() const
+{
 
-        int Monster::getFrenzyOrder() const
-        {
+    return Name;
 
-            return FrenzyOrder;
+}
 
-        }
+int Monster::getFrenzyOrder() const
+{
 
-        Position Monster::getPosition() const{
+    return FrenzyOrder;
 
-            return position;
+}
 
-        }
+bool Monster::isDead() const
+{
 
-        bool Monster::isDead() const
-        {
+    return Dead;
 
-            return Dead;
+}
 
-        }
 
-        void Monster::setPosition(const Position& newPos)
-        {
+void Monster::Defeated()
+{
 
-            position = newPos;
+    Dead = true;
 
-        }
+}
 
-        void Monster::Defeated()
-        {
+Location* Monster::getLocationMonsterPtr() const
+{
 
-            Dead = true;
+    return this->locationMonster.getPlayerPositionPtr(Name); 
 
-        }
+}
+
+std::string Monster::getLocationMonster() const 
+{
+
+    return this->locationMonster.getPlayerPosition(Name);
+
+}

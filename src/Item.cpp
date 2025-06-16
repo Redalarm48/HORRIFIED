@@ -1,7 +1,14 @@
 #include "..\include\Item.hpp"
 
-Item::Item(itemType type , Position position) : type(type) , position(position) , collected(false){}
+Item::Item(itemType type , Map& locationitem , std::string Name) : type(type) , collected(false) , locationItem(locationitem) , name(Name) {}
 
+
+std::string Item::getName()const
+{
+
+    return name;
+
+}
 
 itemType Item::getType()const
 {
@@ -9,12 +16,7 @@ itemType Item::getType()const
     return type;
     
 }
-Position Item::getPosition()const
-{
 
-    return position;
-
-}
 bool Item::isCollected()const
 {
 
@@ -28,9 +30,17 @@ void Item::collect()
     collected = true;
 
 }
-void Item::setPosition(Position newPosition)
+
+Location* Item::getLocationItemPtr() const
 {
 
-    position = newPosition;
+    return this->locationItem.getPlayerPositionPtr(name); 
+
+}
+
+std::string Item::getLocationItem() const 
+{
+
+    return this->locationItem.getPlayerPosition(name);
 
 }

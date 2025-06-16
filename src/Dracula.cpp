@@ -1,21 +1,22 @@
 #include "..\include\Dracula.hpp"
 
-Dracula::Dracula() : Monster("Dracula" , 1) {}
+Dracula::Dracula(Map& map) : Monster("Dracula" , 1 , map) {}
 
-        void Dracula::usePower()
+
+
+        void Dracula::usePower(Heroes &h)
         {
-
-            //باید کد اجرای قدرت هیولا زده شه اول
-
-            std::cout << "Dracula Hypnotized someone , nearest entity moves 1 step closer.\n";
+            
+            h.getLocation().setPlayerPosition(h.getName() , getLocationMonster());
+            std::cout << "Dracula Hypnotized someone , Last Hero in charge moves to the Dracula.\n";
+            //باید آخرین قهرمان آخرین بازیکنی که بازی کرده منتقل بشه
 
         }
 
         void Dracula::move(const Position& target)
         {
 
-            std::cout << "Dracula moves from (" << getPosition().getX() << "," << getPosition().getY() << ") to (" << target.getX() << "," << target.getY() << "\n";
-            setPosition(target);
+            //کوتاه ترین مسیرو نفهمیدم
 
         }
 
