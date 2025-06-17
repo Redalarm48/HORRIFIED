@@ -1,8 +1,8 @@
 #include "InvisibleMan.hpp"
 
-InvisibleMan::InvisibleMan() : Monster("InvisibleMan" , 6){}
+InvisibleMan::InvisibleMan(Map& map) : Monster("InvisibleMan" , 6 , map){}
 
-void InvisibleMan::usePower()
+void InvisibleMan::usePower(Heroes &h)
 {
 
     //باید کد اجرای قدرت هیولا زده شه اول
@@ -14,10 +14,11 @@ void InvisibleMan::usePower()
 void InvisibleMan::move(const Position& target)
 {
 
-    std::cout << "InvisibleMan moves from (" << getPosition().getX() << "," << getPosition().getY() << ") to (" << target.getX() << "," << target.getY() << "\n";
-    setPosition(target);
+    //کوتاه ترین مسیرو نفهمیدم
 
 }
+
+
 
 void InvisibleMan::attack()
 {

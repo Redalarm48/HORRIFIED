@@ -1,12 +1,12 @@
 #include "Monster.hpp"
 
-Monster::Monster(const std:: string& name , int frenzyorder) : Name(name) , FrenzyOrder(frenzyorder) , position(0 , 0) , Dead(false) {}
+Monster::Monster(const std:: string& name , int frenzyorder , Map& locationmonster) : Name(name) , FrenzyOrder(frenzyorder) , position(0 , 0) , Dead(false) , locationMonster(locationmonster){}
 
 Monster::~Monster(){
 
 }
 
-std::string Monster::getName() const
+std::string Monster::getNameM() const
 {
 
     return Name;
@@ -20,12 +20,6 @@ int Monster::getFrenzyOrder() const
 
 }
 
-Position Monster::getPosition() const{
-
-    return position;
-
-}
-
 bool Monster::isDead() const
 {
 
@@ -33,12 +27,6 @@ bool Monster::isDead() const
 
 }
 
-void Monster::setPosition(const Position& newPos)
-{
-
-    position = newPos;
-
-}
 
 void Monster::Defeated()
 {
@@ -47,18 +35,16 @@ void Monster::Defeated()
 
 }
 
-void Monster::usePower() {
+Location* Monster::getLocationMonsterPtr() const
+{
+
+    return this->locationMonster.getPlayerPositionPtr(Name); 
 
 }
 
-void Monster::move(const Position& target) {
+std::string Monster::getLocationMonster() const 
+{
 
-}
-
-void Monster::attack() {
-
-}
-
-void Monster::applyItem(const std::vector<Item>& items) {
+    return this->locationMonster.getPlayerPosition(Name);
 
 }
