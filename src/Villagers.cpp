@@ -33,7 +33,7 @@ std::string Villager::getSafeLocationVillager() const {
 
 void Villager::addVillager(std::string nameVillager, std::string locationVillager, std::string safeLocationVillager) {
     this->locationVillager.setPlayerPosition(nameVillager, locationVillager);
-    nameAndsafeLocationVilager.emplace_back(nameVillager, safeLocationVillager);
+    nameAndsafeLocationVilager.emplace_back(nameVillager, safeLocationVillager, locationVillager);
 }
 
 void Villager::initializeVillagers() {
@@ -69,9 +69,9 @@ std::vector<std::string> Villager::moveLocation(std::string location) {
     }
     
     for(auto& i : nameAndsafeLocationVilager) {
-        if(i.second == location) {
-            villagersAtLocation.push_back(i.first);
-            std::cout <<"-"<< i.first << std::endl;
+        if(std::get<2>(i) == location) {
+            villagersAtLocation.push_back(std::get<0>(i));
+            std::cout <<"-"<< std::get<0>(i) << std::endl;
         }
     }
 
@@ -115,16 +115,41 @@ std::vector<std::string> Villager::moveLocation(std::string location) {
     return nameVillagerMove;
 }
 
+std::string Villager::guideVillager(std::vector<std::string> location) {
+    std::vector<std::string> chekNameVillager;
+    for(auto& j : location) {
+        std::cout << j << ":";
+        for(auto& i : nameAndsafeLocationVilager) {
+            if(std::get<2>(i) == j) {
+                chekNameVillager.push_back(std::get<0>(i));
+                std::cout << std::get<0>(i) << ",";
+            }
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "Enter the name of the villager you want to take to the hero's location: ";
+    std::string nameVillagerMove;
+    std::cin >> nameVillagerMove;
+    if (std::find(chekNameVillager.begin(), chekNameVillager.end(), nameVillagerMove) == chekNameVillager.end()) {
+        std::cout << "Villager not found";
+        return "";
+    }
+    else {
+        return nameVillagerMove;
+    }
+
+}
+
 void Villager::chekSafeLocationVillager(std::string nameVilager) {
     for(auto& chek : nameAndsafeLocationVilager) {
-        if(nameVilager == chek.first) {
+        if(nameVilager == std::get<0>(chek)) {
             auto locationLiveVilager = locationVillager.getPlayerPosition(nameVilager);
             // std::cout << locationLiveVilager << "\n";
-            if(chek.second == locationLiveVilager) {
+            if(std::get<1>(chek) == locationLiveVilager) {
                 std::cout << "Villager " << nameVilager << " safe location." << std::endl;
                 removeVillager(nameVilager);
             }
         }
     }
 }
-std::vector<std::pair<std::string, std::string>> Villager::nameAndsafeLocationVilager;
+std::vector<std::tuple<std::string, std::string, std::string>> Villager::nameAndsafeLocationVilager;

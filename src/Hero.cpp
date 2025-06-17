@@ -69,7 +69,7 @@ void Heroes::move() {
 }
 
 
-void Heroes::guide() {
+void Heroes::guide() {  
 
     if(!canTakeAction()) {
         std::cout << "No actions left.\n";
@@ -82,11 +82,16 @@ void Heroes::guide() {
         return;
     }
 
-    std::cout << "Villagers at current location:\n";
-    // villager.printVillagerAtLocation(current->getName());
+    std::vector<std::string> neighborsHero;
 
-    std::cout << "Enter billager name to guide";
-    
+    auto neighbors = current->getNeighbors();
+    for(auto& loc : neighbors) {
+        neighborsHero.push_back(loc->getName());
+    }
+
+    std::string nameVillager = Villager::guideVillager(neighborsHero);
+    locationHero.setPlayerPosition(nameVillager, getLocationHero());
+
 
 }
 void Heroes::pickUp() {
