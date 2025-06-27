@@ -1,4 +1,5 @@
-#include "Map.hpp"
+#include "..\include\Map.hpp"
+#include "..\include\Item.hpp"
 #include <iostream>
 #include <queue>
 #include <unordered_map>
@@ -123,7 +124,9 @@ std::string Map::findShortestPath(const std::string& start, const std::string& e
 
 void Map::setPlayerPosition(const std::string& PlayerName, const std::string& locationName) {
     if(locations.find(locationName) != locations.end()) {
-        playerPositions[PlayerName] = locations[locationName];
+        auto locationPtr = locations[locationName];
+        playerPositions[PlayerName] = locationPtr;
+        locationPtr->addPlayer(PlayerName);
     }
 }
 
@@ -147,7 +150,7 @@ Location* Map::getPlayerPositionPtr(const std::string& name) const {
 void Map::printPlayers() const {
     std::cout << "\nPlayer Positions:\n";
     for (const auto& pair : playerPositions) {
-        std::cout << " " << pair.first << " → " << pair.second->getName() << "\n";
+        std::cout << " " << pair.first << " in " << pair.second->getName() << "\n";
     }
 }
 
@@ -162,3 +165,38 @@ void Map::print() {
         std::cout << "\n";
     }
 }
+
+void Map::removePlayer(const std::string& name) {
+    auto it = playerPositions.find(name);
+    if (it != playerPositions.end()) {
+        if (it->second) {
+            it->second->removePlayer(name);
+        }
+        playerPositions.erase(it);
+    }
+}
+
+
+std::vector<Item*> Map::getItemsAt(const std::string& locationName) const {
+    std::vector<Item*> result;
+    std::vector<std::string> players = getPlayersLocation(locationName);
+
+    std::cout << "[Debug] Checking players in location: " << locationName << "\n";
+    for (const std::string& name : players) {
+        std::cout << " - " << name << "\n";
+        if (name.rfind("item_", 0) == 0) {
+            Item* item = Item::findByName(name);
+            if (item) {
+                std::cout << "   [Debug] Item found: " << item->getName() << "\n";
+                result.push_back(item);
+            } else {
+                std::cout << "   [Warning] Couldn't find item object for: " << name << "\n";
+            }
+        }
+    }
+
+    return result;
+}
+
+
+

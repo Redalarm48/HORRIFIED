@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Villagers.hpp"
-#include "Hero.hpp"
-#include "Map.hpp"
+#include "include\Villagers.hpp"
+#include "include\Hero.hpp"
+#include "include\Map.hpp"
 
 int main() {
     Map& map = Map::getInstance();

@@ -2,6 +2,7 @@
 #define HERO_H
 #include "PerkCard.hpp"
 #include "Villagers.hpp"
+#include "Item.hpp"
 #include "Map.hpp"
 #include <string>
 // #include "Villagers.hpp"
@@ -18,6 +19,8 @@ private:
     Map& locationHero;
     int numberActionTaken;
     int maxActions;
+    std::vector<Item*> inventory;
+
 
 public:
     Heroes(int,const std::string, Map&);
@@ -34,10 +37,15 @@ public:
 
     void move();
     void guide();
-    void pickUp();
+    void pickUp(Item* item);
     void Advance();
     void defeat();
     // virtual void specialAction() = 0;
+    int getNumberActionTaken() const;
+    void showInventory() const;
+    void removeFromInventory(Item* item);
+    std::vector<Item*> getInventory();
+
 
 protected:
     void incrementAction();
@@ -55,4 +63,6 @@ public:
     // void specialAction() override;
 };
 
-#endif // HERO_H
+
+
+#endif 

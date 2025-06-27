@@ -8,6 +8,8 @@
 #include "Location.hpp"
 #include <memory>
 
+class Item;
+
 class Map {
 private:
     // std::string namePlayer;
@@ -38,6 +40,9 @@ public:
     void printNeighbors();
     void print();
     void printPlayers() const;
+    void removePlayer(const std::string& name);
+    std::vector<Item*> getItemsAt(const std::string& location) const;
+
 
 };
 

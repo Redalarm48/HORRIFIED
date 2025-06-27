@@ -1,4 +1,4 @@
-#include "PerkCard.hpp"
+#include "..\include\PerkCard.hpp"
 
 PerkCard::PerkCard(PerkCardType perkType,const std::string& descriprion) {
     this->perkType = perkType;

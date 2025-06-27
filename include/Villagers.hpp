@@ -2,7 +2,7 @@
 #define VILLAGERS_H
 #include "Hero.hpp"
 #include "Map.hpp"
-#include <utility> // برای std::pair
+#include <utility>
 #include <vector>
 class Villager {
 private:
@@ -10,10 +10,10 @@ private:
     std::string nameVillager;
     std::string safeLocationVillager;
     Map& locationVillager;
-    static std::vector<std::tuple<std::string, std::string, std::string>> nameAndsafeLocationVilager;
+    static std::vector<std::pair<std::string, std::string>> nameAndsafeLocationVilager;
 public:
     Villager(Map&);
-    Villager(std::string, std::string, Map&);
+    Villager(std::string, Map&, std::string);
     
     void setNameVillager(const std::string&);
     // void setStatusVillager(const Status&);
@@ -29,7 +29,9 @@ public:
     void chekSafeLocationVillager(std::string);
 
     static std::vector<std::string> moveLocation(std::string);
-    static std::string guideVillager(std::vector<std::string>);
+
+    std::vector<std::pair<std::string, std::string>> getActiveVillagers() const;
+
 
 };
 

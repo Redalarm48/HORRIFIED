@@ -15,7 +15,6 @@ class Monster
 
         std::string Name;
         int FrenzyOrder;
-        Position position;
         Map& locationMonster;
         bool Dead;
 
@@ -32,9 +31,10 @@ class Monster
         void Defeated();
         Location* getLocationMonsterPtr() const;
         std::string getLocationMonster() const;
+        Map& getMap() const;
 
-        virtual void usePower(Heroes &h);
-        virtual void move(const Position& target);
+        virtual void usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers);
+        virtual void move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers);
         virtual void attack();
         virtual void applyItem(const std::vector<Item>& items);
 

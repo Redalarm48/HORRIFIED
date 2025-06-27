@@ -1,5 +1,5 @@
-#include "Hero.hpp"
-#include "Villagers.hpp"
+#include "..\include\Hero.hpp"
+#include "..\include\Villagers.hpp"
 Heroes::Heroes(int maxAction, const std::string nameHero, Map& locationHero)  : nameHero(nameHero), statusHero(Status::Alive), locationHero(locationHero),
     numberActionTaken(0), maxActions(maxAction) {}
 
@@ -24,6 +24,13 @@ void Heroes::incrementAction() {
     ++numberActionTaken;
     
 }
+
+
+int Heroes::getNumberActionTaken() const {
+    return numberActionTaken;
+    
+}
+
 
 
 void Heroes::move() {
@@ -82,19 +89,15 @@ void Heroes::guide() {
         return;
     }
 
-    std::vector<std::string> neighborsHero;
+    std::cout << "Villagers at current location:\n";
+    // villager.printVillagerAtLocation(current->getName());
 
-    auto neighbors = current->getNeighbors();
-    for(auto& loc : neighbors) {
-        neighborsHero.push_back(loc->getName());
-    }
-
-    std::string nameVillager = Villager::guideVillager(neighborsHero);
-    locationHero.setPlayerPosition(nameVillager, getLocationHero());
+    std::cout << "Enter billager name to guide";
 
 
 }
-void Heroes::pickUp() {
+void Heroes::pickUp(Item* item) {
+    inventory.push_back(item);
     ++this->numberActionTaken;
 
 }
@@ -118,3 +121,25 @@ void Heroes::defeat() {
 // void Archaeologist::specialAction() {
 
 // }
+
+std::string Heroes::getName() const {
+    return this->nameHero;
+}
+
+void Heroes::showInventory() const {
+    std::cout << getName() << "'s Inventory:\n";
+    for (const auto& item : inventory) {
+        std::cout << "- " << item->getName() << "\n";
+    }
+}
+
+void Heroes::removeFromInventory(Item* item) {
+    auto it = std::find(inventory.begin(), inventory.end(), item);
+    if (it != inventory.end()) {
+        inventory.erase(it);
+    }
+}
+
+std::vector<Item*> Heroes::getInventory(){
+    return inventory;
+}
