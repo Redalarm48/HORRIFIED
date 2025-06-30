@@ -1,5 +1,5 @@
-#include "..\include\Hero.hpp"
-#include "..\include\Villagers.hpp"
+#include "Hero.hpp"
+#include "Villagers.hpp"
 Heroes::Heroes(int maxAction, const std::string nameHero, Map& locationHero)  : nameHero(nameHero), statusHero(Status::Alive), locationHero(locationHero),
     numberActionTaken(0), maxActions(maxAction) {}
 
@@ -88,12 +88,15 @@ void Heroes::guide() {
         std::cout << "Hero location unknown.\n";
         return;
     }
+    std::vector<std::string> neighborsHero;
 
-    std::cout << "Villagers at current location:\n";
-    // villager.printVillagerAtLocation(current->getName());
+    auto neighbors = current->getNeighbors();
+    for(auto& loc : neighbors) {
+        neighborsHero.push_back(loc->getName());
+    }
 
-    std::cout << "Enter billager name to guide";
-
+    std::string nameVillager = Villager::guideVillager(neighborsHero);
+    locationHero.setPlayerPosition(nameVillager, getLocationHero());
 
 }
 void Heroes::pickUp(Item* item) {
