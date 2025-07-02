@@ -13,6 +13,7 @@
 #include "Villagers.hpp"
 #include "PerkCard.hpp"
 #include "MonsterCard.hpp"
+#include <unordered_set>
 
 class Game {
 private:
@@ -34,13 +35,31 @@ private:
     // سطح وحشت (۰ تا ۵)
     int terrorLevel;
 
+
+    std::vector<Item*> itemBag;
+
     std::vector<Item*> activeItems; // اشاره‌گر به آیتم‌های روی نقشه
 
     // کارت‌ها
     PerkDeck perkDeck;
     MonsterDeck monsterDeck{ &dracula, &invisibleMan, &dracula };  // فرض کن فعلاً frenzy رو هم Dracula می‌گیریم
 
+    std::vector<std::string> draculaCoffinLocations = { "cave", "crypt", "dungeon", "graveyard" };
+    std::unordered_map<std::string, bool> coffinDestroyed = {
+        {"cave", false},
+        {"crypt", false},
+        {"dungeon", false},
+        {"graveyard", false}
+    };
+    std::unordered_map<std::string, bool> invisibleItemCollected = {
+        {"inn", false},
+        {"barn", false},
+        {"institute", false},
+        {"laboratory", false},
+        {"mansion", false}
+    };
 
+    bool invisibleAdvanceDone = false;
 
     // نوبت‌ها
     bool isMayorTurn;
@@ -113,6 +132,13 @@ public:
     void handleDraculaAttack();
     void handleInvisibleManAttack();
     void handlePickUp(Heroes& hero);
+    void returnItemToBag(Item* item); 
+    void placeRandomItem(int count); 
+    void placeRandomItemAt(const std::string& location, int count);
+    std::string findLocationWithMostItems() const;
+    void handleAdvanceCoffin(const std::string& location, Heroes& hero);
+    void handleDefeatDracula(Monster* monster, Heroes& hero);
+    void handleAdvanceInvisibleMan(Heroes& hero);
 
 };
 

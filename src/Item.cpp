@@ -52,4 +52,16 @@ Item* Item::findByName(const std::string& name) {
     return nullptr;
 }
 
+std::string Item::getPickedUpFrom() const
+{
+
+    return pickedUpFrom;
+
+} 
+
+void Item:: setPickedUpFrom(const std::string& loc) 
+{ 
+    pickedUpFrom = loc; 
+}
+
 std::vector<Item*> Item::allItems;

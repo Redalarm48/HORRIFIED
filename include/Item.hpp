@@ -5,12 +5,15 @@
 #include <string>
 #include <vector>
 #include "Position.hpp"
+#include "Hero.hpp"
 #include "Location.hpp"
+#include "Map.hpp"
+
+class Map;
 
 
 enum class itemType { RED, BLUE , YELLOW};
 
-class Map; 
 
 class Item
 {
@@ -21,6 +24,7 @@ class Item
         itemType type;
         bool collected;
         Map* locationItem;
+        std::string pickedUpFrom = "";
         
 
     public :
@@ -38,8 +42,8 @@ class Item
         std::string getLocationItem() const;
         static Item* findByName(const std::string& name);
         static std::vector<Item*> allItems;
-
-
+        std::string getPickedUpFrom() const; 
+        void setPickedUpFrom(const std::string& loc);
 
         void collect();
 
