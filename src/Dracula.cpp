@@ -46,8 +46,31 @@ void Dracula::move(const std::vector<Heroes*>& heroes, const std::vector<std::pa
     }
 }
 
+void Dracula::move() {
 
+    auto current = getLocationMonsterPtr();
+    if(!current) {
+        std::cout << "Heo location unknwon";
+        return;
+    }
+    // std::string n = "h";    
 
+    std::cout << "Current location: " << current->getName() << "\nNeighbors: \n";
+    
+    auto neighbors = current->getNeighbors();
+    for(size_t i = 0; i < neighbors.size(); ++i) {
+        std::cout << i+1 << "." << neighbors[i]->getName() << "\n";
+    }
+
+    std::cout << "choose a location to move to (number): ";
+    std::string newLocationHero;
+    std::cin >> newLocationHero;
+
+    // Location* newLocation = neighbors[newLocationHero - 1];
+    getMap().setPlayerPosition("Dracula" , newLocationHero);
+    std::cout << "Dracula" << " moved to " << newLocationHero << ".\n";
+
+}
 
 void Dracula::attack()
 {
