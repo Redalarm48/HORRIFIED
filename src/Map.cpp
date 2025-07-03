@@ -119,8 +119,26 @@ std::string Map::findShortestPath(const std::string& start, const std::string& e
     }
 
     std::reverse(path.begin(), path.end());
-    return path[1];
+    if (path.size() >= 2) {
+    return path[1];  // مسیر بعدی از start
+} else {
+    return "";  // یا یه پیغام خطا، یا همون start
 }
+
+}
+
+bool Map::isNeighbor(const std::string& from, const std::string& to) const {
+    auto it = locations.find(from);
+    if (it == locations.end()) return false;
+
+    for (Location* neighbor : it->second->getNeighbors()) {
+        if (neighbor->getName() == to) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 void Map::setPlayerPosition(const std::string& PlayerName, const std::string& locationName) {
     if(locations.find(locationName) != locations.end()) {
@@ -179,18 +197,20 @@ void Map::removePlayer(const std::string& name) {
 
 std::vector<Item*> Map::getItemsAt(const std::string& locationName) const {
     std::vector<Item*> result;
-    std::vector<std::string> players = getPlayersLocation(locationName);
 
-    std::cout << "[Debug] Checking players in location: " << locationName << "\n";
-    for (const std::string& name : players) {
-        std::cout << " - " << name << "\n";
+    auto it = locations.find(locationName);  //  تغییر دادیم از playerPositions به locations
+    if (it == locations.end()) {
+        std::cout << "[Debug] Location '" << locationName << "' not found in locations.\n";
+        return result;
+    }
+
+    std::cout << "[Debug] Checking items at location '" << locationName << "'.\n";
+
+    for (const std::string& name : it->second->getPlayers()) {
         if (name.rfind("item_", 0) == 0) {
             Item* item = Item::findByName(name);
             if (item) {
-                std::cout << "   [Debug] Item found: " << item->getName() << "\n";
                 result.push_back(item);
-            } else {
-                std::cout << "   [Warning] Couldn't find item object for: " << name << "\n";
             }
         }
     }
@@ -198,5 +218,12 @@ std::vector<Item*> Map::getItemsAt(const std::string& locationName) const {
     return result;
 }
 
+std::vector<std::string> Map::getAllLocationNames() const {
+    std::vector<std::string> names;
+    for (const auto& [name, _] : locations) {
+        names.push_back(name);
+    }
+    return names;
+}
 
 

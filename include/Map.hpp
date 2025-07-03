@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include "Location.hpp"
+#include "Item.hpp"
 #include <memory>
 
 class Item;
@@ -33,7 +34,8 @@ public:
     void negiborLocation();
     std::vector<std::string> getPlayersLocation(const std::string&) const;
     std::string findShortestPath(const std::string&, const std::string&);
-    
+    bool isNeighbor(const std::string& from, const std::string& to) const;
+
     void setPlayerPosition(const std::string&, const std::string&);
     std::string getPlayerPosition(const std::string&) const;
     Location* getPlayerPositionPtr(const std::string&) const;
@@ -42,6 +44,7 @@ public:
     void printPlayers() const;
     void removePlayer(const std::string& name);
     std::vector<Item*> getItemsAt(const std::string& location) const;
+    std::vector<std::string> getAllLocationNames() const; 
 
 
 };
