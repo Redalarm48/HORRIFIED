@@ -1,10 +1,12 @@
 #include "Villagers.hpp"
+#include <algorithm>
+#include <cctype>
 
-Villager::Villager(std::string nameVillager,Map& locationVillager, std::string safeLocationVillager) : nameVillager(nameVillager), safeLocationVillager(safeLocationVillager), locationVillager(locationVillager) {
-    //initializeVillagers();
-}
+
 Villager::Villager(Map& locationVillager) : locationVillager(locationVillager) {
-    //initializeVillagers();
+    initializeVillagers(NameVillagers::Maria);
+    initializeVillagers(NameVillagers::Maleva);
+    // initializeVillagers();
 
 }
 
@@ -36,36 +38,67 @@ void Villager::addVillager(std::string nameVillager, std::string locationVillage
     nameAndsafeLocationVilager.emplace_back(nameVillager, safeLocationVillager, locationVillager);
 }
 
-void Villager::initializeVillagers() {
-    addVillager("Dr.crunly","percinct", "laboratory");
-    addVillager("Maleva","shop", "camp");
-    addVillager("Fritz","institute", "tower");
-    addVillager("Maria","camp", "barn");
-    addVillager("Prof.pearson","museum", "cave");
-    addVillager("Dr.read","camp", "institute");
+void Villager::initializeVillagers(NameVillagers nameVillager) {
+    switch (nameVillager)
+    {
+    case NameVillagers::Dr_crunly :
+        addVillager("Dr.crunly","percinct", "laboratory");
+        break;
+    
+    case NameVillagers::Maleva :
+        addVillager("Maleva","shop", "camp");
+        break;
+
+    case NameVillagers::Fritz :
+        addVillager("Fritz","institute", "tower");
+        break;
+
+    case NameVillagers::Maria :
+        addVillager("Maria","camp", "barn");
+        break;
+
+    case NameVillagers::Prof_pearson :
+        addVillager("Prof.pearson","museum", "cave");
+        break;
+
+    case NameVillagers::Dr_read :
+        addVillager("Dr.read","camp", "institute");
+        break;
+
+    default:
+        // throw
+        break;
+    }
 
 }
-void Villager::removeVillager(std::string& nameVilager) {
+void Villager::removeVillager(const std::string& nameVilager) {
     this->locationVillager.setPlayerPosition(nameVilager, "brake");
 }
 
 std::vector<std::string> Villager::moveLocation(std::string location) {
-    // std::cout << location;c
-    // int numberVillagerLive = 0;
     std::vector<std::string> villagersAtLocation;
+
     if(nameAndsafeLocationVilager.empty()) {
         return {};
     }
-
-    std::cout << "Do you want to move the villagers with the hero? (yes,no): ";
-    std::string yesOrNO;
-    std::cin >> yesOrNO;
-    if(yesOrNO == "no") {
-        return {};
-    }
-    else if(yesOrNO != "yes") {
-        std::cout << "try again: (yes, no): ";
+    while (true)
+    {
+        
+        
+        std::cout << "Do you want to move the villagers with the hero? (yes,no): ";
+        
+        std::string yesOrNO;
         std::cin >> yesOrNO;
+        std::transform(yesOrNO.begin(), yesOrNO.end(), yesOrNO.begin(), ::tolower);
+        
+        
+        if(yesOrNO == "no") {
+            return {};
+        }
+        else if(yesOrNO == "yes") {
+            break;
+        }
+        std::cout << "Invalid input, Please enter 'yes' or 'no'\n";
     }
     
     for(auto& i : nameAndsafeLocationVilager) {
@@ -90,7 +123,7 @@ std::vector<std::string> Villager::moveLocation(std::string location) {
     }
 
     
-    if(numberVillager > villagersAtLocation.size() && numberVillager <= 0) {
+    if(numberVillager > villagersAtLocation.size() || numberVillager <= 0) {
         std::cout << "eshtebah!!!!!1" << std::endl;
         return {};
     }
@@ -114,6 +147,7 @@ std::vector<std::string> Villager::moveLocation(std::string location) {
 
     return nameVillagerMove;
 }
+
 std::string Villager::guideVillager(std::vector<std::string> location) {
     std::vector<std::string> chekNameVillager;
     for(auto& j : location) {
@@ -164,4 +198,13 @@ std::vector<std::pair<std::string, std::string>> Villager::getActiveVillagers() 
     }
 
     return result;
+}
+
+void Villager::updateVillager(const std::string& nameVillager, const std::string& newLocationVillalger) {
+    for (auto& villager : nameAndsafeLocationVilager) {
+        if (std::get<0>(villager) == nameVillager) {
+            std::get<2>(villager) = newLocationVillalger;
+            return;
+        }
+    }
 }
