@@ -54,7 +54,7 @@ void Villager::initializeVillagers(NameVillagers nameVillager) {
         break;
 
     case NameVillagers::Maria :
-        addVillager("Maria","camp", "barn");
+        addVillager("Maria","camp", "cave");
         break;
 
     case NameVillagers::Prof_pearson :
@@ -73,6 +73,8 @@ void Villager::initializeVillagers(NameVillagers nameVillager) {
 }
 void Villager::removeVillager(const std::string& nameVilager) {
     this->locationVillager.setPlayerPosition(nameVilager, "brake");
+    Villager::updateVillager(nameVilager, "break");
+    PerkDeck::drawCard();
 }
 
 std::vector<std::string> Villager::moveLocation(std::string location) {
@@ -150,6 +152,12 @@ std::vector<std::string> Villager::moveLocation(std::string location) {
 
 std::string Villager::guideVillager(std::vector<std::string> location) {
     std::vector<std::string> chekNameVillager;
+    bool trueOrfalse = true;
+    while (trueOrfalse)
+    {
+        /* code */
+    }
+    
     for(auto& j : location) {
         std::cout << j << ":";
         for(auto& i : nameAndsafeLocationVilager) {
