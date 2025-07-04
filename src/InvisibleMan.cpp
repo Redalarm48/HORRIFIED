@@ -1,6 +1,4 @@
 #include "InvisibleMan.hpp"
-#include <climits>
-
 
 InvisibleMan::InvisibleMan(Map& map) : Monster("InvisibleMan" , 6 , map){}
 

@@ -1,4 +1,3 @@
-#include <climits>
 #include "Dracula.hpp"
 
 Dracula::Dracula(Map& map) : Monster("Dracula" , 1 , map) {}

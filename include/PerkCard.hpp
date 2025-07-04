@@ -9,7 +9,6 @@
 class Heroes;
 class Dracula;
 class InvisibleMan;
-class Game;
 
 enum class PerkCardType{
     VisitFromDetective,
@@ -39,16 +38,16 @@ private:
 public:
     // PerkDeck();
     static void initializeDeck();
-    static void addCard(PerkCardType, const std::string&, const int);
+    static void addCard(PerkCardType, const std::string, int);
     static void shuffleDeck();
     static PerkCard drawCard();
     static bool isEmpty();
     static std::vector<PerkCard> getInGamePerkCards();
 
     static void visitFormTheDetective();
-    static void breakOfDawn(Heroes&, Game&);
-    static void overstock(Game&, Heroes&, Heroes&);
-    static void lateIntoTheNight(Heroes&);
+    static void breakOfDawn();
+    static void overstock();
+    static void lateIntoTheNight();
     static void Repel(Dracula&, InvisibleMan&);
     static void Hurry(Heroes&, Heroes&);
 

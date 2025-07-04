@@ -1,7 +1,5 @@
 #include "Hero.hpp"
-#include <unordered_set>
 #include "Villagers.hpp"
-#include "Game.hpp"
 Heroes::Heroes(int maxAction, const std::string nameHero, Map& locationHero)  : nameHero(nameHero), statusHero(Status::Alive), locationHero(locationHero),
     numberActionTaken(0), maxActions(maxAction) {
         // perkCard.drawCard();
@@ -137,15 +135,12 @@ void Heroes::guide() {
 
     locationHero.setPlayerPosition(nameVillager, getLocationHero());
 
-    incrementAction();
-
 }
 
 void Heroes::pickUp(Item* item) {
     inventory.push_back(item);
+    ++this->numberActionTaken;
 
-    incrementAction();
-    
 }
 
 void Heroes::increaseActionMax()
@@ -163,55 +158,22 @@ int Heroes::getMaxAction()const
 }
 
 
-void Heroes::Advance(Game& game) {
-    // بررسی کن که همه مکان‌ها حداقل یک آیتم ازشون جمع شده
-    for (const auto& entry : this->getInvisibleItemCollected()) {
-        if (!entry.second) {
-            std::cout << "You must collect at least one item from all 5 required locations before advancing.\n";
-            return;
-        }
-    }
+void Heroes::Advance() {
+    ++this->numberActionTaken;
 
-    // حالا ۵ آیتم با مکان‌های متفاوت رو پیدا کن و حذفشون کن
-    std::unordered_set<std::string> usedLocations;
-    std::vector<Item*> itemsToRemove;
-
-    for (Item* item : this->getInventory()) {
-        std::string loc = item->getPickedUpFrom();
-        if (this->getInvisibleItemCollected().count(loc) && !usedLocations.count(loc)) {
-            usedLocations.insert(loc);
-            itemsToRemove.push_back(item);
-        }
-
-        if (usedLocations.size() == 5) break;
-    }
-
-    if (usedLocations.size() < 5) {
-        std::cout << "You do not have the correct 5 items from distinct locations.\n";
-        return;
-    }
-
-    // حذف آیتم‌ها از اینونتوری
-    for (Item* item : itemsToRemove) {
-        this->removeFromInventory(item);
-        game.returnItemToBag(item);
-    }
-    
-    game.setInvisibleAdvanceDone(true);
-    std::cout << "You successfully performed the advance action for Invisible Man.\n";
-
-
-    incrementAction();
-    
 }
 void Heroes::defeat() {
-    
+    ++this->numberActionTaken;
 
-    incrementAction();
-    
 }
+// void Heroes::specialAction() {
+//     ++this->numberActionTaken;
+
+// }
+
 Archaeologist::Archaeologist(Map& map) : Heroes(4, "Archaeologist", map) {}
 
+// Mayor::Mayor() : Heroes();
 Mayor::Mayor(Map& map) : Heroes(5, "Mayor", map) {}
 
 void Archaeologist::specialAction(Map& map ,  const std::vector<Item*>& itemList) {
@@ -282,8 +244,6 @@ void Archaeologist::specialAction(Map& map ,  const std::vector<Item*>& itemList
             break;
         }
     }
-
-    incrementAction();
 
 }
 
@@ -371,6 +331,13 @@ void Heroes::usePerkCard(int index) {
     }
 }
 
+// void Heroes::showPerkCards() const {
+//     std::cout << "Perk Cards:\n";
+//     for (size_t i = 0; i < perkCards.size(); ++i) {
+//         std::cout << i + 1 << ". " << static_cast<int>(perkCards[i].getType()) << " - " << perkCards[i].getDescription() << "\n";
+//     }
+// }
+
 void Heroes::removePerkCard(int index) {
     if (index >= 0 && index < perkCards.size()) {
         perkCards.erase(perkCards.begin() + index);
@@ -400,6 +367,11 @@ std::unordered_map<std::string, bool>& Heroes::getcoffinDestroyed()
 void Heroes::handlePickUp(Map& map , const std::vector<Item*>& itemList) {
     while (true) {
         auto itemsHere = map.getItemsAt(getLocationHero() , itemList);
+
+        // if(numberActionTaken > 5)
+        // {
+        //     break;
+        // }
 
         if (itemsHere.empty()) {
             std::cout << "There are no more items at this location.\n";
@@ -488,3 +460,21 @@ void Heroes::handleAdvanceCoffin(const std::string& location) {
     getcoffinDestroyed()[location] = true;
     std::cout << "Coffin at " << location << " destroyed!\n";
 }
+
+ // 
+// std::unordered_map<std::string, bool> Heroes::getInvisibleItemCollected() {
+
+//     return invisibleItemCollected;
+
+// }
+//         }
+//     }
+//     return false;
+// }
+
+// std::unordered_map<std::string, bool> Heroes::getInvisibleItemCollected()
+// {
+
+//     return invisibleItemCollected;
+
+// }

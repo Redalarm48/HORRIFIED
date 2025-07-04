@@ -5,7 +5,7 @@
 #include "Item.hpp"
 #include "Map.hpp"
 #include <string>
-
+// #include "Villagers.hpp"
 enum class itemType;
 enum class Status{
     Alive,
@@ -15,7 +15,6 @@ enum class Status{
 class Map;
 class Item;
 enum class itemType;
-
 
 class Heroes {
 private:
@@ -41,6 +40,7 @@ public:
     std::string getName() const;
     Status getStatus() const;
     std::vector<PerkCard> getInGamePerkCards();
+    void setStatus(Status);
     void setLocation(const std::string&, const std::string&);
 
     Location* getLocationHeroPtr() const;
@@ -51,8 +51,9 @@ public:
     void move(bool = false);
     void guide();
     void pickUp(Item*);
-    void Advance(Game&);
+    void Advance();
     void defeat();
+    // virtual void specialAction() = 0;
     int getNumberActionTaken() const;
     void showInventory() const;
     void removeFromInventory(Item* item);
@@ -61,6 +62,7 @@ public:
     bool hasItems(itemType type, int count) const;
     void addPerkCard(const PerkCard& card);
     void usePerkCard(int index);
+    // void showPerkCards() const;
     const std::vector<PerkCard>& getPerkCards() const;
     void decreaseAction();
     void increaseActionMax();
@@ -89,6 +91,7 @@ public:
 class Mayor : public Heroes {
 public:
     Mayor(Map&);
+    // void specialAction() override;
 };
 
 

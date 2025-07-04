@@ -12,6 +12,10 @@ class Item;
 
 class Map {
 private:
+    // std::string namePlayer;
+    // std::unordered_map<std::string, Location*> locations;
+    // std::unordered_map<std::string, Location*> playerPositions;
+
 
     static std::unordered_map<std::string, std::shared_ptr<Location>> locations; 
     static std::unordered_map<std::string, std::shared_ptr<Location>> playerPositions;  

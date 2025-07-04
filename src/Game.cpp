@@ -478,7 +478,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case TheDelivery :
 
             placeRandomItem(3);
-            villagerManager.initializeVillagers(NameVillagers::WilnureAndChick);
+            villagerManager.addVillager("Wilbur & Chick","docks", "percinct");
             if(!frenziedMonster->isDead())
                 {frenziedMonster->move(heroes , villagers);}
             return;
@@ -486,7 +486,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case FortuneTeller :
 
             placeRandomItem(3);
-            villagerManager.initializeVillagers(NameVillagers::Maleva);
+            villagerManager.addVillager("Maleva","camp", "shop");
             if(!frenziedMonster->isDead())
                 {frenziedMonster->move(heroes , villagers);}
             return;
@@ -494,7 +494,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case FormerEmployer :
 
             placeRandomItem(3);
-            villagerManager.initializeVillagers(NameVillagers::Dr_crunly);
+            villagerManager.addVillager("Dr.crunly","laboratory", "percinct");
             if(!frenziedMonster->isDead())
                 {frenziedMonster->move(heroes , villagers);}
             if(!invisibleMan.isDead())
@@ -505,7 +505,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case HurriedAssistant :
 
             placeRandomItem(3);
-            villagerManager.initializeVillagers(NameVillagers::Fritz);
+            villagerManager.addVillager("Fritz","tower", "institute");
             if(!dracula.isDead())
                 {dracula.move(heroes , villagers);}
             return;
@@ -513,7 +513,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case TheInnocent :
 
             placeRandomItem(3);
-            villagerManager.initializeVillagers(NameVillagers::Maria);
+            villagerManager.addVillager("Maria","barn", "camp");
             if(!invisibleMan.isDead())
                 {invisibleMan.move(heroes , villagers);}
             if(!dracula.isDead())
@@ -525,7 +525,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case EgyptianExpert :
 
             placeRandomItem(3);
-            villagerManager.initializeVillagers(NameVillagers::Prof_pearson);
+            villagerManager.addVillager("Prof.pearson","cave", "museum");
             if(!frenziedMonster->isDead())
                 {frenziedMonster->move(heroes , villagers);}
             if(!dracula.isDead())
@@ -535,7 +535,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case TheIchthyologist :
 
             placeRandomItem(3);
-            villagerManager.initializeVillagers(NameVillagers::Dr_read);
+            villagerManager.addVillager("Dr.read","institute", "camp");
             if(!frenziedMonster->isDead())
                 {frenziedMonster->move(heroes , villagers);}
             return;
@@ -768,7 +768,7 @@ void Game::handleDefeatDracula(Monster* monster, Heroes& hero) {
         gameMap.removePlayer(monster->getNameM());
         std::cout << "Invisible Man has been defeated!\n";
     }
-    hero.defeat();
+
 }
 
 void Game::handleAdvanceInvisibleMan(Heroes& hero) {
@@ -807,14 +807,6 @@ void Game::handleAdvanceInvisibleMan(Heroes& hero) {
     std::cout << "You successfully performed the advance action for Invisible Man.\n";
 }
 
-
-void Game::setMonsterPhaseTrue(bool value) {
-    monsterPhaseTrue = value;
-}
-
-void Game::setInvisibleAdvanceDone(bool value) {
-    invisibleAdvanceDone = value;
-}
 
 
 

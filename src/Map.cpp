@@ -1,5 +1,5 @@
-#include "..\include\Map.hpp"
-#include "..\include\Item.hpp"
+#include "Map.hpp"
+#include "Item.hpp"
 #include <iostream>
 #include <queue>
 #include <unordered_map>
