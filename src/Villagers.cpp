@@ -1,39 +1,27 @@
-#include "..\include\Villagers.hpp"
+#include "Villagers.hpp"
 #include <algorithm>
 #include <cctype>
 
 
-Villager::Villager(Map& locationVillager) : locationVillager(locationVillager) {
-    initializeVillagers(NameVillagers::Maria);
-    initializeVillagers(NameVillagers::Maleva);
-    // initializeVillagers();
-
-}
+Villager::Villager(Map& locationVillager) : locationVillager(locationVillager) {}
 
 void Villager::setNameVillager(const std::string& nameVillage) {
     this->nameVillager = nameVillage; 
 }
-// void Villager::setStatusVillager(const Status& statusVillager) {
-//     this->statusVillager = statusVillager;
-// }
-// void Villager::setLocationVillager(const Map& locationVillager) {
-//     this->locationVillager = locationVillager;
-// }
- 
+
 std::string Villager::getNameVillager() const {
     return nameVillager;
 }
-// Status Villager::getStatusVillager() const {
-//     return statusVillager;
-// }
+
 std::string Villager::getLocationVillager() const {
     return locationVillager.getPlayerPosition(nameVillager);
 }
+
 std::string Villager::getSafeLocationVillager() const {
     return safeLocationVillager;
 }
 
-void Villager::addVillager(std::string nameVillager, std::string locationVillager, std::string safeLocationVillager) {
+void Villager::addVillager(const std::string& nameVillager, const std::string& locationVillager, const std::string& safeLocationVillager) {
     this->locationVillager.setPlayerPosition(nameVillager, locationVillager);
     nameAndsafeLocationVilager.emplace_back(nameVillager, safeLocationVillager, locationVillager);
 }
@@ -54,7 +42,7 @@ void Villager::initializeVillagers(NameVillagers nameVillager) {
         break;
 
     case NameVillagers::Maria :
-        addVillager("Maria","camp", "cave");
+        addVillager("Maria","camp", "barn");
         break;
 
     case NameVillagers::Prof_pearson :
@@ -64,6 +52,9 @@ void Villager::initializeVillagers(NameVillagers nameVillager) {
     case NameVillagers::Dr_read :
         addVillager("Dr.read","camp", "institute");
         break;
+    case NameVillagers::WilnureAndChick:
+        addVillager("Wilbur & Chick","percinct", "docks");
+    
 
     default:
         // throw
@@ -77,7 +68,7 @@ void Villager::removeVillager(const std::string& nameVilager) {
     PerkDeck::drawCard();
 }
 
-std::vector<std::string> Villager::moveLocation(std::string location) {
+std::vector<std::string> Villager::moveLocation(const std::string& location) {
     std::vector<std::string> villagersAtLocation;
 
     if(nameAndsafeLocationVilager.empty()) {
@@ -179,7 +170,7 @@ std::string Villager::guideVillager(std::vector<std::string> location) {
         return nameVillagerMove;
     }
 }
-void Villager::chekSafeLocationVillager(std::string nameVilager , Heroes& h) {
+void Villager::chekSafeLocationVillager(const std::string& nameVilager , Heroes& h) {
     for(auto& chek : nameAndsafeLocationVilager) {
         if(nameVilager == std::get<0>(chek)) {
             auto locationLiveVilager = locationVillager.getPlayerPosition(nameVilager);
@@ -194,19 +185,18 @@ void Villager::chekSafeLocationVillager(std::string nameVilager , Heroes& h) {
     }
 }
 
-std::vector<std::tuple<std::string, std::string, std::string>> Villager::nameAndsafeLocationVilager;
 
 
 std::vector<std::pair<std::string, std::string>> Villager::getActiveVillagers() const {
     std::vector<std::pair<std::string, std::string>> result;
-
+    
     for (const auto& pair : nameAndsafeLocationVilager) {
         std::string currentLocation = locationVillager.getPlayerPosition(std::get<0>(pair));
-        if (currentLocation != "brake") { // یعنی هنوز توی نقشه هست
+        if (currentLocation != "brake") {
             result.emplace_back(std::get<0>(pair), currentLocation);
         }
     }
-
+    
     return result;
 }
 
@@ -218,3 +208,4 @@ void Villager::updateVillager(const std::string& nameVillager, const std::string
         }
     }
 }
+std::vector<std::tuple<std::string, std::string, std::string>> Villager::nameAndsafeLocationVilager;
