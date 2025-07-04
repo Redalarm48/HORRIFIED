@@ -1,5 +1,5 @@
-#include "..\include\Map.hpp"
-#include "..\include\Item.hpp"
+#include "Map.hpp"
+#include "Item.hpp"
 #include <iostream>
 #include <queue>
 #include <unordered_map>
@@ -226,4 +226,7 @@ std::vector<std::string> Map::getAllLocationNames() const {
     return names;
 }
 
+
+std::unordered_map<std::string, std::shared_ptr<Location>> Map::locations;
+std::unordered_map<std::string, std::shared_ptr<Location>> Map::playerPositions;
 
