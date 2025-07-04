@@ -1,24 +1,13 @@
-#include <iostream>
-#include "include\Villagers.hpp"
-#include "include\Hero.hpp"
-#include "include\Map.hpp"
+#include "Game.hpp"
 
 int main() {
-    Map& map = Map::getInstance();
+    Game game;
 
-    Villager vil(map);
-    
-    Heroes h(10,"parsa", map);
-    Heroes sss(4,"reza", map);
-    map.setPlayerPosition("parsa", "camp");
-    map.setPlayerPosition("reza", "cave");
-    h.move();
-    // vil.chekSafeLocationVillager("Maleva");
+    game.gM().setPlayerPosition("Mayor", "camp");;
+    game.gM().setPlayerPosition("Archaeologist", "cave");
+    game.gM().setPlayerPosition("Dracula", "dungeon");
+    game.gM().setPlayerPosition("InvisibleMan", "abbey");        
 
-    auto getlcation = map.getPlayersLocation("cave");
-    for(auto& i : getlcation) {
-        std::cout << i <<  std::endl;
-    }
-
+    game.run();
     return 0;
 }
