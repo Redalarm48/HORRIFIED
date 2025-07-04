@@ -1,5 +1,5 @@
-#include "Map.hpp"
-#include "Item.hpp"
+#include "..\include\Map.hpp"
+#include "..\include\Item.hpp"
 #include <iostream>
 #include <queue>
 #include <unordered_map>
@@ -165,13 +165,13 @@ Location* Map::getPlayerPositionPtr(const std::string& name) const {
     return nullptr;
 }
 
-void Map::printPlayers() const {
+void Map::printPlayers( const std::vector<Item*>& itemList) const {
     std::cout << "\nPlayer Positions:\n";
     for (const auto& pair : playerPositions) {
         std::cout << " " << pair.first << " in " << pair.second->getName();
 
         // بررسی اینکه آیا این object یک آیتم است
-        Item* item = Item::findByName(pair.first);
+        Item* item = Item::findByName(pair.first ,  itemList);
         if (item) {
             std::string color;
             switch (item->getType()) {
@@ -211,7 +211,7 @@ void Map::removePlayer(const std::string& name) {
 }
 
 
-std::vector<Item*> Map::getItemsAt(const std::string& locationName) const {
+std::vector<Item*> Map::getItemsAt(const std::string& locationName ,  const std::vector<Item*>& itemList) const {
     std::vector<Item*> result;
 
     auto it = locations.find(locationName);  //  تغییر دادیم از playerPositions به locations
@@ -224,7 +224,7 @@ std::vector<Item*> Map::getItemsAt(const std::string& locationName) const {
 
     for (const std::string& name : it->second->getPlayers()) {
         if (name.rfind("item_", 0) == 0) {
-            Item* item = Item::findByName(name);
+            Item* item = Item::findByName(name , itemList);
             if (item) {
                 result.push_back(item);
             }

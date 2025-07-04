@@ -73,17 +73,4 @@ void Dracula::move() {
 
 }
 
-void Dracula::attack()
-{
-    
 
-    std::cout << "Dracula attacks!!!\n";
-
-}
-
-void Dracula::applyItem(const std::vector<Item>& items)
-{
-
-    std::cout << "Dracula affected by items\n";
-
-}

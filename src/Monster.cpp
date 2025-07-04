@@ -64,10 +64,3 @@ void Monster::move(const std::vector<Heroes*>& heroes, const std::vector<std::pa
 
 }
 
-void Monster::attack() {
-
-}
-
-void Monster::applyItem(const std::vector<Item>& items) {
-
-}

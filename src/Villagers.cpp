@@ -142,13 +142,10 @@ std::vector<std::string> Villager::moveLocation(const std::string& location) {
 }
 
 std::string Villager::guideVillager(std::vector<std::string> location) {
+
     std::vector<std::string> chekNameVillager;
     bool trueOrfalse = true;
-    while (trueOrfalse)
-    {
-        /* code */
-    }
-    
+
     for(auto& j : location) {
         std::cout << j << ":";
         for(auto& i : nameAndsafeLocationVilager) {

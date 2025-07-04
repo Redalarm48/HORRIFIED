@@ -35,8 +35,8 @@ class Monster
 
         virtual void usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers);
         virtual void move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers);
-        virtual void attack();
-        virtual void applyItem(const std::vector<Item>& items);
+
+
 
 };
 

@@ -71,7 +71,7 @@ public:
     static std::unordered_map<std::string, bool>& getInvisibleItemCollected();
     static std::unordered_map<std::string, bool>& getcoffinDestroyed();
 
-    void handlePickUp( Map& map);
+    void handlePickUp( Map& map , const std::vector<Item*>& itemList);
 
     void setNumberActionTaken(int num);
     void incrementAction();
@@ -83,7 +83,7 @@ public:
 class Archaeologist : public Heroes {
 public:
     Archaeologist(Map&);
-    void specialAction(Map&);
+    void specialAction(Map& , const std::vector<Item*>& itemList);
 };
 
 class Mayor : public Heroes {

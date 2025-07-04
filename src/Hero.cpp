@@ -70,7 +70,7 @@ void Heroes::move(bool skipVillager) {
     }
 
     std::string newLocation;
-    std::cout << "choose a location to move to (number): ";
+    std::cout << "choose a location to move to (name): ";
     bool trueOrfalse = true;
     while (trueOrfalse)
     {
@@ -115,9 +115,9 @@ void Heroes::guide() {
         std::cout << "No actions left.\n";
         return;
     }
-
+    std::cout<<"1";
     auto current = getLocationHeroPtr();
-    
+  std::cout<<"1";  
     if(!current) {
         std::cout << "Hero location unknown.\n";
         return;
@@ -132,6 +132,8 @@ void Heroes::guide() {
     }
 
     std::string nameVillager = Villager::guideVillager(neighborsHero);
+    Villager::updateVillager(nameVillager , getLocationHero());
+
 
     locationHero.setPlayerPosition(nameVillager, getLocationHero());
 
@@ -212,14 +214,14 @@ Archaeologist::Archaeologist(Map& map) : Heroes(4, "Archaeologist", map) {}
 
 Mayor::Mayor(Map& map) : Heroes(5, "Mayor", map) {}
 
-void Archaeologist::specialAction(Map& map) {
+void Archaeologist::specialAction(Map& map ,  const std::vector<Item*>& itemList) {
 
         std::string currentLoc = getLocationHero();
     std::vector<Item*> allItems;
     std::vector<std::string> itemSources; // برای اینکه بدونیم هر آیتم از کدوم خونه اومده
 
     // آیتم‌های خانه‌ی فعلی
-    auto itemsHere = map.getItemsAt(currentLoc);
+    auto itemsHere = map.getItemsAt(currentLoc , itemList);
     for (auto& item : itemsHere) {
         allItems.push_back(item);
         itemSources.push_back(currentLoc);
@@ -228,7 +230,7 @@ void Archaeologist::specialAction(Map& map) {
     // آیتم‌های خانه‌های همسایه
     auto neighbors = map.getNeighbors(currentLoc);
     for (const auto& neighbor : neighbors) {
-        auto items = map.getItemsAt(neighbor);
+        auto items = map.getItemsAt(neighbor , itemList);
         for (auto& item : items) {
             allItems.push_back(item);
             itemSources.push_back(neighbor);
@@ -395,9 +397,9 @@ std::unordered_map<std::string, bool>& Heroes::getcoffinDestroyed()
 }
 
 
-void Heroes::handlePickUp(Map& map) {
+void Heroes::handlePickUp(Map& map , const std::vector<Item*>& itemList) {
     while (true) {
-        auto itemsHere = map.getItemsAt(getLocationHero());
+        auto itemsHere = map.getItemsAt(getLocationHero() , itemList);
 
         if (itemsHere.empty()) {
             std::cout << "There are no more items at this location.\n";
