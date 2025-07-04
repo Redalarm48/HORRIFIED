@@ -10,9 +10,9 @@ void InvisibleMan::usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const
 }
 
 void InvisibleMan::move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) {
-    std::string currentPos = getMap().getPlayerPosition("InvisibleMan");
     for(int steps = 0 ; steps < 2 ; ++steps)
     {    
+        std::string currentPos = getMap().getPlayerPosition("InvisibleMan");
         std::string closestTarget;
         int minDist = INT_MAX;
 

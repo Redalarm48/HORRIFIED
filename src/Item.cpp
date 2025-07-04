@@ -64,4 +64,5 @@ void Item:: setPickedUpFrom(const std::string& loc)
     pickedUpFrom = loc; 
 }
 
+
 std::vector<Item*> Item::allItems;

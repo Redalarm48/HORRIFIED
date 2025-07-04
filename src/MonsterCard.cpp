@@ -44,14 +44,14 @@ void MonsterDeck::shuffleDeck() {
 
 void MonsterDeck::initializeDeck() {
     addCard(MonsterCardType::FormOfTheBat, "Dracula moves to the latest hero position.", 2, { invisibleMan }, 3);
-    addCard(MonsterCardType::Sunrise, "Dracula moves to Crypt.", 2, { invisibleMan, frenzied }, 3);
-    addCard(MonsterCardType::Thief, "Invisible Man removes all items from the location with most items.", 3, { invisibleMan, dracula }, 5);
+    addCard(MonsterCardType::Sunrise, "Dracula moves to Crypt.", 2, {frenzied , invisibleMan }, 3);
+    addCard(MonsterCardType::Thief, "Invisible Man removes all items from the location with most items.", 3, { dracula , invisibleMan }, 5);
     addCard(MonsterCardType::TheDelivery, "Place Wilbur & Chick in Docks.", 3, { frenzied }, 1);
     addCard(MonsterCardType::FortuneTeller, "Place Maleva in Camp.", 2, { frenzied }, 1);
-    addCard(MonsterCardType::FormerEmployer, "Place Dr. Crunly in Laboratory.", 2, { invisibleMan, frenzied }, 1);
+    addCard(MonsterCardType::FormerEmployer, "Place Dr. Crunly in Laboratory.", 2, { frenzied , invisibleMan }, 1);
     addCard(MonsterCardType::HurriedAssistant, "Place Fritz in Tower.", 3, { dracula }, 1);
-    addCard(MonsterCardType::TheInnocent, "Place Maria in Barn.", 3, { frenzied, dracula, invisibleMan }, 1);
-    addCard(MonsterCardType::EgyptianExpert, "Place Prof. Pearson in Cave.", 2, { dracula, frenzied }, 1);
+    addCard(MonsterCardType::TheInnocent, "Place Maria in Barn.", 3, {invisibleMan, dracula, frenzied }, 1);
+    addCard(MonsterCardType::EgyptianExpert, "Place Prof. Pearson in Cave.", 2, {frenzied , dracula  }, 1);
     addCard(MonsterCardType::TheIchthyologist, "Place Dr. Read in Institute.", 2, { frenzied }, 1);
     
     shuffleDeck();

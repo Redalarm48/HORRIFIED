@@ -1,8 +1,8 @@
-#include "PerkCard.hpp"
-#include "InvisibleMan.hpp"
-#include "Map.hpp"
-#include "Hero.hpp"
-#include "Dracula.hpp"
+#include "..\include\PerkCard.hpp"
+#include "..\include\InvisibleMan.hpp"
+#include "..\include\Map.hpp"
+#include "..\include\Hero.hpp"
+#include "..\include\Dracula.hpp"
 
 inline std::ostream& operator<<(std::ostream& os, const PerkCardType& type) {
     switch (type) {
@@ -34,6 +34,13 @@ inline std::ostream& operator<<(std::ostream& os, const PerkCardType& type) {
 PerkCard::PerkCard(PerkCardType perkType,const std::string& descriprion) {
     this->perkType = perkType;
     this->description = descriprion;
+}
+
+PerkCardType PerkCard::getType() const {
+    return perkType;
+}
+std::string PerkCard::getDescription() const {
+    return description;
 }
 
 void PerkDeck::initializeDeck() {
@@ -114,6 +121,9 @@ void PerkDeck::Repel(Dracula& dracula, InvisibleMan& invisibleMan) {
     
 
 }
+
+
+
 
 std::vector<PerkCard> PerkDeck::cards;
 std::vector<PerkCard> PerkDeck::inGameCards;

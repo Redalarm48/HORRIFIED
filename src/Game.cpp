@@ -6,8 +6,8 @@
 
 Game::Game()
     : gameMap(Map::getInstance()),
-      mayor(3, "Mayor", gameMap),
-      archaeologist(3, "Archaeologist", gameMap),
+      mayor(gameMap),
+      archaeologist(gameMap),
       dracula(gameMap),
       invisibleMan(gameMap),
       frenziedMonster(nullptr),
@@ -30,7 +30,7 @@ Map& Game:: gM()
 void Game::initializeGame() {
     for (const auto& loc : draculaCoffinLocations) 
     {
-        coffinDestroyed[loc] = false;
+        mayor.getcoffinDestroyed()[loc] = false;
     }
 
     perkDeck.initializeDeck();
@@ -41,6 +41,9 @@ void Game::initializeGame() {
     std::shuffle(itemBag.begin(), itemBag.end(), std::default_random_engine(std::random_device{}()));
 
 
+    mayor.addPerkCard(perkDeck.drawCard());
+    archaeologist.addPerkCard(perkDeck.drawCard());
+
     for (int i = 0; i < 12; ++i) {
         auto& item = getNextItem();
         std::string location = getRandomLocation();
@@ -49,6 +52,7 @@ void Game::initializeGame() {
 
     frenziedMonster = &dracula;
     determineFirstPlayer();
+    
 }
 
 void Game::determineFirstPlayer() {
@@ -113,10 +117,15 @@ std::string Game::getRandomLocation() const {
 
 void Game::startGameLoop() {
     while (!checkWinCondition() && !checkLoseCondition()) {
-        currentHero = isMayorTurn ? &mayor : &archaeologist;
+        monsterPhaseTrue = true;
+        currentHero = isMayorTurn ? static_cast<Heroes*>(&mayor) : static_cast<Heroes*>(&archaeologist);
+
         heroTurn(*currentHero);
         villagerManager.getLocationVillager();
-        monsterPhase();
+        if(monsterPhaseTrue)
+        {
+            monsterPhase();
+        }
         isMayorTurn = !isMayorTurn;
     }
 
@@ -137,30 +146,237 @@ void Game::startGameLoop() {
 
 void Game::heroTurn(Heroes& hero) {
     hero.resetActions();
+    if(hero.getName() == "Mayor")
+    {
+
+        hero.setNumberActionTaken(0);
+
+    }
+    else
+    {
+
+        hero.setNumberActionTaken(0);
+
+    }
     while (hero.canTakeAction()) {
-        std::cout << "\n" << hero.getName() << " Turn. Actions left: " << (3 - hero.getNumberActionTaken()) << "\n";
-        std::cout << "1. Move\n2. Guide Villager\n3. Pick Up Item\n4. Defeat Monster\n5. Show Inventory\n6. Advance\n7. End Turn\n";
-        gameMap.print();
-        gameMap.printPlayers();
-        int choice;
-        std::cin >> choice;
-        switch (choice) {
-            case 1: hero.move(); 
+        std::cout << "\n" << hero.getName() << " Turn. Actions left: " << (hero.getMaxAction() - hero.getNumberActionTaken()) << "\n";
+        if(hero.getName() == "Mayor")
+        {
+            std::cout << "1. Move\n2. Guide Villager\n3. Pick Up Item\n4. Defeat Monster\n5. Show Inventory\n6. Advance\n7. Use Perk Card\n8. End Turn\n";
+            gameMap.print();
+            gameMap.printPlayers();
+            hero.showCoffinStatus();
+            int choice;
+            std::cin >> choice;
+            switch (choice) {
+                case 1: 
+                    hero.move(); 
                     break;
-            case 2: hero.guide(); 
+                case 2: 
+                    hero.guide();       
                     break;
-            case 3: handlePickUp(hero);
+                case 3: 
+                    hero.handlePickUp(gameMap);        
                     break;
-            case 4: hero.defeat(); 
+                case 4: 
+                    {
+                    std::cout << "which monster you want to defeat ? (Dracula / InvisibleMan)";
+                    std::string monstername;
+                    std::cin >> monstername;
+                    if(monstername == "Dracula")
+                        handleDefeatDracula(&dracula , hero);   
+                    else if(monstername == "InvisibleMan")
+                        handleDefeatDracula(&invisibleMan , hero);  
+                    hero.defeat(); 
+                        break;
+                    }
+                case 5: 
+                    hero.showInventory(); 
                     break;
-            case 5: hero.showInventory(); 
-                    break;
-            case 6: handleAdvanceCoffin(hero.getLocationHero(), hero);
+                case 6: 
+                    hero.handleAdvanceCoffin(hero.getLocationHero());
                     handleInvisibleManAttack();
                     break;
-            case 7: return;
+                case 7: {
+                    const auto& perkCards = hero.getPerkCards();
+                    if (perkCards.empty()) {
+                        std::cout << "You don't have any Perk Cards!\n";
+                        break;
+                    }
 
-            default: std::cout << "Invalid choice\n";
+                    std::cout << "Your Perk Cards:\n";
+                    for (size_t i = 0; i < perkCards.size(); ++i) {
+                        std::cout << i + 1 << ". " << perkCards[i] << " - " << perkCards[i].getDescription() << "\n";
+                    }
+
+                    std::cout << "Choose a card to use (0 to cancel): ";
+                    int choice;
+                    std::cin >> choice;
+
+                    if (choice <= 0 || static_cast<size_t>(choice) > perkCards.size()) {
+                        std::cout << "Cancelled using Perk Card.\n";
+                        break;
+                    }
+
+                    PerkCard selected = perkCards[choice - 1];
+                    hero.removePerkCard(choice - 1);  // remove the card after using it
+
+                    switch (selected.getType()) {
+                        case PerkCardType::VisitFromDetective:
+                            PerkDeck::visitFormTheDetective();
+                            break;
+
+                        case PerkCardType::BreakOfDawn:
+                            monsterPhaseTrue = false;
+                            std::cout << "Monster phase will be skipped.\n";
+                            placeRandomItemAt(hero.getLocationHero() , 2);
+                            std::cout << "You received 2 random items at your location.\n";
+                            break;
+
+                        case PerkCardType::Overstock:
+                            placeRandomItemAt(mayor.getLocationHero() , 1);
+                            placeRandomItemAt(archaeologist.getLocationHero() , 1);
+                            std::cout << "Each hero received 1 item at their locations.\n";
+                            break;
+
+                        case PerkCardType::LateIntoTheNight:
+                            hero.increaseActionMax();
+                            std::cout << "You received 2 extra actions this turn!\n";
+                            break;
+
+                        case PerkCardType::Repel:
+                            PerkDeck::Repel(dracula, invisibleMan);
+                            break;
+
+                        case PerkCardType::Hurry:
+                            PerkDeck::Hurry(mayor, archaeologist);
+                            break;
+
+                        default:
+                            std::cout << "Unknown Perk Card.\n";
+                            break;
+                    }
+
+                    break;
+                }
+
+                
+                case 8: 
+                    return;
+
+                default: std::cout << "Invalid choice\n";
+            }
+        }
+        else
+        {
+            std::cout << "1. Move\n2. Guide Villager\n3. Pick Up Item\n4. Defeat Monster\n5. Show Inventory\n6. Advance\n7. Use Perk Card\n8. Use SpecialAbillity\n9. End Turn\n";
+            gameMap.print();
+            gameMap.printPlayers();
+            int choice;
+            std::cin >> choice;
+            switch (choice) {
+                case 1: 
+                    hero.move(); 
+                    break;
+                case 2: 
+                    hero.guide();       
+                    break;
+                case 3: 
+                    hero.handlePickUp(gameMap);        
+                    break;
+                case 4: 
+                    {
+                    std::cout << "which monster you want to defeat ? (Dracula / InvisibleMan)";
+                    std::string monstername;
+                    std::cin >> monstername;
+                    if(monstername == "Dracula")
+                        handleDefeatDracula(&dracula , hero);   
+                    else if(monstername == "InvisibleMan")
+                        handleDefeatDracula(&invisibleMan , hero);  
+                    hero.defeat(); 
+                        break;
+                    }
+                case 5: 
+                    hero.showInventory(); 
+                    break;
+                case 6: 
+                    hero.handleAdvanceCoffin(hero.getLocationHero());
+                    handleInvisibleManAttack();
+                    break;
+                case 7: {
+                    const auto& perkCards = hero.getPerkCards();
+                    if (perkCards.empty()) {
+                        std::cout << "You don't have any Perk Cards!\n";
+                        break;
+                    }
+
+                    std::cout << "Your Perk Cards:\n";
+                    for (size_t i = 0; i < perkCards.size(); ++i) {
+                        std::cout << i + 1 << ". " << perkCards[i] << " - " << perkCards[i].getDescription() << "\n";
+                    }
+
+                    std::cout << "Choose a card to use (0 to cancel): ";
+                    int choice;
+                    std::cin >> choice;
+
+                    if (choice <= 0 || static_cast<size_t>(choice) > perkCards.size()) {
+                        std::cout << "Cancelled using Perk Card.\n";
+                        break;
+                    }
+
+                    PerkCard selected = perkCards[choice - 1];
+                    hero.removePerkCard(choice - 1);  // remove the card after using it
+
+                    switch (selected.getType()) {
+                        case PerkCardType::VisitFromDetective:
+                            PerkDeck::visitFormTheDetective();
+                            break;
+
+                        case PerkCardType::BreakOfDawn:
+                            monsterPhaseTrue = false;
+                            std::cout << "Monster phase will be skipped.\n";
+                            placeRandomItemAt(hero.getLocationHero() , 2);
+                            std::cout << "You received 2 random items at your location.\n";
+                            break;
+
+                        case PerkCardType::Overstock:
+                            placeRandomItemAt(mayor.getLocationHero() , 1);
+                            placeRandomItemAt(archaeologist.getLocationHero() , 1);
+                            std::cout << "Each hero received 1 item at their locations.\n";
+                            break;
+
+                        case PerkCardType::LateIntoTheNight:
+                            hero.increaseActionMax();
+                            std::cout << "You received 2 extra actions this turn!\n";
+                            break;
+
+                        case PerkCardType::Repel:
+                            PerkDeck::Repel(dracula, invisibleMan);
+                            break;
+
+                        case PerkCardType::Hurry:
+                            PerkDeck::Hurry(mayor, archaeologist);
+                            break;
+
+                        default:
+                            std::cout << "Unknown Perk Card.\n";
+                            break;
+                    }
+
+                    break;
+                }
+
+                case 8:
+
+                    archaeologist.specialAction(gameMap);
+                    archaeologist.incrementAction();
+                    break;
+                
+                case 9: 
+                    return;
+
+                default: std::cout << "Invalid choice\n";
+            }
         }
     }
 }
@@ -179,8 +395,6 @@ void Game::monsterPhase() {
 
     resolveMonsterEvent(card);
     rollDice(card);
-    dracula.move(heroes , villagers);
-    invisibleMan.move(heroes , villagers);
 
 }
 
@@ -193,19 +407,29 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
 
         case FormOfTheBat :
 
-            gameMap.setPlayerPosition("Dracula", currentHero->getLocationHero());
+            if(!dracula.isDead())
+                {gameMap.setPlayerPosition("Dracula", currentHero->getLocationHero());}
             placeRandomItem(2);
+            if(!invisibleMan.isDead())
+                {invisibleMan.move(heroes , villagers);}
             return;
 
         case Sunrise :
+            if(!invisibleMan.isDead())
+                {gameMap.setPlayerPosition("Dracula", "crypt");}
+            
+            if(!frenziedMonster->isDead())
+                {frenziedMonster->move(heroes , villagers);}
 
-            gameMap.setPlayerPosition("Dracula", "crypt");
+            if(!invisibleMan.isDead())
+                {invisibleMan.move(heroes , villagers);}
             return;
 
         case Thief: {
             std::string targetLocation = findLocationWithMostItems();
             if (!targetLocation.empty()) {
-                gameMap.setPlayerPosition("InvisibleMan", targetLocation);
+                if(!invisibleMan.isDead())
+                    {gameMap.setPlayerPosition("InvisibleMan", targetLocation);}
 
                 // حذف همه آیتم‌های این مکان
                 auto items = gameMap.getItemsAt(targetLocation);
@@ -228,18 +452,26 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
 
             placeRandomItem(3);
             villagerManager.addVillager("Wilbur & Chick","docks", "percinct");
+            if(!frenziedMonster->isDead())
+                {frenziedMonster->move(heroes , villagers);}
             return;
  
         case FortuneTeller :
 
             placeRandomItem(3);
             villagerManager.addVillager("Maleva","camp", "shop");
+            if(!frenziedMonster->isDead())
+                {frenziedMonster->move(heroes , villagers);}
             return;
  
         case FormerEmployer :
 
             placeRandomItem(3);
             villagerManager.addVillager("Dr.crunly","laboratory", "percinct");
+            if(!frenziedMonster->isDead())
+                {frenziedMonster->move(heroes , villagers);}
+            if(!invisibleMan.isDead())
+                {invisibleMan.move(heroes , villagers);}
 
             return;
  
@@ -247,24 +479,38 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
 
             placeRandomItem(3);
             villagerManager.addVillager("Fritz","tower", "institute");
+            if(!dracula.isDead())
+                {dracula.move(heroes , villagers);}
             return;
  
         case TheInnocent :
 
             placeRandomItem(3);
             villagerManager.addVillager("Maria","barn", "camp");
+            if(!invisibleMan.isDead())
+                {invisibleMan.move(heroes , villagers);}
+            if(!dracula.isDead())
+                {dracula.move(heroes , villagers);}
+            if(!frenziedMonster->isDead())
+                {frenziedMonster->move(heroes , villagers);}
             return;
 
         case EgyptianExpert :
 
             placeRandomItem(3);
             villagerManager.addVillager("Prof.pearson","cave", "museum");
+            if(!frenziedMonster->isDead())
+                {frenziedMonster->move(heroes , villagers);}
+            if(!dracula.isDead())
+                {dracula.move(heroes , villagers);}
             return;
  
         case TheIchthyologist :
 
             placeRandomItem(3);
             villagerManager.addVillager("Dr.read","institute", "camp");
+            if(!frenziedMonster->isDead())
+                {frenziedMonster->move(heroes , villagers);}
             return;
          
     }
@@ -336,11 +582,19 @@ void Game::rollDice(const MonsterCard& card) {
 
     for (Monster* monster : card.getStrikeOrder()) {
         for (char symbol : results) {
-            if (symbol == '!') monster->usePower(isMayorTurn ? mayor : archaeologist , heroes , villagers);
-            else if (symbol == '*') {
-                if (monster->getNameM() == "Dracula")
+            Heroes& activeHero = isMayorTurn ? static_cast<Heroes&>(mayor) : static_cast<Heroes&>(archaeologist);
+            if (symbol == '!' && !monster->isDead())
+            {
+            std::cout << "the dice reveald [ ! ]\n";
+            monster->usePower(activeHero, heroes, villagers);
+            }
+
+            else if (symbol == '*') 
+            {
+                std::cout << "the dice reveald [ * ]\n";
+                if (monster->getNameM() == "Dracula" && !monster->isDead())
                     handleDraculaAttack();
-                else if (monster->getNameM() == "Invisible Man")
+                else if (monster->getNameM() == "Invisible Man" && !monster->isDead())
                     handleInvisibleManAttack();
             }
         }
@@ -446,66 +700,10 @@ void Game::handleInvisibleManAttack() {
     std::cout << "Dracula attacked, but found no one.\n";
 }
 
-void Game::handlePickUp(Heroes& hero) {
-    while (true) {
-        auto itemsHere = gameMap.getItemsAt(hero.getLocationHero());
-
-        if (itemsHere.empty()) {
-            std::cout << "There are no more items at this location.\n";
-            return;
-        }
-
-        std::cout << "Items at this location:\n";
-        for (size_t i = 0; i < itemsHere.size(); ++i) {
-            std::cout << i + 1 << ". " << itemsHere[i]->getName() << "\n";
-        }
-
-        std::cout << "Enter item number to pick up (or 0 to stop): ";
-        int choice;
-        std::cin >> choice;
-
-        if (choice == 0) {
-            std::cout << "Finished picking up items.\n";
-            break;
-        }
-
-        if (choice >= 1 && choice <= (int)itemsHere.size()) {
-            Item* selected = itemsHere[choice - 1];
-            hero.pickUp(selected);
-            selected->setPickedUpFrom(hero.getLocationHero());
-            std::string from = selected->getPickedUpFrom();
-            if (invisibleItemCollected.count(from)) {
-                invisibleItemCollected[from] = true;
-            }
-
-            gameMap.removePlayer(selected->getName());  // حذف از map
-        } else {
-            std::cout << "Invalid choice.\n";
-        }
-    }
-}
-
-void Game::handleAdvanceCoffin(const std::string& location, Heroes& hero) {
-    hero.defeat();
-
-    if (coffinDestroyed[location]) {
-        std::cout << "This coffin is already destroyed.\n";
-        return;
-    }
-
-    if (!hero.hasItems(itemType::RED, 6)) {
-        std::cout << "You need 6 red items to destroy a coffin.\n";
-        return;
-    }
-
-    hero.removeItems(itemType::RED, 6);
-    coffinDestroyed[location] = true;
-    std::cout << "Coffin at " << location << " destroyed!\n";
-}
 
 void Game::handleDefeatDracula(Monster* monster, Heroes& hero) {
     if (monster->getNameM() == "Dracula") {
-        for (auto& entry : coffinDestroyed) {
+        for (auto& entry : hero.getcoffinDestroyed()) {
             if (!entry.second) {
                 std::cout << "You must destroy all Dracula's coffins first.\n";
                 return;
@@ -518,7 +716,14 @@ void Game::handleDefeatDracula(Monster* monster, Heroes& hero) {
         }
 
         hero.removeItems(itemType::YELLOW, 6);
+        if(!invisibleMan.isDead())
+        {
+
+            frenziedMonster = &invisibleMan;
+
+        }
         monster->Defeated();
+        gameMap.removePlayer(monster->getNameM());
         std::cout << "Dracula has been defeated!\n";
     }
     if (monster->getNameM() == "Invisible Man") {
@@ -534,6 +739,7 @@ void Game::handleDefeatDracula(Monster* monster, Heroes& hero) {
 
         hero.removeItems(itemType::RED, 9);
         monster->Defeated();
+        gameMap.removePlayer(monster->getNameM());
         std::cout << "Invisible Man has been defeated!\n";
     }
 
@@ -541,7 +747,7 @@ void Game::handleDefeatDracula(Monster* monster, Heroes& hero) {
 
 void Game::handleAdvanceInvisibleMan(Heroes& hero) {
     // بررسی کن که همه مکان‌ها حداقل یک آیتم ازشون جمع شده
-    for (const auto& entry : invisibleItemCollected) {
+    for (const auto& entry : hero.getInvisibleItemCollected()) {
         if (!entry.second) {
             std::cout << "You must collect at least one item from all 5 required locations before advancing.\n";
             return;
@@ -554,7 +760,7 @@ void Game::handleAdvanceInvisibleMan(Heroes& hero) {
 
     for (Item* item : hero.getInventory()) {
         std::string loc = item->getPickedUpFrom();
-        if (invisibleItemCollected.count(loc) && !usedLocations.count(loc)) {
+        if (hero.getInvisibleItemCollected().count(loc) && !usedLocations.count(loc)) {
             usedLocations.insert(loc);
             itemsToRemove.push_back(item);
         }
@@ -577,18 +783,76 @@ void Game::handleAdvanceInvisibleMan(Heroes& hero) {
     std::cout << "You successfully performed the advance action for Invisible Man.\n";
 }
 
+void Game::usePerkCard(Heroes& hero, const PerkCard& card) {
+    switch (card.getType()) {
+        case PerkCardType::VisitFromDetective: {
+            std::string loc;
+            std::cout << "Enter location to place Invisible Man: ";
+            std::cin >> loc;
+            gameMap.setPlayerPosition("InvisibleMan", loc);
+            pekrcardName = "VisitFromDetective";
+            break;
+        }
+        case PerkCardType::BreakOfDawn: {
+            std::cout << "Monster phase will be skipped this turn!\n";
+            // ایجاد یک فلگ در Game برای اسکیپ کردن فاز بعدی
+            // e.g., skipNextMonsterPhase = true;
+            placeRandomItem(2);
+            pekrcardName = "BreakOfDawn";
+            break;
+        }
+        case PerkCardType::Overstock: {
+            for (Heroes* h : heroes) {
+                Item& item = getNextItem();
+                gameMap.setPlayerPosition(item.getName(), h->getLocationHero());
+                std::cout << "Placed item at " << h->getLocationHero() << " for " << h->getName() << "\n";
+            }
+            pekrcardName = "Overstock";
+            break;
+        }
+        case PerkCardType::LateIntoTheNight: {
+            hero.decreaseAction();  // متدی در Hero بساز برای دادن اکشن اضافه
+            pekrcardName = "LateIntoTheNight";
+            break;
+        }
+        case PerkCardType::Repel: {
+            for (Monster* m : std::initializer_list<Monster*>{&dracula, &invisibleMan}) {
+                std::string current = gameMap.getPlayerPosition(m->getNameM());
+                std::cout << "Move " << m->getNameM() << " from " << current << " to adjacent location: ";
+                std::string newLoc;
+                std::cin >> newLoc;
+                if (gameMap.isNeighbor(current, newLoc)) {
+                    gameMap.setPlayerPosition(m->getNameM(), newLoc);
+                } else {
+                    std::cout << "Invalid location.\n";
+                }
+            }
+            pekrcardName = "Repel";
+            break;
+        }
+        case PerkCardType::Hurry: {
+            for (Heroes* h : heroes) {
+                std::string current = h->getLocationHero();
+                std::cout << "Move " << h->getName() << " from " << current << " to adjacent location: ";
+                std::string newLoc;
+                std::cin >> newLoc;
+                if (gameMap.isNeighbor(current, newLoc)) {
+                    gameMap.setPlayerPosition(h->getName(), newLoc);
+                } else {
+                    std::cout << "Invalid location.\n";
+                }
+            }
+            pekrcardName = "Hurry";
+            break;
+        }
+    }
+}
 
 
 
 void Game::run() {
 
     initializeGame();
-    std::cout << "\n=== DEBUG: Items in camp ===\n";
-for (Item* item : gameMap.getItemsAt("camp")) {
-    std::cout << "- " << item->getName() << "\n";
-}
-
     startGameLoop();
 
 }
-

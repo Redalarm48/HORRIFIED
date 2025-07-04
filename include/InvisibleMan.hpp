@@ -10,7 +10,7 @@ class InvisibleMan : public Monster
     
         InvisibleMan(Map& map);
 
-        void usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) ;
+        void usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) override;
         void move( const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) override;
         void attack() override;
         void applyItem(const std::vector<Item>& items) override;

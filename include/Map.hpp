@@ -1,4 +1,3 @@
-// Map.h
 #ifndef MAP_H
 #define MAP_H
 
@@ -46,6 +45,7 @@ public:
     void removePlayer(const std::string& name);
     std::vector<Item*> getItemsAt(const std::string& location) const;
     std::vector<std::string> getAllLocationNames() const; 
+    std::vector<std::string> getNeighbors(const std::string& locationName) const;
 
 
 };

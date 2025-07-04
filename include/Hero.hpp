@@ -62,9 +62,11 @@ public:
     bool hasItems(itemType type, int count) const;
     void addPerkCard(const PerkCard& card);
     void usePerkCard(int index);
-    void showPerkCards() const;
+    // void showPerkCards() const;
     const std::vector<PerkCard>& getPerkCards() const;
     void decreaseAction();
+    void increaseActionMax();
+    int getMaxAction()const;
     void removePerkCard(int index);
 
 
@@ -75,13 +77,15 @@ public:
 
     void setNumberActionTaken(int num);
     void incrementAction();
+    void showCoffinStatus();
+    void handleAdvanceCoffin(const std::string& location);
 
 };
 
 class Archaeologist : public Heroes {
 public:
     Archaeologist(Map&);
-    // void specialAction() override;
+    void specialAction(Map&);
 };
 
 class Mayor : public Heroes {

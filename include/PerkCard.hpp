@@ -1,4 +1,3 @@
-
 #if !defined(PERK_CARD_H)
 #define PERK_CARD_H
 #include <random>
@@ -27,6 +26,8 @@ private:
 public:
     PerkCard(PerkCardType,const std::string&);
     friend std::ostream& operator<<(std::ostream&, const PerkCard&);
+    PerkCardType getType() const;
+    std::string getDescription() const;
 };
 
 class PerkDeck {
@@ -43,12 +44,14 @@ public:
     static bool isEmpty();
     static std::vector<PerkCard> getInGamePerkCards();
 
-    void visitFormTheDetective();
-    void breakOfDawn();
-    void overstock();
-    void lateIntoTheNight();
-    void Repel(Dracula&, InvisibleMan&);
-    void Hurry(Heroes&, Heroes&);
+    static void visitFormTheDetective();
+    static void breakOfDawn();
+    static void overstock();
+    static void lateIntoTheNight();
+    static void Repel(Dracula&, InvisibleMan&);
+    static void Hurry(Heroes&, Heroes&);
+
+
 };
 
 #endif // PERK_CARD_H

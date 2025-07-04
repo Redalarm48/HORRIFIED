@@ -168,9 +168,25 @@ Location* Map::getPlayerPositionPtr(const std::string& name) const {
 void Map::printPlayers() const {
     std::cout << "\nPlayer Positions:\n";
     for (const auto& pair : playerPositions) {
-        std::cout << " " << pair.first << " in " << pair.second->getName() << "\n";
+        std::cout << " " << pair.first << " in " << pair.second->getName();
+
+        // بررسی اینکه آیا این object یک آیتم است
+        Item* item = Item::findByName(pair.first);
+        if (item) {
+            std::string color;
+            switch (item->getType()) {
+                case itemType::RED: color = " (Red)"; break;
+                case itemType::YELLOW: color = " (Yellow)"; break;
+                case itemType::BLUE: color = " (Blue)"; break;
+                default: color = " (Unknown)";
+            }
+            std::cout << color;
+        }
+
+        std::cout << "\n";
     }
 }
+
 
 void Map::print() {
     for(const auto& pair : locations) {
@@ -226,7 +242,21 @@ std::vector<std::string> Map::getAllLocationNames() const {
     return names;
 }
 
+std::vector<std::string> Map::getNeighbors(const std::string& locationName) const {
+    std::vector<std::string> result;
+
+    auto it = locations.find(locationName);
+    if (it == locations.end()) return result;
+
+    const auto& loc = it->second;
+    for (Location* neighbor : loc->getNeighbors()) {
+        result.push_back(neighbor->getName());
+    }
+
+    return result;
+}
+
+
 
 std::unordered_map<std::string, std::shared_ptr<Location>> Map::locations;
 std::unordered_map<std::string, std::shared_ptr<Location>> Map::playerPositions;
-

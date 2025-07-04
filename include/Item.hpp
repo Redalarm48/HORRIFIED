@@ -9,11 +9,11 @@
 #include "Location.hpp"
 #include "Map.hpp"
 
-class Map;
-
 
 enum class itemType { RED, BLUE , YELLOW};
 
+class Map;
+class Heroes;
 
 class Item
 {

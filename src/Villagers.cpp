@@ -1,4 +1,4 @@
-#include "Villagers.hpp"
+#include "..\include\Villagers.hpp"
 #include <algorithm>
 #include <cctype>
 
@@ -179,7 +179,7 @@ std::string Villager::guideVillager(std::vector<std::string> location) {
         return nameVillagerMove;
     }
 }
-void Villager::chekSafeLocationVillager(std::string nameVilager) {
+void Villager::chekSafeLocationVillager(std::string nameVilager , Heroes& h) {
     for(auto& chek : nameAndsafeLocationVilager) {
         if(nameVilager == std::get<0>(chek)) {
             auto locationLiveVilager = locationVillager.getPlayerPosition(nameVilager);
@@ -187,6 +187,8 @@ void Villager::chekSafeLocationVillager(std::string nameVilager) {
             if(std::get<1>(chek) == locationLiveVilager) {
                 std::cout << "Villager " << nameVilager << " safe location." << std::endl;
                 removeVillager(nameVilager);
+                h.addPerkCard(PerkDeck::drawCard());
+
             }
         }
     }

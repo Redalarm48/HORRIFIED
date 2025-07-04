@@ -34,7 +34,7 @@ public:
     void addVillager(const std::string, const std::string, const std::string);
     void initializeVillagers(const NameVillagers);
     void removeVillager(const std::string&);
-    void chekSafeLocationVillager(const std::string);
+    void chekSafeLocationVillager(const std::string , Heroes&);
     
     static void updateVillager(const std::string&, const std::string&);
     static std::vector<std::string> moveLocation(const std::string);

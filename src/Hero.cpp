@@ -1,5 +1,5 @@
-#include "Hero.hpp"
-#include "Villagers.hpp"
+#include "..\include\Hero.hpp"
+#include "..\include\Villagers.hpp"
 Heroes::Heroes(int maxAction, const std::string nameHero, Map& locationHero)  : nameHero(nameHero), statusHero(Status::Alive), locationHero(locationHero),
     numberActionTaken(0), maxActions(maxAction) {
         // perkCard.drawCard();
@@ -27,6 +27,12 @@ void Heroes::incrementAction() {
     
 }
 
+void Heroes::decreaseAction() {
+    numberActionTaken-=2;
+    if(numberActionTaken < 0)
+        numberActionTaken = 0;
+    
+}
 
 int Heroes::getNumberActionTaken() const {
     return numberActionTaken;
@@ -135,6 +141,19 @@ void Heroes::pickUp(Item* item) {
 
 }
 
+void Heroes::increaseActionMax()
+{
+
+    maxActions =+ 2;
+
+}
+
+int Heroes::getMaxAction()const
+{
+
+    return maxActions;
+
+}
 
 
 void Heroes::Advance() {
@@ -154,9 +173,77 @@ Archaeologist::Archaeologist(Map& map) : Heroes(4, "Archaeologist", map) {}
 
 // Mayor::Mayor() : Heroes();
 Mayor::Mayor(Map& map) : Heroes(5, "Mayor", map) {}
-// void Archaeologist::specialAction() {
 
-// }
+void Archaeologist::specialAction(Map& map) {
+
+        std::string currentLoc = getLocationHero();
+    std::vector<Item*> allItems;
+    std::vector<std::string> itemSources; // برای اینکه بدونیم هر آیتم از کدوم خونه اومده
+
+    // آیتم‌های خانه‌ی فعلی
+    auto itemsHere = map.getItemsAt(currentLoc);
+    for (auto& item : itemsHere) {
+        allItems.push_back(item);
+        itemSources.push_back(currentLoc);
+    }
+
+    // آیتم‌های خانه‌های همسایه
+    auto neighbors = map.getNeighbors(currentLoc);
+    for (const auto& neighbor : neighbors) {
+        auto items = map.getItemsAt(neighbor);
+        for (auto& item : items) {
+            allItems.push_back(item);
+            itemSources.push_back(neighbor);
+        }
+    }
+
+    if (allItems.empty()) {
+        std::cout << "There are no items at this location or neighboring locations.\n";
+        return;
+    }
+
+    while (true) {
+        std::cout << "Items available to pick up (from current and neighboring locations):\n";
+        for (size_t i = 0; i < allItems.size(); ++i) {
+            std::cout << i + 1 << ". " << allItems[i]->getName() 
+                      << " (at " << itemSources[i] << ")\n";
+        }
+
+        std::cout << "Enter item number to pick up (or 0 to stop): ";
+        int choice;
+        std::cin >> choice;
+
+        if (choice == 0) {
+            std::cout << "Finished picking up items.\n";
+            break;
+        }
+
+        if (choice >= 1 && choice <= (int)allItems.size()) {
+            auto selected = allItems[choice - 1];
+            std::string fromLocation = itemSources[choice - 1];
+
+            pickUp(selected);
+            selected->setPickedUpFrom(fromLocation);
+
+            if (getInvisibleItemCollected().count(fromLocation)) {
+                getInvisibleItemCollected()[fromLocation] = true;
+            }
+
+            map.removePlayer(selected->getName());
+            // بعد از برداشتن، از لیست حذف کن تا دوباره نشون داده نشه
+            allItems.erase(allItems.begin() + (choice - 1));
+            itemSources.erase(itemSources.begin() + (choice - 1));
+        } else {
+            std::cout << "Invalid choice.\n";
+        }
+
+        if (allItems.empty()) {
+            std::cout << "No more items to pick up.\n";
+            break;
+        }
+    }
+
+}
 
 std::string Heroes::getName() const {
     return this->nameHero;
@@ -242,12 +329,12 @@ void Heroes::usePerkCard(int index) {
     }
 }
 
-void Heroes::showPerkCards() const {
-    std::cout << "Perk Cards:\n";
-    for (size_t i = 0; i < perkCards.size(); ++i) {
-        std::cout << i + 1 << ". " << static_cast<int>(perkCards[i].getType()) << " - " << perkCards[i].getDescription() << "\n";
-    }
-}
+// void Heroes::showPerkCards() const {
+//     std::cout << "Perk Cards:\n";
+//     for (size_t i = 0; i < perkCards.size(); ++i) {
+//         std::cout << i + 1 << ". " << static_cast<int>(perkCards[i].getType()) << " - " << perkCards[i].getDescription() << "\n";
+//     }
+// }
 
 void Heroes::removePerkCard(int index) {
     if (index >= 0 && index < perkCards.size()) {
@@ -339,6 +426,38 @@ std::unordered_map<std::string, bool> Heroes::coffinDestroyed{
         {"dungeon", false},
         {"graveyard", false}
 };
+
+void Heroes::showCoffinStatus() 
+{
+
+    std::cout << "\nCoffins Status:\n";
+    for (const auto& pair : coffinDestroyed) 
+    {
+
+        std::cout << " - " << pair.first << ": " << (pair.second ? "Destroyed" : " Not Destroyed") << "\n";
+        
+    }
+
+}
+
+
+void Heroes::handleAdvanceCoffin(const std::string& location) {
+    defeat();
+
+    if (getcoffinDestroyed()[location]) {
+        std::cout << "This coffin is already destroyed.\n";
+        return;
+    }
+
+    if (!hasItems(itemType::RED, 6)) {
+        std::cout << "You need 6 red items to destroy a coffin.\n";
+        return;
+    }
+
+    removeItems(itemType::RED, 6);
+    getcoffinDestroyed()[location] = true;
+    std::cout << "Coffin at " << location << " destroyed!\n";
+}
 
  // 
 // std::unordered_map<std::string, bool> Heroes::getInvisibleItemCollected() {
