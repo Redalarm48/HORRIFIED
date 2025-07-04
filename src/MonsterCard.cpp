@@ -1,4 +1,4 @@
-#include "..\include\MonsterCard.hpp"
+#include "MonsterCard.hpp"
 #include <algorithm>
 #include <random>
 #include <stdexcept>

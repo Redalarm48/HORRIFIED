@@ -1,5 +1,5 @@
-#include "..\include\Item.hpp"
-#include "..\include\Map.hpp"
+#include "Item.hpp"
+#include "Map.hpp"
 
 Item::Item(itemType type , Map* locationitem , const std::string& Name) : type(type) , collected(false) , locationItem(locationitem) , name(Name) {}
 

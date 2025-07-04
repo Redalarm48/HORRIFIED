@@ -1,4 +1,4 @@
-#include "..\include\Monster.hpp"
+#include "Monster.hpp"
 
 Monster::Monster(const std:: string& name , int frenzyorder , Map& locationmonster) : Name(name) , FrenzyOrder(frenzyorder) , Dead(false) , locationMonster(locationmonster){}
 
