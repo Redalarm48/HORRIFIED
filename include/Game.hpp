@@ -129,6 +129,8 @@ public:
     void handleDefeatDracula(Monster* monster, Heroes& hero);
     void handleAdvanceInvisibleMan(Heroes& hero);
 
+    void setMonsterPhaseTrue(bool);
+    void setInvisibleAdvanceDone(bool);
 };
 
 #endif // GAME_HPP
