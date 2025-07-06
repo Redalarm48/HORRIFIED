@@ -16,8 +16,8 @@ Game::Game()
       itemIndex(0),
       currentHero(&mayor),
       villagerManager(gameMap) {
-    for (int i = 0; i < 60; ++i) {
-    Item::allItems.push_back(new Item(static_cast<itemType>(i % 3), &gameMap, "item_" + std::to_string(i)));
+    for (int i = 0; i < 12; ++i) {
+    allGameItems.push_back(new Item(static_cast<itemType>(i % 3), &gameMap, "item_" + std::to_string(i)));
 }
 
 }
@@ -35,16 +35,16 @@ void Game::initializeGame() {
 
     perkDeck.initializeDeck();
     monsterDeck.initializeDeck();
-    std::shuffle(Item::allItems.begin(), Item::allItems.end(), std::default_random_engine(std::random_device{}()));
+    std::shuffle(allGameItems.begin(), allGameItems.end(), std::default_random_engine(std::random_device{}()));
 
-    itemBag = Item::allItems;
+    itemBag = allGameItems;
     std::shuffle(itemBag.begin(), itemBag.end(), std::default_random_engine(std::random_device{}()));
 
 
     mayor.addPerkCard(perkDeck.drawCard());
     archaeologist.addPerkCard(perkDeck.drawCard());
 
-    for (int i = 0; i < 12; ++i) {
+    for (int i = 0; i < 50; ++i) {
         auto& item = getNextItem();
         std::string location = getRandomLocation();
         gameMap.setPlayerPosition(item.getName(), location);
@@ -90,8 +90,8 @@ void Game::determineFirstPlayer() {
 
 Item& Game::getNextItem() {
     if (itemBag.empty()) {
-        std::cout << "[Warning] Item bag is empty!\n";
-        itemBag = Item::allItems;
+        std::cout << "Warning Item bag is empty!\n";
+        itemBag = allGameItems;
         std::shuffle(itemBag.begin(), itemBag.end(), std::default_random_engine(std::random_device{}()));
     }
 
@@ -164,19 +164,34 @@ void Game::heroTurn(Heroes& hero) {
         {
             std::cout << "1. Move\n2. Guide Villager\n3. Pick Up Item\n4. Defeat Monster\n5. Show Inventory\n6. Advance\n7. Use Perk Card\n8. End Turn\n";
             gameMap.print();
-            gameMap.printPlayers();
+            gameMap.printPlayers(allGameItems);
             hero.showCoffinStatus();
             int choice;
             std::cin >> choice;
             switch (choice) {
                 case 1: 
                     hero.move(); 
+                    villagerManager.chekSafeLocationVillager("Maria" , hero);
+                    villagerManager.chekSafeLocationVillager("Wilbur & Chick" , hero);
+                    villagerManager.chekSafeLocationVillager("Maleva" , hero);
+                    villagerManager.chekSafeLocationVillager("Dr.crunly" , hero);
+                    villagerManager.chekSafeLocationVillager("Fritz" , hero);
+                    villagerManager.chekSafeLocationVillager("Prof.pearson" , hero);
+                    villagerManager.chekSafeLocationVillager("Dr.read" , hero);
                     break;
                 case 2: 
-                    hero.guide();       
+                    hero.guide(); 
+                    villagerManager.chekSafeLocationVillager(villagerManager.getNameVillager() , hero);
+                    villagerManager.chekSafeLocationVillager("Maria" , hero);
+                    villagerManager.chekSafeLocationVillager("Wilbur & Chick" , hero);
+                    villagerManager.chekSafeLocationVillager("Maleva" , hero);
+                    villagerManager.chekSafeLocationVillager("Dr.crunly" , hero);
+                    villagerManager.chekSafeLocationVillager("Fritz" , hero);
+                    villagerManager.chekSafeLocationVillager("Prof.pearson" , hero);
+                    villagerManager.chekSafeLocationVillager("Dr.read" , hero);      
                     break;
                 case 3: 
-                    hero.handlePickUp(gameMap);        
+                    hero.handlePickUp(gameMap, allGameItems);        
                     break;
                 case 4: 
                     {
@@ -194,9 +209,22 @@ void Game::heroTurn(Heroes& hero) {
                     hero.showInventory(); 
                     break;
                 case 6: 
-                    hero.handleAdvanceCoffin(hero.getLocationHero());
+                {
+                    std::string heroLoc = hero.getLocationHero();
+
+                    if (heroLoc == "precinct") {
+                        handleAdvanceInvisibleMan(hero);
+                    } 
+                    else if (heroLoc == "cave" || heroLoc == "crypt" || heroLoc == "dungeon" || heroLoc == "graveyard") {
+                        hero.handleAdvanceCoffin(heroLoc);
+                    } 
+                    else {
+                        std::cout << "You are not in a valid location for any advance action.\n";
+                    }
+
                     handleInvisibleManAttack();
                     break;
+                }
                 case 7: {
                     const auto& perkCards = hero.getPerkCards();
                     if (perkCards.empty()) {
@@ -271,7 +299,7 @@ void Game::heroTurn(Heroes& hero) {
         {
             std::cout << "1. Move\n2. Guide Villager\n3. Pick Up Item\n4. Defeat Monster\n5. Show Inventory\n6. Advance\n7. Use Perk Card\n8. Use SpecialAbillity\n9. End Turn\n";
             gameMap.print();
-            gameMap.printPlayers();
+            gameMap.printPlayers(allGameItems);
             int choice;
             std::cin >> choice;
             switch (choice) {
@@ -282,7 +310,7 @@ void Game::heroTurn(Heroes& hero) {
                     hero.guide();       
                     break;
                 case 3: 
-                    hero.handlePickUp(gameMap);        
+                    hero.handlePickUp(gameMap, allGameItems);        
                     break;
                 case 4: 
                     {
@@ -368,7 +396,7 @@ void Game::heroTurn(Heroes& hero) {
 
                 case 8:
 
-                    archaeologist.specialAction(gameMap);
+                    archaeologist.specialAction(gameMap, allGameItems);
                     archaeologist.incrementAction();
                     break;
                 
@@ -432,7 +460,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
                     {gameMap.setPlayerPosition("InvisibleMan", targetLocation);}
 
                 // حذف همه آیتم‌های این مکان
-                auto items = gameMap.getItemsAt(targetLocation);
+                auto items = gameMap.getItemsAt(targetLocation, allGameItems);
                 for (Item* item : items) {
                     gameMap.removePlayer(item->getName());
                     itemBag.push_back(item); // برگشت به کیسه آیتم‌ها
@@ -520,7 +548,7 @@ void Game::placeRandomItem(int count) {
     for (int i = 0; i < count; ++i) {
         if (itemBag.empty()) {
             std::cout << "[Warning] Item bag is empty! Refilling...\n";
-            itemBag = Item::allItems;
+            itemBag = allGameItems;
             std::shuffle(itemBag.begin(), itemBag.end(), std::default_random_engine(std::random_device{}()));
         }
 
@@ -537,7 +565,7 @@ void Game::placeRandomItem(int count) {
 void Game::placeRandomItemAt(const std::string& location, int count) {
     for (int i = 0; i < count; ++i) {
         if (itemBag.empty()) {
-            itemBag = Item::allItems;
+            itemBag = allGameItems;
             std::shuffle(itemBag.begin(), itemBag.end(), std::default_random_engine(std::random_device{}()));
         }
 
@@ -555,7 +583,7 @@ std::string Game::findLocationWithMostItems() const {
     size_t maxCount = 0;
 
     for (const std::string& loc : allLocations) {
-        size_t count = gameMap.getItemsAt(loc).size();
+        size_t count = gameMap.getItemsAt(loc, allGameItems).size();
         if (count > maxCount) {
             maxCount = count;
             maxLocation = loc;
@@ -726,7 +754,7 @@ void Game::handleDefeatDracula(Monster* monster, Heroes& hero) {
         gameMap.removePlayer(monster->getNameM());
         std::cout << "Dracula has been defeated!\n";
     }
-    if (monster->getNameM() == "Invisible Man") {
+    if (monster->getNameM() == "InvisibleMan") {
         if (!invisibleAdvanceDone) {
             std::cout << "You must perform the advance action before defeating Invisible Man.\n";
             return;

@@ -40,8 +40,7 @@ class Item
         bool isCollected()const;
         Location* getLocationItemPtr() const;
         std::string getLocationItem() const;
-        static Item* findByName(const std::string& name);
-        static std::vector<Item*> allItems;
+        static Item* findByName(const std::string& name, const std::vector<Item*>& itemList);
         std::string getPickedUpFrom() const; 
         void setPickedUpFrom(const std::string& loc);
 

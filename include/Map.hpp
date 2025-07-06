@@ -37,9 +37,9 @@ public:
     Location* getPlayerPositionPtr(const std::string&) const;
     void printNeighbors();
     void print();
-    void printPlayers() const;
+    void printPlayers(const std::vector<Item*>& itemList) const;
     void removePlayer(const std::string& name);
-    std::vector<Item*> getItemsAt(const std::string& location) const;
+    std::vector<Item*> getItemsAt(const std::string& location, const std::vector<Item*>& itemList) const;
     std::vector<std::string> getAllLocationNames() const; 
     std::vector<std::string> getNeighbors(const std::string& locationName) const;
 

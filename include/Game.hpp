@@ -46,7 +46,7 @@ private:
 
     std::vector<std::string> draculaCoffinLocations = { "cave", "crypt", "dungeon", "graveyard" };
 
-    bool invisibleAdvanceDone = false;
+    bool invisibleAdvanceDone = true;
 
     // نوبت‌ها
     bool isMayorTurn;
@@ -66,6 +66,7 @@ private:
     std::string pekrcardName;
 
     bool monsterPhaseTrue = true;
+    std::vector<Item*> allGameItems;
 
 
 public:

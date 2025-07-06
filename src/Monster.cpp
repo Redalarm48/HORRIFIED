@@ -63,11 +63,3 @@ void Monster::usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std:
 void Monster::move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) {
 
 }
-
-void Monster::attack() {
-
-}
-
-void Monster::applyItem(const std::vector<Item>& items) {
-
-}
