@@ -1,28 +1,42 @@
-#if !defined(LOCATION_H)
-#define LOCATION_H
+#pragma once
 
 #include <string>
-#include <istream>
+#include <stdexcept>
 #include <vector>
 #include <algorithm>
+#include "Monster.hpp"
+#include "Hero.hpp"
 
 
 class Location {
 
-friend std::ostream& operator<<(std::ostream& os, const Location& loc);
-
 private:
-    std::string nameLocation;
+    NameLocation nameLocation;
+    
     std::vector<Location*> neighbors;
-    std::vector<std::string> players;
-public:
-    Location(const std::string& nameLocation);
-    const std::string& getName() const;
-    void addNeighbor(Location* neighbor);
-    const std::vector<Location*>& getNeighbors() const;
-    void addPlayer(const std::string& name);
-    void removePlayer(const std::string& name);
-    std::vector<std::string> getPlayers() const;
-};
 
-#endif
+    std::vector<NameHeroes> heroes;
+    std::vector<NameMonster> monsters;
+    std::vector<NameVillagers> villagers;
+    std::vector<NameItem> items;
+
+public:
+    Location(const NameLocation nameLocation);
+    const NameLocation getNameLocation() const;
+    const std::vector<NameHeroes> getNameHeroes() const;
+    const std::vector<NameMonster> getNameMonsters() const;
+    const std::vector<NameItem> getNameItems() const;
+    const std::vector<NameVillagers> getNameVillagers() const;
+    const std::vector<Location*>& getNeighbors() const;
+
+    void addNeighbor(Location*);
+    void addHeroes(const NameHeroes&);
+    void addMonsters(const NameMonster&);
+    void addItem(const NameItem&);
+    void addVillagers(const NameVillagers&);
+
+    void removeHeroes(const NameHeroes&);
+    void removeMonsters(const NameMonster&);
+    void removeItem(const NameItem&);
+    void removeVillagers(const NameVillagers&);
+};

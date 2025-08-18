@@ -1,28 +1,35 @@
-#ifndef MAP_H
-#define MAP_H
+#pragma once
 
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include "Location.hpp"
-#include "Item.hpp"
+// #include "../include/Item.hpp"
+// #include "../include/Hero.hpp"
+// #include "../include/Monster.hpp"
+// #include "../include/Villagers.hpp"
+// #include "../include/Item.hpp"
+
+#include "../include/NameEnum.hpp"
+
 #include <memory>
 
-class Item;
+std::ostream& operator<<(std::ostream& os, NameLocation loc);
+
+class Location;
+enum class NameHeroes;
+enum class NameMonster;
+enum class NameVillagers;
+enum class NameItem;
 
 class Map {
 private:
-    // std::string namePlayer;
-    // std::unordered_map<std::string, Location*> locations;
-    // std::unordered_map<std::string, Location*> playerPositions;
-
-
-    static std::unordered_map<std::string, std::shared_ptr<Location>> locations; 
-    static std::unordered_map<std::string, std::shared_ptr<Location>> playerPositions;  
-
-    void addLoation(const std::string&);
-    void connectLocaiton(const std::string&, const std::string&);
+    void addLoation(const NameLocation&);
+    void connectLocaiton(const NameLocation&, const NameLocation&);
+    void totalLocation();
+    void negiborLocation();
 public:
+    std::vector<std::pair<NameLocation, Location>> map;
     
     Map();
     Map(const Map&) = delete;
@@ -30,24 +37,30 @@ public:
 
     static Map& getInstance();
 
-    void totalLocation();
-    void negiborLocation();
-    std::vector<std::string> getPlayersLocation(const std::string&) const;
-    std::string findShortestPath(const std::string&, const std::string&);
-    bool isNeighbor(const std::string& from, const std::string& to) const;
+    std::vector<NameHeroes> getHeroesLocation(const NameLocation&) const;
+    std::vector<NameMonster> getMonsterLocation(const NameLocation&) const;
+    std::vector<NameItem> getItemsLocation(const NameLocation&) const;
+    std::vector<NameVillagers> getVillagerLocaiton(const NameLocation&) const;
+    std::vector<NameLocation> getNeighbors(const NameLocation&) const;
+    std::vector<Location*> getNeighborLocation(const NameLocation&) const;
 
-    static void setPlayerPosition(const std::string&, const std::string&);
-    std::string getPlayerPosition(const std::string&) const;
-    Location* getPlayerPositionPtr(const std::string&) const;
-    void printNeighbors();
-    void print();
-    void printPlayers( const std::vector<Item*>& itemList) const;
-    void removePlayer(const std::string& name);
-    std::vector<Item*> getItemsAt(const std::string& location ,  const std::vector<Item*>& itemList) const;
-    std::vector<std::string> getAllLocationNames() const; 
-    std::vector<std::string> getNeighbors(const std::string& locationName) const;
+    NameLocation chengNameLocationTheString(const std::string&);
+
+    // void setHeroesPosition(const std::string&);
+    
+
+    NameLocation findShortestPath(const NameLocation&, const NameLocation&);
+    // bool isNeighbor(const std::string& from, const std::string& to) const;    static void setPlayerPosition(const std::string&, const std::string&);
+    
+    // std::string getPlayerPosition(const std::string&) const;
+    // Location* getPlayerPositionPtr(const std::string&) const;
+    // void printNeighbors();          
+    // void print();
+    // void printPlayers(const std::vector<Item*>& itemList) const;
+    // void removePlayer(const std::string& name);
+    // std::vector<Item*> getItemsAt(const std::string& location, const std::vector<Item*>& itemList) const;
+    std::vector<NameLocation> getAllLocationNames() const; 
 
 
 };
 
-#endif

@@ -15,8 +15,6 @@ class Dracula : public Monster
         void move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) override;
         void move();
 
-
-
 };
 
 #endif

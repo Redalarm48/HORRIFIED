@@ -9,7 +9,8 @@ class Map;
 enum class NameVillagers{
     Dr_crunly, Maleva, 
     Fritz, Maria, 
-    Prof_pearson, Dr_read
+    Prof_pearson, Dr_read,
+    WilnureAndChick
 };
 
 
@@ -20,9 +21,10 @@ private:
     std::string safeLocationVillager;
     std::string nameVillager;
     Map& locationVillager;
-
+    void addVillager(const std::string&, const std::string&, const std::string&);
+    
 public:
-
+    
     Villager(Map&);
     
     void setNameVillager(const std::string&);
@@ -31,13 +33,12 @@ public:
     std::string getLocationVillager() const;
     std::string getSafeLocationVillager() const;
 
-    void addVillager(const std::string, const std::string, const std::string);
     void initializeVillagers(const NameVillagers);
     void removeVillager(const std::string&);
-    void chekSafeLocationVillager(const std::string , Heroes&);
+    void chekSafeLocationVillager(const std::string&, Heroes&);
     
     static void updateVillager(const std::string&, const std::string&);
-    static std::vector<std::string> moveLocation(const std::string);
+    static std::vector<std::string> moveLocation(const std::string&);
     static std::string guideVillager(std::vector<std::string>);
 
 

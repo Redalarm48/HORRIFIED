@@ -12,8 +12,7 @@ class InvisibleMan : public Monster
 
         void usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) override;
         void move( const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) override;
-
-
+        void move();
 };
 
 #endif

@@ -1,66 +1,55 @@
 #include "Monster.hpp"
 
-Monster::Monster(const std:: string& name , int frenzyorder , Map& locationmonster) : Name(name) , FrenzyOrder(frenzyorder) , Dead(false) , locationMonster(locationmonster){}
+Monster::Monster(const NameMonster nameMonster , int frenzyorder , Map& locationmonster) : nameMonster(nameMonster) , FrenzyOrder(frenzyorder) , Dead(false) , locationMonster(locationmonster){}
 
-Monster::~Monster(){
+Monster::~Monster(){}
 
+void Monster::setMonsterPosition(const NameLocation& newNameLocaitonMonster) {
+    if(this->nameLocationMonster == newNameLocaitonMonster) {
+        return;
+    }
+    auto chek = std::find_if(locationMonster.map.begin(), locationMonster.map.end(), [&newNameLocaitonMonster](const auto& p) {
+        return p.first == newNameLocaitonMonster;
+    });
+    auto chek2 = std::find_if(locationMonster.map.begin(), locationMonster.map.end(), [this](const auto& p) {
+        return p.first == nameLocationMonster;
+    });
+    if(chek != locationMonster.map.end() && chek2 != locationMonster.map.end()) {
+        chek->second.addMonsters(nameMonster);
+        chek2->second.removeMonsters(nameMonster);
+        nameLocationMonster = newNameLocaitonMonster;
+    }
+    else {
+        throw std::invalid_argument(" ");
+    }
 }
 
-std::string Monster::getNameM() const
-{
 
-    return Name;
+NameMonster Monster::getNameM() const {
 
+    return nameMonster;
 }
 
-int Monster::getFrenzyOrder() const
-{
+int Monster::getFrenzyOrder() const {
 
     return FrenzyOrder;
-
 }
 
-bool Monster::isDead() const
-{
-
+bool Monster::isDead() const{
     return Dead;
-
 }
 
 
-void Monster::Defeated()
-{
-
+void Monster::Defeated(){
     Dead = true;
-
 }
 
-Location* Monster::getLocationMonsterPtr() const
-{
-
-    return this->locationMonster.getPlayerPositionPtr(Name); 
-
+NameLocation Monster::getNameLocationMonster() const {
+    return nameLocationMonster;
 }
 
-std::string Monster::getLocationMonster() const 
-{
-
-    return this->locationMonster.getPlayerPosition(Name);
-
+bool Monster::cheknumberDistance(const NameLocation& nameLocation) {
+    return (
+        this->locationMonster.findShortestPath((this->locationMonster.findShortestPath(this->nameLocationMonster, nameLocation)),nameLocation) == nameLocation
+    );
 }
-
-Map& Monster::getMap() const
-{
-
-    return locationMonster;
-
-}
-
-void Monster::usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) {
-
-}
-
-void Monster::move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) {
-
-}
-

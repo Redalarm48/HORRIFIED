@@ -1,10 +1,13 @@
 #include "Map.hpp"
-#include "Item.hpp"
+#include "NameEnum.hpp"
 #include <iostream>
 #include <queue>
-#include <unordered_map>
+#include <map>
 #include <algorithm>
 #include <memory>
+#include <fstream>
+
+
 
 Map::Map() {
     totalLocation();
@@ -16,247 +19,332 @@ Map& Map::getInstance() {
     return instance;
 }
 
-void Map::addLoation(const std::string& nameLocation) {
-    if(locations.find(nameLocation) == locations.end()) {
-        // locations[nameLocation] = new Location(nameLocation);
-        locations[nameLocation] = std::make_shared<Location>(nameLocation);
-
+std::ostream& operator<<(std::ostream& os, NameLocation namelocation) {
+    switch (namelocation)
+    {
+    case NameLocation::ABBEY:
+        os << "abbey";
+    case NameLocation::CAVE: 
+        os << "cave";
+    case NameLocation::CAMP: 
+        os << "camp";
+    case NameLocation::PRECINCT: 
+        os << "precinct";
+    case NameLocation::INN: 
+        os << "inn";
+    case NameLocation::BARN:
+        os << "barn";
+    case NameLocation::DUNGEON: 
+        os << "dungeon";
+    case NameLocation::TOWER: 
+        os << "tower";
+    case NameLocation::MUSEUM: 
+        os << "museum";
+    case NameLocation::CRYPT: 
+        os << "crypt";
+    case NameLocation::MANSION: 
+        os << "mansion";
+    case NameLocation::SHOP: 
+        os << "shop";
+    case NameLocation::DOCKS: 
+        os << "docks";
+    case NameLocation::HOSPITAL: 
+        os << "hospital";
+    case NameLocation::CHURCH: 
+        os << "church";
+    case NameLocation::LABORATORY: 
+        os << "laboratory";
+    case NameLocation::GRAVEYARD: 
+        os << "graveyard";
+    case NameLocation::INSTITUTE: 
+        os << "institute";
+    case NameLocation::THEATRE: 
+        os << "theatr";
+    default:
+        throw std::invalid_argument("");
     }
-    
+    return os;
 }
 
-void Map::connectLocaiton(const std::string& start, const std::string& end) {
-    addLoation(start);
-    addLoation(end);
-    locations[start]->addNeighbor(locations[end].get());
-    locations[end]->addNeighbor(locations[start].get());
+void Map::addLoation(const NameLocation& nameLocation) {
+    auto chek = std::find_if(map.begin(), map.end(), [&nameLocation](const auto& p) {
+        return p.first == nameLocation;
+    });
+
+    if(chek == map.end()) {
+        Location newLocation(nameLocation);
+        map.emplace_back(nameLocation, newLocation);
+    }
+
+    else {
+        throw std::invalid_argument("");
+    }
 }
+
+void Map::connectLocaiton(const NameLocation& start, const NameLocation& end) {
+    auto chek = std::find_if(map.begin(), map.end(), [&start](const auto& p) {
+        return p.first == start;
+    });
+
+    auto chek2 = std::find_if(map.begin(), map.end(), [&end](const auto& p) {
+        return p.first == end;
+    });
+    
+    if(chek != map.end() && chek2 != map.end()) {
+        chek->second.addNeighbor(&chek2->second);
+        chek2->second.addNeighbor(&chek->second);
+    }
+}
+
+
 
 void Map::totalLocation() {
-    addLoation("cave");               addLoation("museum");             addLoation("hospital");
-    addLoation("camp");               addLoation("crypt");              addLoation("church");
-    addLoation("precinct");           addLoation("abbey");              addLoation("laboratory");
-    addLoation("inn");                addLoation("mansion");            addLoation("graveyard");
-    addLoation("barn");               addLoation("shop");               addLoation("institute");
-    addLoation("dungeon");            addLoation("docks");              addLoation("theatre");           
-    addLoation("tower");              addLoation("brake");
-
+    addLoation(NameLocation::CAVE);
+    addLoation(NameLocation::CAMP);
+    addLoation(NameLocation::PRECINCT);
+    addLoation(NameLocation::INN);
+    addLoation(NameLocation::BARN);
+    addLoation(NameLocation::DUNGEON);
+    addLoation(NameLocation::TOWER);
+    addLoation(NameLocation::MUSEUM);
+    addLoation(NameLocation::CRYPT);
+    addLoation(NameLocation::ABBEY);
+    addLoation(NameLocation::MANSION);
+    addLoation(NameLocation::SHOP);
+    addLoation(NameLocation::DOCKS);
+    addLoation(NameLocation::HOSPITAL);
+    addLoation(NameLocation::CHURCH);
+    addLoation(NameLocation::LABORATORY);
+    addLoation(NameLocation::GRAVEYARD);
+    addLoation(NameLocation::INSTITUTE);
+    addLoation(NameLocation::THEATRE);
 }
 
 void Map::negiborLocation() {
-    connectLocaiton("cave", "camp");
-    connectLocaiton("camp", "precinct");
-    connectLocaiton("camp", "mansion");
-    connectLocaiton("camp", "theatre");
-    connectLocaiton("camp", "inn");
-    connectLocaiton("precinct", "inn");
-    connectLocaiton("precinct", "mansion");
-    connectLocaiton("precinct", "theatre");
-    connectLocaiton("inn", "theatre");
-    connectLocaiton("inn", "mansion");
-    connectLocaiton("theatre", "barn");
-    connectLocaiton("theatre", "tower");
-    connectLocaiton("theatre", "shop");
-    connectLocaiton("theatre", "mansion");
-    connectLocaiton("mansion", "abbey");
-    connectLocaiton("mansion", "shop");
-    connectLocaiton("mansion", "church");
-    connectLocaiton("mansion", "museum");
-    connectLocaiton("abbey", "crypt");
-    connectLocaiton("museum", "shop");
-    connectLocaiton("museum", "church");
-    connectLocaiton("church", "hospital");
-    connectLocaiton("church", "graveyard");
-    connectLocaiton("church", "shop");
-    connectLocaiton("shop", "laboratory");
-    connectLocaiton("laboratory", "institute");
-    connectLocaiton("tower", "dungeon");
-    connectLocaiton("tower", "docks");
-
+    connectLocaiton(NameLocation::CAVE, NameLocation::CAMP);
+    connectLocaiton(NameLocation::CAMP, NameLocation::PRECINCT);
+    connectLocaiton(NameLocation::CAMP, NameLocation::MANSION);
+    connectLocaiton(NameLocation::CAMP, NameLocation::THEATRE);
+    connectLocaiton(NameLocation::CAMP, NameLocation::INN);
+    connectLocaiton(NameLocation::PRECINCT, NameLocation::INN);
+    connectLocaiton(NameLocation::PRECINCT, NameLocation::MANSION);
+    connectLocaiton(NameLocation::PRECINCT, NameLocation::THEATRE);
+    connectLocaiton(NameLocation::INN, NameLocation::THEATRE);
+    connectLocaiton(NameLocation::INN, NameLocation::MANSION);
+    connectLocaiton(NameLocation::THEATRE, NameLocation::BARN);
+    connectLocaiton(NameLocation::THEATRE, NameLocation::TOWER);
+    connectLocaiton(NameLocation::THEATRE, NameLocation::SHOP);
+    connectLocaiton(NameLocation::THEATRE, NameLocation::MANSION);
+    connectLocaiton(NameLocation::MANSION, NameLocation::ABBEY);
+    connectLocaiton(NameLocation::MANSION, NameLocation::SHOP);
+    connectLocaiton(NameLocation::MANSION, NameLocation::CHURCH);
+    connectLocaiton(NameLocation::MANSION, NameLocation::MUSEUM);
+    connectLocaiton(NameLocation::ABBEY, NameLocation::CRYPT);
+    connectLocaiton(NameLocation::MUSEUM, NameLocation::SHOP);
+    connectLocaiton(NameLocation::MUSEUM, NameLocation::CHURCH);
+    connectLocaiton(NameLocation::CHURCH, NameLocation::HOSPITAL);
+    connectLocaiton(NameLocation::CHURCH, NameLocation::GRAVEYARD);
+    connectLocaiton(NameLocation::CHURCH, NameLocation::SHOP);
+    connectLocaiton(NameLocation::SHOP, NameLocation::LABORATORY);
+    connectLocaiton(NameLocation::LABORATORY, NameLocation::INSTITUTE);
+    connectLocaiton(NameLocation::TOWER, NameLocation::DUNGEON);
+    connectLocaiton(NameLocation::TOWER, NameLocation::DOCKS);
 }
 
-std::vector<std::string> Map::getPlayersLocation(const std::string& locationName) const {
-    std::vector<std::string> playersAtLocation;
+std::vector<NameHeroes> Map::getHeroesLocation(const NameLocation& nameLocation) const {
+    // std::vector<std::string> playersAtLocation;
 
-    for (const auto& pair : playerPositions) {
-        const std::string& playerName = pair.first;
-        auto loc = pair.second;
+    auto chek = std::find_if(map.begin(), map.end(), [&nameLocation](const auto& p) {
+        return p.first == nameLocation;
+    });
 
-        if (loc && loc->getName() == locationName) {
-            playersAtLocation.push_back(playerName);
+    if(chek != map.end()) {
+
+        
+        // for (const auto& pair : playerPositions) {
+        //     const std::string& playerName = pair.first;
+        //     auto loc = pair.second;
+            
+        //     if (loc && loc->getName() == nameLocation) {
+        //         playersAtLocation.push_back(playerName);
+        //     }
+        // }
+        
+        return chek->second.getNameHeroes();
+
+        // return playersAtLocation;
+    }
+}
+std::vector<NameMonster> Map::getMonsterLocation(const NameLocation& nameLocation) const {
+    auto chek = std::find_if(map.begin(), map.end(), [&nameLocation](const auto& p) {
+        return p.first == nameLocation;
+    });
+
+    if(chek != map.end()) {
+        return chek->second.getNameMonsters();
+    }
+}
+std::vector<NameItem> Map::getItemsLocation(const NameLocation& nameLocation) const {
+    auto chek = std::find_if(map.begin(), map.end(), [&nameLocation](const auto& p) {
+        return p.first == nameLocation;
+    });
+
+    if(chek != map.end()) {
+        return chek->second.getNameItems();
+    }
+}
+std::vector<NameVillagers> Map::getVillagerLocaiton(const NameLocation& nameLocation) const {
+    auto chek = std::find_if(map.begin(), map.end(), [&nameLocation](const auto& p) {
+        return p.first == nameLocation;
+    });
+
+    if(chek != map.end()) {
+        return chek->second.getNameVillagers();
+    }
+}
+
+std::vector<Location*> Map::getNeighborLocation(const NameLocation& nameLocation) const {
+    auto chek = std::find_if(map.begin(), map.end(), [&nameLocation](const auto& p) {
+        return p.first == nameLocation;
+    });
+
+    if(chek != map.end()) {
+        return chek->second.getNeighbors();
+    }
+}
+NameLocation Map::findShortestPath(const NameLocation& start, const NameLocation& end) {
+    std::unordered_map<NameLocation, NameLocation> parent;
+    std::queue<Location*> q;
+
+    // پیدا کردن اشاره‌گر به start
+    Location* startPtr = nullptr;
+    for (auto& pair : map) {
+        if (pair.first == start) {
+            startPtr = &pair.second;
+            break;
         }
     }
+    if (!startPtr) 
+        throw std::invalid_argument("");
 
-    return playersAtLocation;
-}
+    q.push(startPtr);
+    parent[start] = start;
 
-std::string Map::findShortestPath(const std::string& start, const std::string& end) {
-   
-    std::unordered_map<std::string, std::string> parent;
-    std::queue<Location*> loc;
-    loc.push(locations[start].get());
-    parent[start] = "";
+    while (!q.empty()) {
+        Location* current = q.front();
+        q.pop();
 
-    while (!loc.empty()) {
-        Location* current = loc.front();
-        loc.pop();
-        std::string currentName = current->getName();
-        if(currentName == end) 
-            break;
+        // گرفتن نام فعلی
+        NameLocation currentName;
+        bool found = false;
+        for (const auto& pair : map) {
+            if (&pair.second == current) {
+                currentName = pair.first;
+                found = true;
+                break;
+            }
+        }
+        if (!found) continue;
+
+        if (currentName == end) break;
+
         for (Location* neighbor : current->getNeighbors()) {
-            std::string neighName = neighbor->getName();
-            if(parent.find(neighName) == parent.end()) {
+            // گرفتن نام neighbor
+            NameLocation neighName;
+            bool neighFound = false;
+            for (const auto& pair : map) {
+                if (&pair.second == neighbor) {
+                    neighName = pair.first;
+                    neighFound = true;
+                    break;
+                }
+            }
+            if (!neighFound) continue;
+
+            if (parent.find(neighName) == parent.end()) {
                 parent[neighName] = currentName;
-                loc.push(neighbor);
+                q.push(neighbor);
             }
         }
     }
 
-    
-    std::vector<std::string> path;
-    for(std::string at = end; !at.empty(); at = parent[at]) {
+    if (parent.find(end) == parent.end())
+        throw std::invalid_argument("");
+    std::vector<NameLocation> path;
+    for (NameLocation at = end; at != start; at = parent[at]) {
         path.push_back(at);
     }
-
+    path.push_back(start);
     std::reverse(path.begin(), path.end());
+
     if (path.size() >= 2) {
-    return path[1];  // مسیر بعدی از start
-} else {
-    return "";  // یا یه پیغام خطا، یا همون start
-}
+        // برگرداندن اسم مکان دوم در مسیر (قدم بعدی)
+        NameLocation next = path[1];
 
-}
-
-bool Map::isNeighbor(const std::string& from, const std::string& to) const {
-    auto it = locations.find(from);
-    if (it == locations.end()) return false;
-
-    for (Location* neighbor : it->second->getNeighbors()) {
-        if (neighbor->getName() == to) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
-void Map::setPlayerPosition(const std::string& PlayerName, const std::string& locationName) {
-    if(locations.find(locationName) != locations.end()) {
-        auto locationPtr = locations[locationName];
-        playerPositions[PlayerName] = locationPtr;
-        locationPtr->addPlayer(PlayerName);
-    }
-}
-
-std::string Map::getPlayerPosition(const std::string& playerName) const {
-    auto it = playerPositions.find(playerName);
-    if(it != playerPositions.end()) {
-        return it->second->getName();
-        
-    }
-    return "";
-}
-
-Location* Map::getPlayerPositionPtr(const std::string& name) const {
-    auto it = playerPositions.find(name);
-    if (it != playerPositions.end()) {
-        return it->second.get();
-    }
-    return nullptr;
-}
-
-void Map::printPlayers( const std::vector<Item*>& itemList) const {
-    std::cout << "\nPlayer Positions:\n";
-    for (const auto& pair : playerPositions) {
-        std::cout << " " << pair.first << " in " << pair.second->getName();
-
-        // بررسی اینکه آیا این object یک آیتم است
-        Item* item = Item::findByName(pair.first ,  itemList);
-        if (item) {
-            std::string color;
-            switch (item->getType()) {
-                case itemType::RED: color = " (Red)"; break;
-                case itemType::YELLOW: color = " (Yellow)"; break;
-                case itemType::BLUE: color = " (Blue)"; break;
-                default: color = " (Unknown)";
-            }
-            std::cout << color;
-        }
-
-        std::cout << "\n";
-    }
-}
-
-
-void Map::print() {
-    for(const auto& pair : locations) {
-        auto loc = pair.second;
-        std::cout << "Location: " << loc->getName() << "\n";
-        std::cout << " Neighbors: ";
-        for(Location* neighbor : loc->getNeighbors()) {
-            std::cout << neighbor->getName() << " ";
-        }
-        std::cout << "\n";
-    }
-}
-
-void Map::removePlayer(const std::string& name) {
-    auto it = playerPositions.find(name);
-    if (it != playerPositions.end()) {
-        if (it->second) {
-            it->second->removePlayer(name);
-        }
-        playerPositions.erase(it);
-    }
-}
-
-
-std::vector<Item*> Map::getItemsAt(const std::string& locationName ,  const std::vector<Item*>& itemList) const {
-    std::vector<Item*> result;
-
-    auto it = locations.find(locationName);  //  تغییر دادیم از playerPositions به locations
-    if (it == locations.end()) {
-        std::cout << "[Debug] Location '" << locationName << "' not found in locations.\n";
-        return result;
-    }
-
-    std::cout << "[Debug] Checking items at location '" << locationName << "'.\n";
-
-    for (const std::string& name : it->second->getPlayers()) {
-        if (name.rfind("item_", 0) == 0) {
-            Item* item = Item::findByName(name , itemList);
-            if (item) {
-                result.push_back(item);
-            }
+        // پیدا کردن رشته اسم آن مکان
+        for (const auto& pair : map) {
+            if (pair.first == next)
+                return pair.second.getNameLocation();
         }
     }
 
-    return result;
+        throw std::invalid_argument("");
 }
 
-std::vector<std::string> Map::getAllLocationNames() const {
-    std::vector<std::string> names;
-    for (const auto& [name, _] : locations) {
-        names.push_back(name);
+NameLocation Map::chengNameLocationTheString(const std::string& nameLocation) {
+    static const std::unordered_map<std::string, NameLocation> nameMap = {
+        {"cave", NameLocation::CAVE},
+        {"camp", NameLocation::CAMP},
+        {"precinct", NameLocation::PRECINCT},
+        {"inn", NameLocation::INN},
+        {"barn", NameLocation::BARN},
+        {"dungeon", NameLocation::DUNGEON},
+        {"tower", NameLocation::TOWER},
+        {"museum", NameLocation::MUSEUM},
+        {"crypt", NameLocation::CRYPT},
+        {"abbey", NameLocation::ABBEY},
+        {"mansion", NameLocation::MANSION},
+        {"shop", NameLocation::SHOP},
+        {"docks", NameLocation::DOCKS},
+        {"hospital", NameLocation::HOSPITAL},
+        {"church", NameLocation::CHURCH},
+        {"laboratory", NameLocation::LABORATORY},
+        {"graveyard", NameLocation::GRAVEYARD},
+        {"institute", NameLocation::INSTITUTE},
+        {"theatre", NameLocation::THEATRE}
+    };
+
+    auto it = nameMap.find(nameLocation);
+    if (it != nameMap.end())
+        return it->second;
+    else
+        throw std::invalid_argument("");
+}
+
+
+std::vector<NameLocation> Map::getAllLocationNames() const {
+    std::vector<NameLocation> names;
+    for (const auto& [name, loc] : map) {
+        names.push_back(loc.getNameLocation());
     }
     return names;
 }
 
-std::vector<std::string> Map::getNeighbors(const std::string& locationName) const {
-    std::vector<std::string> result;
+std::vector<NameLocation> Map::getNeighbors(const NameLocation& nameLocation) const {
+    std::vector<NameLocation> result;
 
-    auto it = locations.find(locationName);
-    if (it == locations.end()) return result;
+    auto chek = std::find_if(map.begin(), map.end(), [&nameLocation](const auto& p) {
+        return p.first == nameLocation;
+    });
+    if(chek != map.end()) {
 
-    const auto& loc = it->second;
-    for (Location* neighbor : loc->getNeighbors()) {
-        result.push_back(neighbor->getName());
+        const auto& loc = chek->second;
+        for (Location* neighbor : loc.getNeighbors()) {
+            result.push_back(neighbor->getNameLocation());
+        }
+        return result;
     }
-
-    return result;
-}
-
-
-
-std::unordered_map<std::string, std::shared_ptr<Location>> Map::locations;
-std::unordered_map<std::string, std::shared_ptr<Location>> Map::playerPositions;
+    else {
+        throw std::invalid_argument("");
+    }
+} 

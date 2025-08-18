@@ -45,14 +45,12 @@ std::string Item::getLocationItem() const
     return this->locationItem->getPlayerPosition(name);
 
 }
-
 Item* Item::findByName(const std::string& name, const std::vector<Item*>& itemList) {
     for (Item* item : itemList) {
         if (item->getName() == name) return item;
     }
     return nullptr;
 }
-
 
 std::string Item::getPickedUpFrom() const
 {

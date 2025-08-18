@@ -64,7 +64,7 @@ void Game::determineFirstPlayer() {
     std::cout << "Player controlling Archaeologist, when was your last meal? (hh:mm): ";
     std::cin >> archaeologistInput;
 
-
+    // تبدیل به عدد دقیقه از 00:00 برای مقایسه
     auto parseTime = [](const std::string& timeStr) -> int {
         size_t colonPos = timeStr.find(':');
         if (colonPos == std::string::npos) return -1;
@@ -84,7 +84,7 @@ void Game::determineFirstPlayer() {
         return;
     }
 
-
+    // هرکس دیرتر غذا خورده نوبت اول می‌گیرد
     isMayorTurn = (mayorTime > archaeologistTime);
 }
 
@@ -96,12 +96,12 @@ Item& Game::getNextItem() {
     }
 
     Item* item = itemBag.back();
-    itemBag.pop_back();  
+    itemBag.pop_back();  // از کیسه حذف میشه
     return *item;
 }
 
 void Game::returnItemToBag(Item* item) {
-    itemBag.insert(itemBag.begin(), item);  
+    itemBag.insert(itemBag.begin(), item);  // می‌تونی از اول یا آخر بذاری
 }
 
 
@@ -180,7 +180,7 @@ void Game::heroTurn(Heroes& hero) {
                     villagerManager.chekSafeLocationVillager("Dr.read" , hero);
                     break;
                 case 2: 
-                    hero.guide();
+                    hero.guide(); 
                     villagerManager.chekSafeLocationVillager(villagerManager.getNameVillager() , hero);
                     villagerManager.chekSafeLocationVillager("Maria" , hero);
                     villagerManager.chekSafeLocationVillager("Wilbur & Chick" , hero);
@@ -188,10 +188,10 @@ void Game::heroTurn(Heroes& hero) {
                     villagerManager.chekSafeLocationVillager("Dr.crunly" , hero);
                     villagerManager.chekSafeLocationVillager("Fritz" , hero);
                     villagerManager.chekSafeLocationVillager("Prof.pearson" , hero);
-                    villagerManager.chekSafeLocationVillager("Dr.read" , hero);
+                    villagerManager.chekSafeLocationVillager("Dr.read" , hero);      
                     break;
                 case 3: 
-                    hero.handlePickUp(gameMap , allGameItems);        
+                    hero.handlePickUp(gameMap, allGameItems);        
                     break;
                 case 4: 
                     {
@@ -208,23 +208,23 @@ void Game::heroTurn(Heroes& hero) {
                 case 5: 
                     hero.showInventory(); 
                     break;
-                case 6: {
-    std::string heroLoc = hero.getLocationHero();
+                case 6: 
+                {
+                    std::string heroLoc = hero.getLocationHero();
 
-    if (heroLoc == "precinct") {
-        handleAdvanceInvisibleMan(hero);
-    } 
-    else if (heroLoc == "cave" || heroLoc == "crypt" || heroLoc == "dungeon" || heroLoc == "graveyard") {
-        hero.handleAdvanceCoffin(heroLoc);
-    } 
-    else {
-        std::cout << "You are not in a valid location for any advance action.\n";
-    }
+                    if (heroLoc == "precinct") {
+                        handleAdvanceInvisibleMan(hero);
+                    } 
+                    else if (heroLoc == "cave" || heroLoc == "crypt" || heroLoc == "dungeon" || heroLoc == "graveyard") {
+                        hero.handleAdvanceCoffin(heroLoc);
+                    } 
+                    else {
+                        std::cout << "You are not in a valid location for any advance action.\n";
+                    }
 
-    handleInvisibleManAttack();
-    break;
-}
-
+                    handleInvisibleManAttack();
+                    break;
+                }
                 case 7: {
                     const auto& perkCards = hero.getPerkCards();
                     if (perkCards.empty()) {
@@ -247,7 +247,7 @@ void Game::heroTurn(Heroes& hero) {
                     }
 
                     PerkCard selected = perkCards[choice - 1];
-                    hero.removePerkCard(choice - 1);
+                    hero.removePerkCard(choice - 1);  // remove the card after using it
 
                     switch (selected.getType()) {
                         case PerkCardType::VisitFromDetective:
@@ -310,7 +310,7 @@ void Game::heroTurn(Heroes& hero) {
                     hero.guide();       
                     break;
                 case 3: 
-                    hero.handlePickUp(gameMap , allGameItems);        
+                    hero.handlePickUp(gameMap, allGameItems);        
                     break;
                 case 4: 
                     {
@@ -353,7 +353,7 @@ void Game::heroTurn(Heroes& hero) {
                     }
 
                     PerkCard selected = perkCards[choice - 1];
-                    hero.removePerkCard(choice - 1);
+                    hero.removePerkCard(choice - 1);  // remove the card after using it
 
                     switch (selected.getType()) {
                         case PerkCardType::VisitFromDetective:
@@ -396,7 +396,7 @@ void Game::heroTurn(Heroes& hero) {
 
                 case 8:
 
-                    archaeologist.specialAction(gameMap , allGameItems);
+                    archaeologist.specialAction(gameMap, allGameItems);
                     archaeologist.incrementAction();
                     break;
                 
@@ -437,7 +437,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
 
             if(!dracula.isDead())
                 {gameMap.setPlayerPosition("Dracula", currentHero->getLocationHero());}
-                placeRandomItem(2);
+            placeRandomItem(2);
             if(!invisibleMan.isDead())
                 {invisibleMan.move(heroes , villagers);}
             return;
@@ -459,10 +459,11 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
                 if(!invisibleMan.isDead())
                     {gameMap.setPlayerPosition("InvisibleMan", targetLocation);}
 
-                auto items = gameMap.getItemsAt(targetLocation , allGameItems);
+                // حذف همه آیتم‌های این مکان
+                auto items = gameMap.getItemsAt(targetLocation, allGameItems);
                 for (Item* item : items) {
                     gameMap.removePlayer(item->getName());
-                    itemBag.push_back(item);
+                    itemBag.push_back(item); // برگشت به کیسه آیتم‌ها
                 }
 
                 std::cout << "Invisible Man went to " << targetLocation << " and stole " << items.size() << " items!\n";
@@ -478,7 +479,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case TheDelivery :
 
             placeRandomItem(3);
-            villagerManager.addVillager("Wilbur & Chick","docks", "percinct");
+            villagerManager.initializeVillagers(NameVillagers::WilnureAndChick);
             if(!frenziedMonster->isDead())
                 {frenziedMonster->move(heroes , villagers);}
             return;
@@ -486,7 +487,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case FortuneTeller :
 
             placeRandomItem(3);
-            villagerManager.addVillager("Maleva","camp", "shop");
+            villagerManager.initializeVillagers(NameVillagers::Maleva);
             if(!frenziedMonster->isDead())
                 {frenziedMonster->move(heroes , villagers);}
             return;
@@ -494,7 +495,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case FormerEmployer :
 
             placeRandomItem(3);
-            villagerManager.addVillager("Dr.crunly","laboratory", "percinct");
+            villagerManager.initializeVillagers(NameVillagers::Dr_crunly);
             if(!frenziedMonster->isDead())
                 {frenziedMonster->move(heroes , villagers);}
             if(!invisibleMan.isDead())
@@ -505,7 +506,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case HurriedAssistant :
 
             placeRandomItem(3);
-            villagerManager.addVillager("Fritz","tower", "institute");
+            villagerManager.initializeVillagers(NameVillagers::Fritz);
             if(!dracula.isDead())
                 {dracula.move(heroes , villagers);}
             return;
@@ -513,7 +514,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case TheInnocent :
 
             placeRandomItem(3);
-            villagerManager.addVillager("Maria","barn", "camp");
+            villagerManager.initializeVillagers(NameVillagers::Maria);
             if(!invisibleMan.isDead())
                 {invisibleMan.move(heroes , villagers);}
             if(!dracula.isDead())
@@ -525,7 +526,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case EgyptianExpert :
 
             placeRandomItem(3);
-            villagerManager.addVillager("Prof.pearson","cave", "museum");
+            villagerManager.initializeVillagers(NameVillagers::Prof_pearson);
             if(!frenziedMonster->isDead())
                 {frenziedMonster->move(heroes , villagers);}
             if(!dracula.isDead())
@@ -535,7 +536,7 @@ void Game::resolveMonsterEvent(const MonsterCard& card) {
         case TheIchthyologist :
 
             placeRandomItem(3);
-            villagerManager.addVillager("Dr.read","institute", "camp");
+            villagerManager.initializeVillagers(NameVillagers::Dr_read);
             if(!frenziedMonster->isDead())
                 {frenziedMonster->move(heroes , villagers);}
             return;
@@ -582,7 +583,7 @@ std::string Game::findLocationWithMostItems() const {
     size_t maxCount = 0;
 
     for (const std::string& loc : allLocations) {
-        size_t count = gameMap.getItemsAt(loc , allGameItems).size();
+        size_t count = gameMap.getItemsAt(loc, allGameItems).size();
         if (count > maxCount) {
             maxCount = count;
             maxLocation = loc;
@@ -645,7 +646,7 @@ void Game::increaseTerrorLevel() {
 void Game::handleDraculaAttack() {
     std::string currentLoc = gameMap.getPlayerPosition("Dracula");
 
- 
+    // بررسی قهرمان‌ها
     std::vector<Heroes*> heroesHere;
     if (gameMap.getPlayerPosition(mayor.getName()) == currentLoc)
         heroesHere.push_back(&mayor);
@@ -675,21 +676,21 @@ void Game::handleDraculaAttack() {
                     hero->removeFromInventory(item);
                     returnItemToBag(item);
                     std::cout << hero->getName() << " used " << item->getName() << " to block the attack!\n";
-                    return;
+                    return;  // حمله دفع شد
                 } else {
                     std::cout << "Invalid choice. Attack proceeds.\n";
                 }
             }
         }
 
-
+        // اگر نخواست یا آیتم نداشت
         gameMap.setPlayerPosition(hero->getName(), "hospital");
         std::cout << "Dracula attacked " << hero->getName() << " and sent them to hospital!\n";
         increaseTerrorLevel();
         return;
     }
 
-
+    // بررسی روستایی‌ها
     for (const auto& v : villagerManager.getActiveVillagers()) {
         const std::string& name = v.first;
         const std::string& location = v.second;
@@ -709,6 +710,7 @@ void Game::handleDraculaAttack() {
 void Game::handleInvisibleManAttack() {
     std::string currentLoc = gameMap.getPlayerPosition("InvisibleMan");
 
+    // بررسی روستایی‌ها
     for (const auto& v : villagerManager.getActiveVillagers()) {
         const std::string& name = v.first;
         const std::string& location = v.second;
@@ -768,45 +770,55 @@ void Game::handleDefeatDracula(Monster* monster, Heroes& hero) {
         gameMap.removePlayer(monster->getNameM());
         std::cout << "Invisible Man has been defeated!\n";
     }
-
+    hero.defeat();
 }
 
 void Game::handleAdvanceInvisibleMan(Heroes& hero) {
-    for (const auto& entry : hero.getInvisibleItemCollected()) {
-        if (!entry.second) {
-            std::cout << "You must collect at least one item from all 5 required locations before advancing.\n";
-            return;
+    hero.Advance(*this);
+  }
+
+void Game::usePerkCard(Heroes& hero, const PerkCard& card) {
+    switch (card.getType()) {
+        case PerkCardType::VisitFromDetective: {
+            perkDeck.visitFormTheDetective();
+            pekrcardName = "VisitFromDetective";
+            break;
+        }
+        case PerkCardType::BreakOfDawn: {
+            perkDeck.breakOfDawn(hero, *this);
+            pekrcardName = "BreakOfDawn";
+            break;
+        }
+        case PerkCardType::Overstock: {
+            perkDeck.overstock(*this, mayor, archaeologist);
+            pekrcardName = "Overstock";
+            break;
+        }
+        case PerkCardType::LateIntoTheNight: {
+            perkDeck.lateIntoTheNight(hero);  // متدی در Hero بساز برای دادن اکشن اضافه
+            pekrcardName = "LateIntoTheNight";
+            break;
+        }
+        case PerkCardType::Repel: {
+            perkDeck.Repel(dracula, invisibleMan);
+            pekrcardName = "Repel";
+            break;
+        }
+        case PerkCardType::Hurry: {
+            perkDeck.Hurry(mayor, archaeologist);
+            pekrcardName = "Hurry";
+            break;
         }
     }
-
- 
-    std::unordered_set<std::string> usedLocations;
-    std::vector<Item*> itemsToRemove;
-
-    for (Item* item : hero.getInventory()) {
-        std::string loc = item->getPickedUpFrom();
-        if (hero.getInvisibleItemCollected().count(loc) && !usedLocations.count(loc)) {
-            usedLocations.insert(loc);
-            itemsToRemove.push_back(item);
-        }
-
-        if (usedLocations.size() == 5) break;
-    }
-
-    if (usedLocations.size() < 5) {
-        std::cout << "You do not have the correct 5 items from distinct locations.\n";
-        return;
-    }
-
-    for (Item* item : itemsToRemove) {
-        hero.removeFromInventory(item);
-        returnItemToBag(item);
-    }
-
-    invisibleAdvanceDone = true;
-    std::cout << "You successfully performed the advance action for Invisible Man.\n";
 }
 
+void Game::setMonsterPhaseTrue(bool value) {
+    monsterPhaseTrue = value;
+}
+
+void Game::setInvisibleAdvanceDone(bool value) {
+    invisibleAdvanceDone = value;
+}
 
 
 

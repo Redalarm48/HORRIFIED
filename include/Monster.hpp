@@ -1,42 +1,39 @@
 #ifndef MONSTER_HPP
 #define MONSTER_HPP
-
-#include "Item.hpp"
+#include "NameEnum.hpp"
 #include "Map.hpp"
-#include "Villagers.hpp"
-#include "Hero.hpp"
 #include <iostream>
 #include <vector>
 
+class Map;
+
 class Monster
 {
-
     private :
 
-        std::string Name;
+        const NameMonster nameMonster;
+        NameLocation nameLocationMonster;
         int FrenzyOrder;
         Map& locationMonster;
         bool Dead;
 
     public :
 
-        Monster(const std:: string& name , int frenzyorder , Map& locationmonster);
+        Monster(const NameMonster, int, Map&);
 
         virtual ~Monster();
 
-        std::string getNameM() const;
+
+        NameMonster getNameM() const;
         int getFrenzyOrder() const;
         bool isDead() const;
 
+        void setMonsterPosition(const NameLocation&);
+
+        bool cheknumberDistance(const NameLocation&);
+
         void Defeated();
-        Location* getLocationMonsterPtr() const;
-        std::string getLocationMonster() const;
-        Map& getMap() const;
-
-        virtual void usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers);
-        virtual void move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers);
-
-
+        NameLocation getNameLocationMonster() const;
 
 };
 

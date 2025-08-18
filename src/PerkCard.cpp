@@ -3,6 +3,7 @@
 #include "Map.hpp"
 #include "Hero.hpp"
 #include "Dracula.hpp"
+#include "Game.hpp"
 
 inline std::ostream& operator<<(std::ostream& os, const PerkCardType& type) {
     switch (type) {
@@ -56,7 +57,7 @@ void PerkDeck::initializeDeck() {
 
 }
 
-void PerkDeck::addCard(PerkCardType type, const std::string desc, int count) {
+void PerkDeck::addCard(PerkCardType type, const std::string& desc, const int count) {
     for (int i = 0; i < count; i++ ) {
         cards.emplace_back(type,desc);
     }
@@ -115,13 +116,26 @@ void PerkDeck::Hurry(Heroes& hero1, Heroes& hero2) {
 void PerkDeck::Repel(Dracula& dracula, InvisibleMan& invisibleMan) {
     dracula.move();
     dracula.move();
-    // invisibleMan.move();
-    // invisibleMan.move();
-
-    
-
+    invisibleMan.move();
+    invisibleMan.move();
 }
 
+void PerkDeck::breakOfDawn(Heroes& hero, Game& game) {
+    game.setMonsterPhaseTrue(false);  // Skip monster phase
+    std::cout << "Monster phase will be skipped.\n";
+    game.placeRandomItemAt(hero.getLocationHero(), 2);
+    std::cout << "You received 2 random items at your location.\n";
+}
+void PerkDeck::overstock(Game& game, Heroes& hero1, Heroes& hero2) {
+    game.placeRandomItemAt(hero1.getLocationHero(), 1);
+    game.placeRandomItemAt(hero2.getLocationHero(), 1);
+    std::cout << "Each hero received 1 item at their locations.\n";
+}
+void PerkDeck::lateIntoTheNight(Heroes& hero) {
+    hero.decreaseAction();
+    std::cout << "You received 2 extra actions this trun!\n";
+
+}
 
 
 
