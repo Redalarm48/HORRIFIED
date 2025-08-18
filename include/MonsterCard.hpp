@@ -1,8 +1,10 @@
-#ifndef MONSTERCARD_HPP
-#define MONSTERCARD_HPP
+#pragma once
 
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <random>
+#include "Map.hpp"
 #include "Monster.hpp"
 
 enum MonsterCardType {
@@ -15,42 +17,46 @@ enum MonsterCardType {
     HurriedAssistant,
     TheInnocent,
     EgyptianExpert,
-    TheIchthyologist
+    TheIchthyologist,
+    HypnoticGaze,
+    OnTHeMove,
+    Default
 };
 
-class MonsterCard {
-private:
-    MonsterCardType type;
-    std::string description;
-    int diceCount;
-    std::vector<Monster*> strikeOrder;
-
-public:
-    MonsterCard(MonsterCardType type, const std::string& description, int diceCount = 0, const std::vector<Monster*>& strikeOrder = {});
-
-    const std::string& getDescription() const;
-    int getDiceCount() const;
-    const std::vector<Monster*>& getStrikeOrder() const;
-    MonsterCardType getType() const;
-};
 
 class MonsterDeck {
 private:
-    std::vector<MonsterCard> cards;
-    Monster* dracula;
-    Monster* invisibleMan;
-    Monster* frenzied;
+    int ItemCount;
+    int diceCount;
+    int moveCount;
+    MonsterCardType monsterType;
+    std::vector<NameMonster> striceOrder;
+    static std::vector<MonsterDeck> cards;
+    static std::vector<MonsterDeck> inGameCards;
 
-    void addCard(MonsterCardType type, const std::string& desc, int diceCount, const std::vector<Monster*>& strikeOrder, int count);
+    void addCard(const int, const int, const int, const int, const MonsterCardType&, const std::vector<NameMonster>&);
+    
+    public:
+    MonsterDeck(const int, const int, const int, const MonsterCardType&, const std::vector<NameMonster>&);
+    MonsterDeck();
     void shuffleDeck();
-
-public:
-    MonsterDeck(Monster* dracula, Monster* invisibleMan, Monster* frenzied);
-
+    // MonsterDeck(const MonsterDeck&) = default;
+    // MonsterDeck(MonsterDeck&&) = default;
+    // MonsterDeck& operator=(const MonsterDeck&) = default;
+    // MonsterDeck& operator=(MonsterDeck&&) = default;
+    void formOfTheBat(Heroes&, Monster&);
+    void sunrise(Monster&);
+    void thief(Monster&, Item&);
+    void theDelivery(Villager&);
+    void fortuneTeller(Villager&);
+    void formerEmployer(Villager&);
+    void hurriedAssistant(Villager&);
+    void theInnocent(Villager&);
+    void egyptianExpert(Villager&);
+    void theIchthyologist(Villager&);
     void initializeDeck();
-    MonsterCard drawCard();
+    void playDrawCard(const MonsterCardType&, Villager&, Heroes&, Monster&, Monster&, Item&);
+    MonsterDeck drawCard(Item&, Villager&, Heroes&, Monster&, Monster&);
     bool isEmpty() const;
 
 };
-
-#endif
