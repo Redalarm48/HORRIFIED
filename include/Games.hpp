@@ -54,7 +54,12 @@ public:
     bool isMouseOver(const sf::CircleShape&, const sf::RenderWindow&);
     void centerTextInButton(sf::Text&, const sf::RectangleShape&);
     
-
+    void setButtonAndTextMenu(sf::RectangleShape&, sf::RectangleShape&, sf::RectangleShape&, sf::Text&, sf::Text&, sf::Text&);
+    void setImageInDesktop(const sf::Texture&, sf::Sprite&);
+    void menu(bool = true);
+    
+    void setButtonAndTextStartGame(sf::RectangleShape&, sf::RectangleShape&, sf::RectangleShape&, sf::Text&, sf::Text&, sf::Text&, sf::Text&, sf::Text&);
+    std::vector<std::string> startPlay(const std::string&);
     //////////////////////////////
 
 };
