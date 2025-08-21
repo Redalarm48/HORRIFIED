@@ -1,51 +1,81 @@
-#ifndef ITEM_HPP
-#define ITEM_HPP
-
+#pragma once
 
 #include <string>
 #include <vector>
-#include "Position.hpp"
 #include "Hero.hpp"
 #include "Location.hpp"
 #include "Map.hpp"
 
-
-enum class itemType { RED, BLUE , YELLOW};
-
 class Map;
-class Heroes;
+
+enum class TypeOwnership {
+    ARCHAEOLOGIST, MAYOR, NO_OWNERSHIP
+};
+
+enum class TypeItem { 
+    RED, BLUE , YELLOW
+};
+
+
+struct ItemList
+{
+public:
+   
+    TypeItem typeitem;
+    NameItem nameitem;
+    NameLocation namelocation;
+    int power;
+    static std::vector<ItemList> itemlist;
+    ItemList(TypeItem typeitem,NameLocation namelocation, NameItem nameitem, int power);
+    ItemList();
+    void addItemList(TypeItem type, NameLocation, NameItem name, int pow);
+    void initializeItem();
+    void shuffleItem();
+    ItemList addItemInGame();
+};
 
 class Item
 {
 
-    private :
+private :
 
-        std::string name;
-        itemType type;
-        bool collected;
-        Map* locationItem;
-        std::string pickedUpFrom = "";
-        
+    static ItemList itemList;
+    Map& locationItem;
+    const NameItem nameItem;
+    const TypeItem typeItem;
+    TypeOwnership typeOwnership;
+    NameLocation nameLocationItem;
+    int power;
+    bool collected;
+    
+public :
+    
+    static std::vector<std::pair<NameItem, Item>> itemsInGame;
+    
+    Item(TypeItem, Map&, NameItem, NameLocation, int, TypeOwnership = TypeOwnership::NO_OWNERSHIP);
+    Item(Map&);
+    Item(const Item&) = default;
+    Item(Item&&) = default;
+    Item& operator=(const Item&) = default;
+    Item& operator=(Item&&) = default;
 
-    public :
+    NameLocation getLocationItem() const;
+    NameItem getNameItem() const;
+    TypeItem getTypeItem()const;
+    TypeOwnership getTypeOwnsership() const;
+    bool isCollected()const;
+    void collectTrue();
+    NameItem addItemInGame();
+    void removeItemInGame(const NameItem&); 
 
-        Item(itemType type , Map* locationitem , const std::string& Name);
-        Item(const Item&) = default;
-        Item(Item&&) = default;
-        Item& operator=(const Item&) = default;
-        Item& operator=(Item&&) = default;
-        std::string getName()const;
-        itemType getType()const;
-        Position getPosition()const;
-        bool isCollected()const;
-        Location* getLocationItemPtr() const;
-        std::string getLocationItem() const;
-        static Item* findByName(const std::string& name, const std::vector<Item*>& itemList);
-        std::string getPickedUpFrom() const; 
-        void setPickedUpFrom(const std::string& loc);
+    void setItemsPosition(const NameLocation&);
+    void setItemsPosition(const NameItem&, const NameLocation&);
+    void setTypeOwnsership(const TypeOwnership&);
 
-        void collect();
+    static std::string chengNameItemTheString(const NameItem&);
+
+    void pickUp(const NameHeroes&, const NameItem&);
+    NameLocation itemMaxLocation();
+    void removeAllItemLocation(const NameLocation&);
 
 };
-
-#endif
