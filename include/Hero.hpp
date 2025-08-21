@@ -1,82 +1,61 @@
-#if !defined(HERO_H)
-#define HERO_H
+#pragma once
 #include "PerkCard.hpp"
 #include "Villagers.hpp"
 #include "Item.hpp"
 #include "Map.hpp"
+#include "NameEnum.hpp"
 #include <string>
 
-enum class itemType;
 enum class Status{
     Alive,
     Dade
 };
-
 class Map;
 class Item;
-enum class itemType;
-
+class Location;
+class Villager;
 
 class Heroes {
 private:
 
-    std::string nameHero;
-    PerkDeck perkCard;
-    Status statusHero;
+    const NameHeroes nameHero;
+    NameLocation nameLocationHeroes;
     Map& locationHero;
     int numberActionTaken;
     int maxActions;
-    std::vector<Item*> inventory;
-    std::vector<PerkCard> perkCards;
+    Status statusHero;
 
-    
-    static std::unordered_map<std::string, bool> invisibleItemCollected;
-    static std::unordered_map<std::string, bool> coffinDestroyed;
-
+    std::vector<PerkDeck> perkCards;
     
 public:
-    Heroes(int,const std::string, Map&);
+    Heroes(int,const NameHeroes, Map&, const NameLocation&);
     virtual ~Heroes() = default;
 
     std::string getName() const;
+    NameHeroes getNameHero() const;
+    std::string changNameHeroesTheString(const NameHeroes&);
     Status getStatus() const;
-    std::vector<PerkCard> getInGamePerkCards();
-    void setLocation(const std::string&, const std::string&);
+    std::vector<PerkDeck> getInGamePerkCards();
 
-    Location* getLocationHeroPtr() const;
-    std::string getLocationHero() const;
+    NameLocation getLocationHero() const;
     bool canTakeAction() const;
     void resetActions();
 
-    void move(bool = false);
-    void guide();
-    void pickUp(Item*);
-    void Advance(Game&);
-    void defeat();
+    bool cheknumberDistance(const NameLocation&);
+
+
+    void move(Villager&,const NameLocation&, bool);
+    void guide(Villager&, const NameVillagers&);
+    void pickUp(Item&, const std::vector<NameItem>&);
+
     int getNumberActionTaken() const;
-    void showInventory() const;
-    void removeFromInventory(Item* item);
-    std::vector<Item*> getInventory();
-    bool removeItems(itemType type, int count);
-    bool hasItems(itemType type, int count) const;
-    void addPerkCard(const PerkCard& card);
-    void usePerkCard(int index);
-    const std::vector<PerkCard>& getPerkCards() const;
+
+    const std::vector<PerkDeck>& getPerkCards() const;
     void decreaseAction();
-    void increaseActionMax();
-    int getMaxAction()const;
-    void removePerkCard(int index);
 
-
-    static std::unordered_map<std::string, bool>& getInvisibleItemCollected();
-    static std::unordered_map<std::string, bool>& getcoffinDestroyed();
-
-    void handlePickUp( Map& map, const std::vector<Item*>& itemList);
-
-    void setNumberActionTaken(int num);
     void incrementAction();
-    void showCoffinStatus();
-    void handleAdvanceCoffin(const std::string& location);
+
+    void setHeroesPosition(const NameLocation&);
 
 };
 
@@ -90,7 +69,3 @@ class Mayor : public Heroes {
 public:
     Mayor(Map&);
 };
-
-
-
-#endif 
