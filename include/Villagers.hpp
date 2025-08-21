@@ -1,50 +1,37 @@
-#if !defined(VILLAGERS_H)
-#define VILLAGERS_H
-#include "Hero.hpp"
-#include <utility>
+#pragma once
+
 #include <vector>
+#include "Map.hpp"
+#include "NameEnum.hpp"
 
+enum class NameLocation;
 class Map;
-
-enum class NameVillagers{
-    Dr_crunly, Maleva, 
-    Fritz, Maria, 
-    Prof_pearson, Dr_read,
-    WilnureAndChick
-};
-
 
 class Villager {
 private:
 
-    static std::vector<std::tuple<std::string, std::string, std::string>> nameAndsafeLocationVilager;
-    std::string safeLocationVillager;
-    std::string nameVillager;
+    NameVillagers nameVillager;
+    NameLocation safeLocationVillager;
+    NameLocation nameLocationVillagers;
     Map& locationVillager;
-    void addVillager(const std::string&, const std::string&, const std::string&);
-    
+    void addVillager(const NameVillagers&, const NameLocation&, const NameLocation&);
+    static std::vector<std::pair<NameVillagers, Villager>> villagers;
 public:
     
     Villager(Map&);
+    Villager(Map&,const NameLocation&, const NameVillagers&, const NameLocation&);
+    void setVillagersPosition(const NameLocation&);
+    void setVillagersPosition(const NameVillagers&, const NameLocation);
+    NameVillagers chengNameVillager(const std::string&);
+    NameVillagers getNameVillager() const;
+    NameLocation getLocationVillager() const;
+    NameLocation getSafeLocationVillager() const;
+
+    void initializeVillagers(const NameVillagers&);
+    void removeVillager(const NameVillagers&);
+    void chekSafeLocationVillager(const NameVillagers&);
     
-    void setNameVillager(const std::string&);
-
-    std::string getNameVillager() const;
-    std::string getLocationVillager() const;
-    std::string getSafeLocationVillager() const;
-
-    void initializeVillagers(const NameVillagers);
-    void removeVillager(const std::string&);
-    void chekSafeLocationVillager(const std::string&, Heroes&);
-    
-    static void updateVillager(const std::string&, const std::string&);
-    static std::vector<std::string> moveLocation(const std::string&);
-    static std::string guideVillager(std::vector<std::string>);
-
-
-    std::vector<std::pair<std::string, std::string>> getActiveVillagers() const;
-
+    std::string chengNameVillagerTheString(const NameVillagers&);
+    std::vector<NameVillagers> moveLocation(const NameLocation&);
+    NameVillagers guideVillager(std::vector<NameLocation>);
 };
-
-
-#endif // VILLAGERS_H
