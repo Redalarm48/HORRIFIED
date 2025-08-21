@@ -1,13 +1,17 @@
 #pragma once
 
-#include "../include/Map.hpp"
 #include <SFML/Graphics.hpp>
-#include "../include/Hero.hpp"
-#include "../include/Item.hpp"
-#include "../include/Villagers.hpp"
+#include <string>
+#include "Map.hpp"
+#include "Hero.hpp"
+#include "Item.hpp"
+#include "Villagers.hpp"
 #include "PerkCard.hpp"
 #include "MonsterCard.hpp"
-#include <string>
+
+enum class Turn {
+    HERO, MONSTER
+};
 
 enum class Player {
     PLAYER_1, PLAYER_2
@@ -15,21 +19,24 @@ enum class Player {
 
 struct Players
 {
+    Turn turn = Turn::HERO;
     Player player;
     std::string namePlayer;
+    Heroes hero1;
+    Heroes hero2;
+    Players(Map& map) : hero1{0, NameHeroes::ARCHAEOLOGIST, map, NameLocation::CAMP}, hero2{0, NameHeroes::MAYOR, map, NameLocation::CAVE} {
+    } 
 };
 
 class Games {
 private:
     Map mapGames;
 
-    // MonsterDeck monsterCardInGames;
-    // Heroes hero;
     Villager villagerGames{this->mapGames};
     Item itemGames{this->mapGames};
 
-    Players player1;
-    Players player2;
+    Players player1{mapGames};
+    Players player2{mapGames};
 
     std::vector<std::pair<NameLocation, sf::CircleShape>> locations;
 
@@ -61,5 +68,8 @@ public:
     void setButtonAndTextStartGame(sf::RectangleShape&, sf::RectangleShape&, sf::RectangleShape&, sf::Text&, sf::Text&, sf::Text&, sf::Text&, sf::Text&);
     std::vector<std::string> startPlay(const std::string&);
     //////////////////////////////
+    void startGame();
+    void addLocations();
 
 };
+

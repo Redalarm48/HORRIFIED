@@ -1,4 +1,4 @@
-#include "../include/Games.hpp"
+#include "Games.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -320,4 +320,85 @@ std::vector<std::string> Games::startPlay(const std::string& numberPlayer) {
     }
     return{inputString1, inputString2};
     
+}
+
+
+void Games::addLocations() {
+
+    float scaleX = float(windowSize.x - 400) / 1663.f;
+    float scaleY = float(windowSize.y) / 1653.f;
+    
+    
+    auto addLocation = [&](const NameLocation& nameLocation, sf::FloatRect rect, float radius) {
+        float centerX = (rect.left +rect.width / 2.f) * scaleX;
+        float centerY = (rect.top + rect.height / 2.f) * scaleY;
+        sf::CircleShape shape(radius);
+        shape.setOrigin(radius, radius);
+        shape.setPosition(centerX, centerY);
+        shape.setFillColor(sf::Color::Transparent);
+
+        this->locations.emplace_back(nameLocation, shape);
+    };
+
+
+
+    addLocation(NameLocation::CAVE,{46, 308, 165, 165}, 60);
+    addLocation(NameLocation::CAMP,      {273, 238, 220, 220}, 100);
+    addLocation(NameLocation::PRECINCT,  {548, 185, 230, 230}, 90);
+    addLocation(NameLocation::INN, {827, 134, 230, 230}, 90);
+    addLocation(NameLocation::BARN, {1140, 170, 230, 230}, 90);
+    addLocation(NameLocation::DUNGEON, {1429, 197, 203, 203}, 80);
+    addLocation(NameLocation::TOWER, {1280, 462, 230, 230}, 90);
+    addLocation(NameLocation::DOCKS, {1375, 755, 230, 230}, 90);
+    addLocation(NameLocation::THEATRE, {945, 492, 230, 230}, 90);
+    addLocation(NameLocation::MANSION, {344, 738, 230, 230}, 100);
+    addLocation(NameLocation::ABBEY, {50, 852, 230, 230}, 90);
+    addLocation(NameLocation::CRYPT, {27, 1171, 200, 200}, 80);
+    addLocation(NameLocation::MUSEUM, {253, 1112, 244, 244}, 100);
+    addLocation(NameLocation::SHOP, {805, 921, 230, 230}, 90);
+    addLocation(NameLocation::CHURCH, {639, 1190, 230, 230}, 85);
+    addLocation(NameLocation::HOSPITAL, {535, 1421, 189, 189}, 70);
+    addLocation(NameLocation::GRAVEYARD, {876, 1368, 230, 230}, 90);
+    addLocation(NameLocation::LABORATORY, {1028, 1121, 240, 240}, 90);
+    addLocation(NameLocation::INSTITUTE, {1220, 1366, 240, 240}, 90);
+}
+
+
+void Games::startGame() {
+    this->itemGames.addItemInGame();
+
+    this->addLocations();   
+    sf::Texture backgroundTextureMap;
+    if(!backgroundTextureMap.loadFromFile("../Horrified_Assets/map.png")) {
+        throw std::invalid_argument("not found image");
+    }
+    
+    this->villagerGames.initializeVillagers(NameVillagers::Maleva);
+    this->villagerGames.setVillagersPosition(NameVillagers::Maleva, NameLocation::CAMP);
+    this->villagerGames.initializeVillagers(NameVillagers::Dr_read);
+    this->villagerGames.setVillagersPosition(NameVillagers::Dr_read, NameLocation::HOSPITAL);
+    this->villagerGames.initializeVillagers(NameVillagers::Dr_crunly);
+
+    auto item = this->itemGames.addItemInGame();
+    this->itemGames.setItemsPosition(item, NameLocation::CAMP);
+    item = this->itemGames.addItemInGame();
+    this->itemGames.setItemsPosition(item, NameLocation::CAMP);
+    item = this->itemGames.addItemInGame();
+    this->itemGames.setItemsPosition(item, NameLocation::CAMP);
+    item = this->itemGames.addItemInGame();
+    this->itemGames.setItemsPosition(item, NameLocation::CAMP);
+    item = this->itemGames.addItemInGame();
+    this->itemGames.setItemsPosition(item, NameLocation::CAMP);
+    item = this->itemGames.addItemInGame();
+
+    sf::Sprite backgroundSpriteMap(backgroundTextureMap);
+    backgroundSpriteMap.setScale(
+        float(this->windowSize.x-400) / (backgroundTextureMap.getSize().x),
+        float(this->windowSize.y) / (backgroundTextureMap.getSize().y)
+    );
+    while (this->window.isOpen()) {
+        this->window.clear();
+        this->window.draw(backgroundSpriteMap);        
+        this->window.display();
+    }
 }
