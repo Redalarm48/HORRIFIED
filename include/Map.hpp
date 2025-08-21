@@ -3,16 +3,11 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "Location.hpp"
-// #include "../include/Item.hpp"
-// #include "../include/Hero.hpp"
-// #include "../include/Monster.hpp"
-// #include "../include/Villagers.hpp"
-// #include "../include/Item.hpp"
-
-#include "../include/NameEnum.hpp"
-
 #include <memory>
+#include "Location.hpp"
+#include "NameEnum.hpp"
+
+enum class PathMode { Distance, NextStep };
 
 std::ostream& operator<<(std::ostream& os, NameLocation loc);
 
@@ -45,20 +40,10 @@ public:
     std::vector<Location*> getNeighborLocation(const NameLocation&) const;
 
     NameLocation chengNameLocationTheString(const std::string&);
-
-    // void setHeroesPosition(const std::string&);
+    std::string chengNameLocationTheString(const NameLocation&);
     
-
-    NameLocation findShortestPath(const NameLocation&, const NameLocation&);
-    // bool isNeighbor(const std::string& from, const std::string& to) const;    static void setPlayerPosition(const std::string&, const std::string&);
-    
-    // std::string getPlayerPosition(const std::string&) const;
-    // Location* getPlayerPositionPtr(const std::string&) const;
-    // void printNeighbors();          
-    // void print();
-    // void printPlayers(const std::vector<Item*>& itemList) const;
-    // void removePlayer(const std::string& name);
-    // std::vector<Item*> getItemsAt(const std::string& location, const std::vector<Item*>& itemList) const;
+    template <class T>
+    T findShortestPath(const NameLocation&, const NameLocation&);
     std::vector<NameLocation> getAllLocationNames() const; 
 
 

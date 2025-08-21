@@ -24,44 +24,66 @@ std::ostream& operator<<(std::ostream& os, NameLocation namelocation) {
     {
     case NameLocation::ABBEY:
         os << "abbey";
+        break;
     case NameLocation::CAVE: 
         os << "cave";
+        break;
     case NameLocation::CAMP: 
         os << "camp";
+        break;
     case NameLocation::PRECINCT: 
         os << "precinct";
+        break;
     case NameLocation::INN: 
         os << "inn";
+        break;
     case NameLocation::BARN:
         os << "barn";
+        break;
     case NameLocation::DUNGEON: 
         os << "dungeon";
+        break;
     case NameLocation::TOWER: 
         os << "tower";
+        break;
     case NameLocation::MUSEUM: 
         os << "museum";
+        break;
     case NameLocation::CRYPT: 
         os << "crypt";
+        break;
     case NameLocation::MANSION: 
         os << "mansion";
+        break;
     case NameLocation::SHOP: 
         os << "shop";
+        break;
     case NameLocation::DOCKS: 
         os << "docks";
+        break;
     case NameLocation::HOSPITAL: 
         os << "hospital";
+        break;
     case NameLocation::CHURCH: 
         os << "church";
+        break;
     case NameLocation::LABORATORY: 
         os << "laboratory";
+        break;
     case NameLocation::GRAVEYARD: 
         os << "graveyard";
+        break;
     case NameLocation::INSTITUTE: 
         os << "institute";
+        break;
     case NameLocation::THEATRE: 
         os << "theatr";
+        break;
+    case NameLocation::Default:
+        os << "default";
+        break;
     default:
-        throw std::invalid_argument("");
+        throw std::invalid_argument("not found location");
     }
     return os;
 }
@@ -118,6 +140,7 @@ void Map::totalLocation() {
     addLoation(NameLocation::GRAVEYARD);
     addLoation(NameLocation::INSTITUTE);
     addLoation(NameLocation::THEATRE);
+    addLoation(NameLocation::Default);
 }
 
 void Map::negiborLocation() {
@@ -212,7 +235,9 @@ std::vector<Location*> Map::getNeighborLocation(const NameLocation& nameLocation
         return chek->second.getNeighbors();
     }
 }
-NameLocation Map::findShortestPath(const NameLocation& start, const NameLocation& end) {
+
+template <class T>
+T Map::findShortestPath(const NameLocation& start, const NameLocation& end) {
     std::unordered_map<NameLocation, NameLocation> parent;
     std::queue<Location*> q;
 
@@ -225,7 +250,7 @@ NameLocation Map::findShortestPath(const NameLocation& start, const NameLocation
         }
     }
     if (!startPtr) 
-        throw std::invalid_argument("");
+        throw std::invalid_argument("Start location not found");
 
     q.push(startPtr);
     parent[start] = start;
@@ -235,31 +260,30 @@ NameLocation Map::findShortestPath(const NameLocation& start, const NameLocation
         q.pop();
 
         // گرفتن نام فعلی
-        NameLocation currentName;
-        bool found = false;
+        NameLocation currentName = NameLocation::Default;
         for (const auto& pair : map) {
             if (&pair.second == current) {
                 currentName = pair.first;
-                found = true;
                 break;
             }
         }
-        if (!found) continue;
-
+        if (currentName == NameLocation::Default) {
+            throw std::runtime_error("Current location not found in map");
+        }
         if (currentName == end) break;
 
         for (Location* neighbor : current->getNeighbors()) {
             // گرفتن نام neighbor
-            NameLocation neighName;
-            bool neighFound = false;
+            NameLocation neighName = NameLocation::Default;
             for (const auto& pair : map) {
                 if (&pair.second == neighbor) {
                     neighName = pair.first;
-                    neighFound = true;
                     break;
                 }
             }
-            if (!neighFound) continue;
+            if (neighName == NameLocation::Default) {
+                throw std::runtime_error("Neighbor not found in map");
+            }
 
             if (parent.find(neighName) == parent.end()) {
                 parent[neighName] = currentName;
@@ -269,7 +293,8 @@ NameLocation Map::findShortestPath(const NameLocation& start, const NameLocation
     }
 
     if (parent.find(end) == parent.end())
-        throw std::invalid_argument("");
+        throw std::invalid_argument("No path found");
+
     std::vector<NameLocation> path;
     for (NameLocation at = end; at != start; at = parent[at]) {
         path.push_back(at);
@@ -277,18 +302,17 @@ NameLocation Map::findShortestPath(const NameLocation& start, const NameLocation
     path.push_back(start);
     std::reverse(path.begin(), path.end());
 
-    if (path.size() >= 2) {
+    if (path.size() >= 1) {
         // برگرداندن اسم مکان دوم در مسیر (قدم بعدی)
-        NameLocation next = path[1];
-
-        // پیدا کردن رشته اسم آن مکان
-        for (const auto& pair : map) {
-            if (pair.first == next)
-                return pair.second.getNameLocation();
+         if constexpr (std::is_same_v<T, int>) {
+            return static_cast<int>(path.size() - 1);
+        } else if constexpr (std::is_same_v<T, NameLocation>) {
+            return path[1];
+        } else {
+            static_assert(sizeof(T) == 0, "Unsupported type for findShortestPath");
         }
     }
-
-        throw std::invalid_argument("");
+    throw std::runtime_error("Path too short");
 }
 
 NameLocation Map::chengNameLocationTheString(const std::string& nameLocation) {
@@ -321,6 +345,31 @@ NameLocation Map::chengNameLocationTheString(const std::string& nameLocation) {
         throw std::invalid_argument("");
 }
 
+std::string Map::chengNameLocationTheString(const NameLocation& nameLocaiton) {
+    switch (nameLocaiton)
+    {
+        case NameLocation::CAVE:        return "cave";
+        case NameLocation::CAMP:        return "camp";
+        case NameLocation::PRECINCT:    return "precinct";
+        case NameLocation::INN:         return "inn";
+        case NameLocation::BARN:        return "barn";
+        case NameLocation::DUNGEON:     return "dungeon";
+        case NameLocation::TOWER:       return "tower";
+        case NameLocation::MUSEUM:      return "museum";
+        case NameLocation::CRYPT:       return "crypt";
+        case NameLocation::ABBEY:       return "abbey";
+        case NameLocation::MANSION:     return "mansion";
+        case NameLocation::SHOP:        return "shop";
+        case NameLocation::DOCKS:       return "docks";
+        case NameLocation::HOSPITAL:    return "hospital";
+        case NameLocation::CHURCH:      return "church";
+        case NameLocation::LABORATORY:  return "laboratory";
+        case NameLocation::GRAVEYARD:   return "graveyard";
+        case NameLocation::INSTITUTE:   return "institute";
+        case NameLocation::THEATRE:     return "theatre";
+    }
+}
+
 
 std::vector<NameLocation> Map::getAllLocationNames() const {
     std::vector<NameLocation> names;
@@ -348,3 +397,6 @@ std::vector<NameLocation> Map::getNeighbors(const NameLocation& nameLocation) co
         throw std::invalid_argument("");
     }
 } 
+
+template int Map::findShortestPath<int>(const NameLocation&, const NameLocation&);
+template NameLocation Map::findShortestPath<NameLocation>(const NameLocation&, const NameLocation&);
