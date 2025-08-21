@@ -1,6 +1,8 @@
-#include "../include/Location.hpp"
-#include "../include/Item.hpp"
+#include "Location.hpp"
+#include "Item.hpp"
 Location::Location(const NameLocation nameLocaiton) {
+    this->invisibleItemCollecte = false;
+    this->coffinDestroyed = false;
     this->nameLocation = nameLocaiton;
 }
 
@@ -21,6 +23,58 @@ const std::vector<NameVillagers> Location::getNameVillagers() const {
 }
 const std::vector<Location*>& Location::getNeighbors() const {
     return neighbors;
+}
+
+void Location::setInvivsibleItemCollecte() {
+    if(
+        this->nameLocation == NameLocation::INN||
+        this->nameLocation == NameLocation::BARN||
+        this->nameLocation == NameLocation::INSTITUTE||
+        this->nameLocation == NameLocation::LABORATORY||
+        this->nameLocation == NameLocation::MANSION
+    ) {
+        this->invisibleItemCollecte == true;
+    }
+}
+
+void Location::setCoffinDestroyed() {
+    if(
+        this->nameLocation == NameLocation::CAVE||
+        this->nameLocation == NameLocation::CRYPT||
+        this->nameLocation == NameLocation::DUNGEON||
+        this->nameLocation == NameLocation::GRAVEYARD
+    ) {
+        this->coffinDestroyed == true;
+    }
+}
+
+bool Location::getInvisibleItemCollecte() const {
+    if(
+        this->nameLocation == NameLocation::INN||
+        this->nameLocation == NameLocation::BARN||
+        this->nameLocation == NameLocation::INSTITUTE||
+        this->nameLocation == NameLocation::LABORATORY||
+        this->nameLocation == NameLocation::MANSION
+    ) {
+    return this->invisibleItemCollecte;; 
+    }
+    else {
+        throw std::invalid_argument("not fond name invisible item collecte ");
+    }
+}
+
+bool Location::getCoffindestroyed() const { 
+    if(
+        this->nameLocation == NameLocation::CAVE||
+        this->nameLocation == NameLocation::CRYPT||
+        this->nameLocation == NameLocation::DUNGEON||
+        this->nameLocation == NameLocation::GRAVEYARD
+    ) {
+    return this->coffinDestroyed;
+    } 
+    else {
+        throw std::invalid_argument("not fond name coffindestroyed");
+    }
 }
 
 void Location::addNeighbor(Location* neighbor) {
