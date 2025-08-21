@@ -72,6 +72,8 @@ public:
     void addLocations();
 
     void drawPrekCard(const PerkCardType&);
+    std::string drawMonsterCard(const MonsterCardType&);
+
 
 
 };

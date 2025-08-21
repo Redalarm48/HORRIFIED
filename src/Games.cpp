@@ -434,3 +434,52 @@ void Games::drawPrekCard(const PerkCardType& prekCardType) {
     this->drawCard(nameImagePerkCard, 3.f);
 
 }
+
+std::string Games::drawMonsterCard(const MonsterCardType& monsterCardType) {
+    std::string nameImageMonsterCard = "../Horrified_Assets/Monster_Cards/";
+    switch (monsterCardType)
+    {
+    case MonsterCardType::EgyptianExpert:
+        nameImageMonsterCard += "EgyptianExpert.png";
+        break;
+    case MonsterCardType::FormerEmployer:
+        nameImageMonsterCard += "FomerEmployer.png";
+        break;
+    case MonsterCardType::FormOfTheBat:
+        nameImageMonsterCard += "FormOfTheBat.png";
+        break;
+    case MonsterCardType::FortuneTeller:
+        nameImageMonsterCard += "FortuneTeller.png";
+        break;
+    case MonsterCardType::HurriedAssistant:
+        nameImageMonsterCard += "HurriedAssistant.png";
+        break;
+    case MonsterCardType::HypnoticGaze:
+        nameImageMonsterCard += "HypnoticGaze.png";
+        break;
+    case MonsterCardType::OnTHeMove:
+        nameImageMonsterCard += "OnTheMove.png";
+        break;
+    case MonsterCardType::Sunrise:
+        nameImageMonsterCard += "Sunrise.png";
+        break;
+    case MonsterCardType::TheDelivery:
+        nameImageMonsterCard += "TheDelivery.png";
+        break;
+    case MonsterCardType::TheIchthyologist:
+        nameImageMonsterCard += "TheIchtyologist.png";
+        break;
+    case MonsterCardType::TheInnocent:
+        nameImageMonsterCard += "TheInnocent.png";
+        break;
+    case MonsterCardType::Thief:
+        nameImageMonsterCard += "Thief.png";
+        break;
+    
+    default:
+        throw std::invalid_argument("not found image Monster card");
+    }
+
+    return this->drawCard(nameImageMonsterCard, 2.5f);
+
+}
