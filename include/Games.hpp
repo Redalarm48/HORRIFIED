@@ -71,5 +71,8 @@ public:
     void startGame();
     void addLocations();
 
+    void drawPrekCard(const PerkCardType&);
+
+
 };
 

@@ -402,3 +402,35 @@ void Games::startGame() {
         this->window.display();
     }
 }
+
+void Games::drawPrekCard(const PerkCardType& prekCardType) {
+    std::string nameImagePerkCard = "../Horrified_Assets/Perk_Cards/";
+    switch (prekCardType)
+    {
+    case PerkCardType::BreakOfDawn: 
+        nameImagePerkCard += "BreakOfDawn.png";
+        break;
+    case PerkCardType::Hurry: 
+        nameImagePerkCard += "Hurry.png";
+        break;
+    case PerkCardType::LateIntoTheNight: 
+        nameImagePerkCard += "LateIntoTheNight.png";
+        break;
+    case PerkCardType::Overstock: 
+        nameImagePerkCard += "Overstock.png";
+        break;
+    case PerkCardType::Repel: 
+        nameImagePerkCard += "Repel.png";
+        break;
+    case PerkCardType::VisitFromDetective: 
+        nameImagePerkCard += "VisitFromTheDetective.png";
+        break;
+    
+    default:
+        throw std::invalid_argument("not found prek card type");
+        break;
+    }
+
+    this->drawCard(nameImagePerkCard, 3.f);
+
+}
