@@ -403,6 +403,28 @@ void Games::startGame() {
     }
 }
 
+void Games::setButtonAndImageAction(sf::RectangleShape& rect, sf::Texture& texture, sf::Sprite& sprit, const std::string& nameImage, const int i, const int j) {
+
+    if(!texture.loadFromFile("../Horrified_Assets/Action/" + nameImage)) {
+        throw std::invalid_argument("not found image action");
+    }
+
+    sprit.setTexture(texture);
+    sprit.setPosition(this->windowSize.x-(200*i), this->windowSize.y / 2+(200*j));
+
+    sprit.setScale(
+        float(200.f / texture.getSize().x), 
+        float((200.f )/(texture.getSize().y))
+    );
+
+
+
+        rect.setSize(sf::Vector2f(200, 200));
+        rect.setPosition(this->windowSize.x - (200*i), this->windowSize.y / 2+(200*j));
+        rect.setFillColor(sf::Color(100,0,0,100));
+
+}
+
 void Games::drawPrekCard(const PerkCardType& prekCardType) {
     std::string nameImagePerkCard = "../Horrified_Assets/Perk_Cards/";
     switch (prekCardType)

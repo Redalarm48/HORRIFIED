@@ -70,6 +70,8 @@ public:
     //////////////////////////////
     void startGame();
     void addLocations();
+    void setButtonAndImageAction(sf::RectangleShape&,sf::Texture&, sf::Sprite&, const std::string&, const int, const int);
+
 
     void drawPrekCard(const PerkCardType&);
     std::string drawMonsterCard(const MonsterCardType&);
