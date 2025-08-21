@@ -1,15 +1,17 @@
-#if !defined(PERK_CARD_H)
-#define PERK_CARD_H
+#pragma once
+
 #include <random>
 #include <vector>
 #include <algorithm>
 #include <iostream>
-// #include "Hero.hpp"
+#include "Hero.hpp"
+#include "Map.hpp"
 
 class Heroes;
-class Dracula;
-class InvisibleMan;
+class Monster;
 class Game;
+class Item;
+
 
 enum class PerkCardType{
     VisitFromDetective,
@@ -20,39 +22,26 @@ enum class PerkCardType{
     Hurry
 };
 
-class PerkCard {
-private:
-    PerkCardType perkType;
-    std::string description;
-public:
-    PerkCard(PerkCardType,const std::string&);
-    friend std::ostream& operator<<(std::ostream&, const PerkCard&);
-    PerkCardType getType() const;
-    std::string getDescription() const;
-};
 
 class PerkDeck {
-    // friend class Hero;
 private:
-    static std::vector<PerkCard> cards;
-    static std::vector<PerkCard> inGameCards;
-public:
-    // PerkDeck();
-    static void initializeDeck();
-    static void addCard(PerkCardType, const std::string&, const int);
-    static void shuffleDeck();
-    static PerkCard drawCard();
-    static bool isEmpty();
-    static std::vector<PerkCard> getInGamePerkCards();
+    PerkCardType perkType;
+    static std::vector<PerkDeck> cards;
+    static std::vector<PerkDeck> inGameCards;
 
-    static void visitFormTheDetective();
-    static void breakOfDawn(Heroes&, Game&);
-    static void overstock(Game&, Heroes&, Heroes&);
-    static void lateIntoTheNight(Heroes&);
-    static void Repel(Dracula&, InvisibleMan&);
-    static void Hurry(Heroes&, Heroes&);
+public:
+    void initializeDeck();
+    void addCard(const PerkCardType&, const int&);
+    void shuffleDeck();
+    PerkDeck drawCard();
+    bool isEmpty();
+    std::vector<PerkDeck> getInGamePerkCards();
+    void visitFormTheDetective(Monster&, const NameLocation&) const;
+    void breakOfDawn(const Heroes&, Item&) const; 
+    void overstock(const Heroes&, const Heroes&, Item&) const; 
+    void lateIntoTheNight(Heroes&) const;
+    bool Repel(Monster&, const NameLocation&) const;
+    bool Hurry(Heroes&, const NameLocation&) const;
 
 
 };
-
-#endif // PERK_CARD_H
