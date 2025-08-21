@@ -483,3 +483,44 @@ std::string Games::drawMonsterCard(const MonsterCardType& monsterCardType) {
     return this->drawCard(nameImageMonsterCard, 2.5f);
 
 }
+
+std::string Games::drawCard(const std::string& nameImageCard, const int size) {
+    sf::Texture cardTexture;
+    if(!cardTexture.loadFromFile(nameImageCard)) {
+        throw std::invalid_argument("not found image");
+    }
+    sf::Texture screen;
+    screen.create(this->window.getSize().x, this->window.getSize().y);
+    screen.update(this->window);
+    sf::Sprite background(screen);
+
+    sf::RectangleShape darkOverlay;
+    darkOverlay.setSize(sf::Vector2f(this->window.getSize()));
+    darkOverlay.setFillColor(sf::Color(0, 0, 0, 150));
+
+    sf::Sprite card(cardTexture);
+    card.setOrigin(card.getLocalBounds().width / 2, card.getLocalBounds().height / 2);
+    card.setPosition(this->window.getSize().x / 2, this->window.getSize().y / 2);
+    
+    sf::Clock clock;
+    while (this->window.isOpen()) {
+        while (this->window.pollEvent(this->event)) {
+            if (this->event.key.code == sf::Keyboard::Enter) {
+                return nameImageCard;
+            }
+        }
+
+        this->window.clear();
+        if(clock.getElapsedTime().asSeconds() < 2.0f) {
+            float t = clock.getElapsedTime().asSeconds();
+            float scaleX = std::abs(std::cos(t * 3)); // شبیه چرخش
+            card.setScale(scaleX / size, 
+            float(this->windowSize.y / 2) / (cardTexture.getSize().y));       
+        }
+        
+        this->window.draw(background);
+        this->window.draw(darkOverlay);
+        this->window.draw(card);
+        this->window.display();
+    }
+}

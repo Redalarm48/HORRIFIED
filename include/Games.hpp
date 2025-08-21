@@ -73,7 +73,7 @@ public:
 
     void drawPrekCard(const PerkCardType&);
     std::string drawMonsterCard(const MonsterCardType&);
-
+    std::string drawCard(const std::string&, const int);
 
 
 };
