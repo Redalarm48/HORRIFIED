@@ -425,6 +425,97 @@ void Games::setButtonAndImageAction(sf::RectangleShape& rect, sf::Texture& textu
 
 }
 
+void Games::run() {
+
+    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+    sf::Vector2f mousePositionf(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+    bool cursorOnLocation = false;
+
+    sf::Texture textureAction[6];
+    sf::Sprite spriteAction[6];
+    sf::RectangleShape recAction[6];
+    
+    if(player1.turn == Turn::HERO) {
+        
+        this->setButtonAndImageAction(recAction[0],textureAction[0],spriteAction[0],"move.png",1,0);
+        this->setButtonAndImageAction(recAction[1],textureAction[1],spriteAction[1],"guide.png",1,1);
+        this->setButtonAndImageAction(recAction[2],textureAction[2],spriteAction[2],"advance.png",1,2);
+        this->setButtonAndImageAction(recAction[3],textureAction[3],spriteAction[3],"defeat.png",2,0);
+        this->setButtonAndImageAction(recAction[4],textureAction[4],spriteAction[4],"pickup.png",2,1);
+        this->setButtonAndImageAction(recAction[5],textureAction[5],spriteAction[5],"specialAction.png",2,2);
+        
+        for(size_t i = 0; i < 6; ++i) {
+            this->window.draw(spriteAction[i]);
+            this->window.draw(recAction[i]);
+        }
+        
+        for(size_t i = 0; i < 6; ++i) {
+            
+            if(this->isMouseOver(recAction[i], this->window)) {
+                cursorOnLocation = true;
+                if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    switch (i)
+                    {
+                    case 0:
+                        this->moveGames(this->player1);
+                        // std::cout << player1.hero1.getLocationHero();
+                        // player1.hero2.move(this->villagerGames, NameLocation::CAMP, true);
+                        break;
+                    case 1:
+                    while (this->window.pollEvent(this->event))
+                    {
+                        std::cout << "h";
+                        /* code */
+                        
+                        for(const auto& [name, shape] : this->locations) {
+                            if(this->isMouseOver(shape, this->window)) {
+                                if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                                    this->clickedLocation(name, NameAction::GUIDE);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                        
+                    default:
+                        break;
+                    }
+                }
+            }
+
+        }
+    }        
+    
+    
+
+    for(const auto& [name, shape] : this->locations) {
+        if (this->isMouseOver(shape, this->window)) {
+            cursorOnLocation = true;
+            break;
+        }
+    }
+    this->window.setMouseCursor(cursorOnLocation ? this->handCursor : this->arrowCursor);
+    
+    while (this->window.pollEvent(this->event)) {
+            if(this->event.key.code == sf::Keyboard::Escape) {
+            this->menu(false);
+        }
+
+
+        for(const auto& [name, shape] : this->locations) {
+            if(this->isMouseOver(shape, this->window)) {
+                if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    this->clickedLocation(name);
+                    break;
+                }
+            }
+        }
+    }
+
+  
+}
+
+
 void Games::drawPrekCard(const PerkCardType& prekCardType) {
     std::string nameImagePerkCard = "../Horrified_Assets/Perk_Cards/";
     switch (prekCardType)
