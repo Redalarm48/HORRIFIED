@@ -945,3 +945,48 @@ std::string Games::getNameImage(const bool bol) {
     else
         return "../Horrified_Assets/Items/Coffins/Coffin.png";
 }
+
+void Games::cout(const std::string& message) {
+    sf::RectangleShape box;
+    box.setPosition(0,0);
+    box.setSize(sf::Vector2f(this->windowSize.x , 300));
+    box.setFillColor(sf::Color(180,40,40,200));
+    box.setOutlineColor(sf::Color::White);
+    box.setOutlineThickness(3);
+
+
+    sf::Texture screen;
+    screen.create(this->window.getSize().x, this->window.getSize().y);
+    screen.update(this->window);
+    sf::Sprite background(screen);
+
+    sf::Text text;
+    text.setFont(font);
+    text.setString(message);
+    text.setCharacterSize(50);
+    text.setFillColor(sf::Color::White);
+
+    sf::FloatRect textBounds = text.getLocalBounds();
+    text.setPosition(
+        box.getPosition().x + (box.getSize().x - textBounds.width) / 2.f,
+        box.getPosition().y + (box.getSize().y - textBounds.height) / 2.f - 10
+    );
+
+    sf::Clock clock;
+    while (clock.getElapsedTime().asSeconds() < 2.0f) {
+
+        while (this->window.pollEvent(this->event))
+        {           
+            if(this->event.type == sf::Event::MouseButtonPressed && this->event.mouseButton.button == sf::Mouse::Left) {
+                return;
+            }
+        }
+        window.clear();
+        window.draw(background);
+        window.draw(box);
+        window.draw(text);
+        window.display();
+
+    }
+    return;
+}
