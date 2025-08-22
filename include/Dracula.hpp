@@ -10,7 +10,8 @@ class Dracula : public Monster
 
         Dracula(Map& map);
 
-
+        void power(Villager&, Heroes&, Heroes&) override;
+        
 
 
 };
