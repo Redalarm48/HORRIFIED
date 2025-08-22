@@ -731,4 +731,28 @@ std::string Games::getNameImage(const NameItem& nameItem) {
     throw std::invalid_argument("not found image item");
 
 }
-    
+
+
+std::string Games::getNameImage(const NameVillagers& nameVillager) {
+    std::string nameImageVillager = "../Horrified_Assets/Villager/";
+    switch (nameVillager)
+    {
+    case NameVillagers::Dr_crunly:
+    return nameImageVillager + "DrCranly.png";
+    case NameVillagers::Dr_read:
+    return nameImageVillager + "DrReed.png";
+    case NameVillagers::Fritz:
+    return nameImageVillager + "Fritz.png";
+    case NameVillagers::Maleva:
+    return nameImageVillager + "Maleva.png";
+    case NameVillagers::Maria:
+    return nameImageVillager + "Maria.png";
+    case NameVillagers::Prof_pearson:
+    return nameImageVillager + "ProfPearson.png";
+    case NameVillagers::WilnureAndChick:
+    return nameImageVillager + "WilburAndChick.png";
+
+    default:
+        throw std::invalid_argument("not found image villager");
+    }
+}
