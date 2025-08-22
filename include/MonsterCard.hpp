@@ -23,6 +23,8 @@ enum MonsterCardType {
     Default
 };
 
+class Dracula;
+class InvisibleMan;
 
 class MonsterDeck {
 private:
@@ -36,15 +38,11 @@ private:
 
     void addCard(const int, const int, const int, const int, const MonsterCardType&, const std::vector<NameMonster>&);
     
-    public:
+public:
     MonsterDeck(const int, const int, const int, const MonsterCardType&, const std::vector<NameMonster>&);
     MonsterDeck();
     void shuffleDeck();
-    // MonsterDeck(const MonsterDeck&) = default;
-    // MonsterDeck(MonsterDeck&&) = default;
-    // MonsterDeck& operator=(const MonsterDeck&) = default;
-    // MonsterDeck& operator=(MonsterDeck&&) = default;
-    void formOfTheBat(Heroes&, Monster&);
+    void formOfTheBat(Heroes&, Monster&, Item&);
     void sunrise(Monster&);
     void thief(Monster&, Item&);
     void theDelivery(Villager&);
@@ -55,8 +53,9 @@ private:
     void egyptianExpert(Villager&);
     void theIchthyologist(Villager&);
     void initializeDeck();
-    void playDrawCard(const MonsterCardType&, Villager&, Heroes&, Monster&, Monster&, Item&);
-    MonsterDeck drawCard(Item&, Villager&, Heroes&, Monster&, Monster&);
+    void playDrawCard(const MonsterCardType&, MonsterDeck&, Villager&, Heroes&, Heroes&, Heroes&, Heroes&, Dracula&, InvisibleMan&, Item&, Games*);
+    MonsterDeck drawCard(Item&, Villager&, Heroes&, Heroes&, Heroes&, Heroes&, Dracula&, InvisibleMan&, Games*);
     bool isEmpty() const;
+    MonsterCardType getTypeItem() const;
 
 };
