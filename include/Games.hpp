@@ -83,6 +83,8 @@ public:
     std::string drawMonsterCard(const MonsterCardType&);
     std::string drawCard(const std::string&, const int);
 
+    std::string getNameImage(const NameItem&);
+
 
 };
 

@@ -650,3 +650,85 @@ std::string Games::drawCard(const std::string& nameImageCard, const int size) {
         this->window.display();
     }
 }
+
+
+std::string Games::getNameImage(const NameItem& nameItem) {
+    std::string nameItemImage = "../Horrified_Assets/Items/";
+    switch (nameItem) {
+        case NameItem::ANALYSIS:
+        return nameItemImage + "Blue/Analysis.png";
+        case NameItem::ANATOMY_TEXT:
+        return nameItemImage + "Blue/AnatomyText.png";
+        case NameItem::CENTRIFUGE:
+        return nameItemImage + "Blue/Centrifuge.png";
+        case NameItem::COSMIC_RAY_DIFFUSER:
+        return nameItemImage + "Blue/CosmicRayDiffuser.png";
+        case NameItem::EXPERIMENT:
+        return nameItemImage + "Blue/Experiments.png";
+        case NameItem::FOSSIL:
+        return nameItemImage + "Blue/Fossil.png";
+        case NameItem::KITE:
+        return nameItemImage + "Blue/Kite.png";
+        case NameItem::MONOCANE_MIXTURE:
+        return nameItemImage + "Blue/MonocaneMixture.png";
+        case NameItem::NEBULARLUM:
+        return nameItemImage + "Blue/Nebularium.png";
+        case NameItem::RESARCH:
+        return nameItemImage + "Blue/Research.png";
+        case NameItem::ROTENONE:
+        return nameItemImage + "Blue/Rotenone.png";
+        case NameItem::SEARCHLIGHT:
+        return nameItemImage + "Blue/Searchlight.png";
+        case NameItem::TELESCOPE:
+        return nameItemImage + "Blue/Telescope.png";
+        case NameItem::BEAR_TRAP:
+        return nameItemImage + "Red/BearTrap.png";
+        case NameItem::DART:
+        return nameItemImage + "Red/Dart.png";
+        case NameItem::FIRE_POKER:
+        return nameItemImage + "Red/FirePoker.png";
+        case NameItem::KNIFE:
+        return nameItemImage + "Red/Knife.png";
+        case NameItem::PISTOL:
+        return nameItemImage + "Red/Pistol.png";
+        case NameItem::PITCHFORK:
+        return nameItemImage + "Red/Pitchfork.png";
+        case NameItem::RAPIER:
+        return nameItemImage + "Red/Rapier.png";
+        case NameItem::RIFLE:
+        return nameItemImage + "Red/Rifle.png";
+        case NameItem::SHOVEL:
+        return nameItemImage + "Red/Shovel.png";
+        case NameItem::SILVER_CANE:
+        return nameItemImage + "Red/SilverCane.png";
+        case NameItem::SPEARGUN:
+        return nameItemImage + "Red/Speargun.png";
+        case NameItem::TORCH:
+        return nameItemImage + "Red/Torch.png";
+        case NameItem::CHARM:
+        return nameItemImage + "Yellow/Charm.png";
+        case NameItem::FLOWER:
+        return nameItemImage + "Yellow/Flower.png";
+        case NameItem::GARLIC:
+        return nameItemImage + "Yellow/Garlic.png";
+        case NameItem::MIRRORED_BOX:
+        return nameItemImage + "Yellow/Mirrored_Box.png";
+        case NameItem::SCROLL_OF_THOTH:
+        return nameItemImage + "Yellow/Scroll.png";
+        case NameItem::STAKE:
+        return nameItemImage + "Yellow/Stake.png";
+        case NameItem::TABLET:
+        return nameItemImage + "Yellow/Tablet.png";
+        case NameItem::TAROT_DECK:
+        return nameItemImage + "Yellow/Tarot.png";
+        case NameItem::VIOLIN:
+        return nameItemImage + "Yellow/Violin.png";
+        case NameItem::WOLFSBANE:
+        return nameItemImage + "Yellow/Wolfsbane.png";
+        default:
+            throw std::invalid_argument("not found image item");
+    }
+    throw std::invalid_argument("not found image item");
+
+}
+    
