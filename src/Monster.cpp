@@ -32,6 +32,15 @@ void Monster::setMonsterPosition(const NameLocation& newNameLocaitonMonster) {
     }
 }
 
+void Monster::removeMonster() {
+    auto chek = std::find_if(locationMonster.map.begin(), locationMonster.map.end(), [this](const auto& p) {
+        return p.first == this->nameLocationMonster;
+    });
+    if(chek == locationMonster.map.end()) {
+        throw std::invalid_argument("");
+    }
+    chek->second.removeMonsters(nameMonster);
+}
 
 NameMonster Monster::getNameM() const {
 

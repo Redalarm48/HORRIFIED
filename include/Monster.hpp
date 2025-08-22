@@ -43,10 +43,9 @@ class Monster
 
         DiceResult rollDice();
 
-        bool cheknumberDistance(const NameLocation&);
+        void removeMonster();
 
-        void Defeated();
-        NameLocation getNameLocationMonster() const;
+        bool cheknumberDistance(const NameLocation&);
 
 };
 
