@@ -2,6 +2,7 @@
 
 enum class NameHeroes {
     MAYOR, ARCHAEOLOGIST,
+    COURIER, SCIENTIST,
     Default
 };
 
