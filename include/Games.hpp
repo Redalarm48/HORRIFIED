@@ -85,6 +85,7 @@ public:
 
     std::string getNameImage(const NameItem&);
     std::string getNameImage(const NameVillagers&);
+    std::string getNameImage(const NameHeroes&);
 
 
 };

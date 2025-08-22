@@ -756,3 +756,23 @@ std::string Games::getNameImage(const NameVillagers& nameVillager) {
         throw std::invalid_argument("not found image villager");
     }
 }
+
+
+std::string Games::getNameImage(const NameHeroes& nameHero) {
+    std::string nameImageHeroes = "../Horrified_Assets/Heros/";
+    switch (nameHero)
+    {
+    case NameHeroes::ARCHAEOLOGIST:
+        return nameImageHeroes + "Archaeologist.png";
+    case NameHeroes::MAYOR:
+        return nameImageHeroes + "Mayor.png";    
+    case NameHeroes::SCIENTIST:
+        return nameImageHeroes + "Scientist.png";
+    case NameHeroes::COURIER:
+        return nameImageHeroes + "Courier.png";
+        
+    default:
+        throw std::invalid_argument("not found Name Heroes or Defualt");
+    }
+
+}
