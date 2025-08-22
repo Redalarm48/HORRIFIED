@@ -2,25 +2,10 @@
 #include <algorithm>
 #include <random>
 #include <stdexcept>
+#include "Dracula.hpp"
+#include "InvisibleMan.hpp"
 
-// MonsterCard::MonsterCard(MonsterCardType type, int diceCount, const std::vector<Monster*>& strikeOrder)
-//     : type(type), diceCount(diceCount), strikeOrder(strikeOrder) {}
 
-
-// int MonsterCard::getDiceCount() const {
-//     return diceCount;
-// }
-
-// const std::vector<Monster*>& MonsterCard::getStrikeOrder() const {
-//     return strikeOrder;
-// }
-
-// MonsterCardType MonsterCard::getType() const
-// {
-
-//     return this->type;
-
-// };
 MonsterDeck::MonsterDeck(){
     this->initializeDeck();
 }
@@ -28,10 +13,6 @@ MonsterDeck::MonsterDeck(){
 MonsterDeck::MonsterDeck(const int ItemCount, const int diceCount, const int moveCount, const MonsterCardType& monsterType, const std::vector<NameMonster>& striceOrder) : ItemCount(ItemCount), diceCount(diceCount), moveCount(moveCount), monsterType(monsterType), striceOrder(striceOrder) {}
 
 
-// MonsterDeck::MonsterDeck(Monster* dracula, Monster* invisibleMan, Monster* frenzied)
-//     : dracula(dracula), invisibleMan(invisibleMan), frenzied(frenzied) {
-//     initializeDeck();
-// }
 
 void MonsterDeck::addCard(const int count, const int ItemCount, const int diceCount, const int moveCount, const MonsterCardType& monsterType, const std::vector<NameMonster>& striceOrder){
     for (int i = 0; i < count; ++i) {
@@ -62,7 +43,13 @@ void MonsterDeck::initializeDeck() {
     shuffleDeck();
 }
 
-void MonsterDeck::playDrawCard(const MonsterCardType& monsterType, Villager& villager, Heroes& hero, Monster& dracula, Monster& invisibleMan, Item& item) {
+void MonsterDeck::playDrawCard(const MonsterCardType& monsterType,MonsterDeck& card, Villager& villager, Heroes& hero, Heroes& hero1, Heroes& hero2, Heroes& hero3, Dracula& dracula, InvisibleMan& invsibleMan, Item& item, Games* game) {
+    for(size_t i = 0; i < card.ItemCount; ++i) {
+        item.addItemInGame();
+    }
+    bool chek;
+    
+    
     switch (monsterType)
     {
     case MonsterCardType::EgyptianExpert:
@@ -72,7 +59,7 @@ void MonsterDeck::playDrawCard(const MonsterCardType& monsterType, Villager& vil
         this->formerEmployer(villager);
         break;    
     case MonsterCardType::FormOfTheBat:
-        this->formOfTheBat(hero, dracula);
+        this->formOfTheBat(hero, dracula, item);
         break;    
     case MonsterCardType::FortuneTeller:
         this->fortuneTeller(villager);
@@ -98,15 +85,50 @@ void MonsterDeck::playDrawCard(const MonsterCardType& monsterType, Villager& vil
         this->theInnocent(villager);
         break;    
     case MonsterCardType::Thief:
-        this->thief(invisibleMan, item);
+        this->thief(invsibleMan, item);
         break;    
     default:
         throw std::invalid_argument("not fount monster card type");
         break;
     }
+    Monster* monster;
+    for(auto& mon: card.striceOrder) {
+        switch (mon)
+        {
+        case NameMonster::DRACULA:
+            monster = &dracula;
+            break;
+        case NameMonster::INVISIBLE_MAN:
+            monster = &invsibleMan;
+            break;
+        case NameMonster::FRENZI:
+            switch (monster->getFrenzyOrder())
+            {
+            case NameMonster::DRACULA:
+                monster = &dracula;
+                break;
+            case NameMonster::INVISIBLE_MAN:
+                monster = &invsibleMan;
+                break;
+            }
+        default:
+            break;
+        }
+        for (size_t i = 0; i < card.moveCount; i++)
+        {
+            chek = monster->moveMonster(villager, hero, hero1, hero2, hero3);
+        }
+        if(chek) {
+            for (size_t i = 0; i < card.diceCount; i++)
+            {
+                monster->strike(0, villager, hero, hero1, hero2, hero3, item, game);
+            }
+        }
+            
+    }
 }
 
-MonsterDeck MonsterDeck::drawCard(Item& item, Villager& villager, Heroes& hero, Monster& dracula, Monster& invisibleMan ) {
+MonsterDeck MonsterDeck::drawCard(Item& item, Villager& villager, Heroes& hero, Heroes& hero1, Heroes& hero2, Heroes& hero3, Dracula& dracula, InvisibleMan& invisbleMan, Games* game) {
     if (cards.empty()) {
         throw std::runtime_error("No more Monster cards!");
     }
@@ -118,7 +140,7 @@ MonsterDeck MonsterDeck::drawCard(Item& item, Villager& villager, Heroes& hero, 
         item.addItemInGame();
     }
 
-    this->playDrawCard(card.monsterType, villager, hero, dracula, invisibleMan, item);
+    this->playDrawCard(card.monsterType, card, villager, hero, hero1, hero2, hero3, dracula, invisbleMan, item, game);
 
     return card;
 }
@@ -127,8 +149,12 @@ bool MonsterDeck::isEmpty() const {
     return cards.empty();
 }
 
-void MonsterDeck::formOfTheBat(Heroes& heroNow, Monster& draacula) {
+void MonsterDeck::formOfTheBat(Heroes& heroNow, Monster& draacula, Item& item) {
+    for(int i = 0; i < 2; i++) {
+        item.addItemInGame();
+    }
     draacula.setMonsterPosition(heroNow.getLocationHero());
+    
 }
 
 void MonsterDeck::sunrise(Monster& dracula) {
@@ -168,6 +194,9 @@ void MonsterDeck::theIchthyologist(Villager& drRead) {
     drRead.initializeVillagers(NameVillagers::Dr_read);
 }
 
+MonsterCardType MonsterDeck::getTypeItem() const {
+    return this->monsterType;
+}
 
 std::vector<MonsterDeck> MonsterDeck::cards;
 std::vector<MonsterDeck> MonsterDeck::inGameCards;

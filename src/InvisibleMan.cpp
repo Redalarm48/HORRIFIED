@@ -2,67 +2,54 @@
 #include <climits>
 
 
-InvisibleMan::InvisibleMan(Map& map) : Monster("InvisibleMan" , 6 , map){}
-
-void InvisibleMan::usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers)
-{
-
-    std::cout << "InvisibleMan cause chaos \n";
-    move(heroes , villagers);
-}
-
-void InvisibleMan::move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) {
-    for(int steps = 0 ; steps < 2 ; ++steps)
-    {    
-        std::string currentPos = getMap().getPlayerPosition("InvisibleMan");
-        std::string closestTarget;
-        int minDist = INT_MAX;
+InvisibleMan::InvisibleMan(Map& map) : Monster(NameMonster::INVISIBLE_MAN, map, NameLocation::GRAVEYARD){}
 
 
-        // بررسی روستایی‌ها
-        for (const auto& villager : villagers) {
-            std::string targetPos = getMap().getPlayerPosition(villager.first);
-            int dist = getMap().findShortestPath(currentPos, targetPos).size();
-            if (dist < minDist && dist > 1) {
-                minDist = dist;
-                closestTarget = targetPos;
+bool InvisibleMan::moveMonster(Villager& villager, Heroes& hero1, Heroes& hero2, Heroes& hero3, Heroes& hero4, bool w) {
+   
+    std::vector<std::pair<NameLocation, int>> targets;
+   
+    for(auto& v : villager.getVillagers()) {
+        if(v.second.getLocationVillager() == getNameLocationMonster()) {
+            if(w && chek) {
+                v.second.removeVillager(v.second.getNameVillager());
+                this->chek = false;
             }
-        }
+            return true;
+        } 
+            targets.emplace_back(v.second.getLocationVillager(), 0);
+    }
 
-        if (!closestTarget.empty()) {
-            auto path = getMap().findShortestPath(currentPos, closestTarget);
-            if (path.size() >= 2) {
-                std::string nextStep = path;
-                getMap().setPlayerPosition("InvisibleMan", nextStep);
-                std::cout << "InvisibleMan" << " moved toward " << closestTarget << " to " << nextStep << "\n";
+    if(villager.getVillagers().empty()) {
+        std::cerr << "not found viilager";
+        return false;
+    }
+
+    int minDist = INT_MAX;
+
+    for(auto& [name, number] : targets) {
+        try {
+            number = getLocationMonster().findShortestPath<int>(getNameLocationMonster(), name);
+            if(number < minDist) {
+                minDist = number;
             }
+        } catch(...) {
         }
     }
+    for(auto& [name, number] : targets) {
+        if(number == minDist) {
+            this->setMonsterPosition(getLocationMonster().findShortestPath<NameLocation>(getNameLocationMonster(), name));
+            if(this->getNameLocationMonster() == name) {
+                this->chek = true;
+                return true;
+            }
+            return false;
+        }
+    }
+
+    throw std::invalid_argument("error move Invisible man");
 }
 
-
-void InvisibleMan::move() {
-
-    auto current = getLocationMonsterPtr();
-    if(!current) {
-        std::cout << "Heo location unknwon";
-        return;
-    }
-    // std::string n = "h";    
-
-    std::cout << "Current location: " << current->getName() << "\nNeighbors: \n";
-    
-    auto neighbors = current->getNeighbors();
-    for(size_t i = 0; i < neighbors.size(); ++i) {
-        std::cout << i+1 << "." << neighbors[i]->getName() << "\n";
-    }
-
-    std::cout << "choose a location to move to (number): ";
-    std::string newLocationHero;
-    std::cin >> newLocationHero;
-
-    // Location* newLocation = neighbors[newLocationHero - 1];
-    getMap().setPlayerPosition("Dracula" , newLocationHero);
-    std::cout << "Dracula" << " moved to " << newLocationHero << ".\n";
-
+void InvisibleMan::power(Villager& villager, Heroes& hero1, Heroes& hero2) {
+    this->moveMonster(villager, hero1, hero1, hero1, hero1, true);
 }
