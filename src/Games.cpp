@@ -529,6 +529,107 @@ void Games::setImageMVHI(sf::Texture& texture, sf::Sprite& sprite, const std::st
 }
 
 
+void Games::clickedLocation(const NameLocation& nameLocation, const NameAction& nameAction) {
+    auto chek = std::find_if(mapGames.map.begin(), mapGames.map.end(), [&nameLocation](const auto& p) {
+        return p.first == nameLocation;
+    });
+    if(chek == mapGames.map.end()) {
+        throw std::invalid_argument("not fount location map");
+    }
+
+    
+    auto getItem = chek->second.getNameItems();
+    auto getvillager = chek->second.getNameVillagers();
+    auto getmonster = chek->second.getNameMonsters();
+    auto getHero = chek->second.getNameHeroes();
+        
+    
+    sf::Texture TextureMVHI[4];
+    sf::Sprite SpriteMVHI[4];
+    this->setImageMVHI(TextureMVHI[0], SpriteMVHI[0], "item.png", 1);
+    this->setImageMVHI(TextureMVHI[1], SpriteMVHI[1], "villager.png", 0);
+    this->setImageMVHI(TextureMVHI[2], SpriteMVHI[2], "monster.png", -1);
+    this->setImageMVHI(TextureMVHI[3], SpriteMVHI[3], "hero.png", -2);
+    
+    
+    sf::Texture textureBackground;
+    if(!textureBackground.loadFromFile("../Horrified_Assets/backgroundClick.png")) {
+        throw std::invalid_argument("not found background click");
+    }
+    sf::Sprite spriteBackground(textureBackground);
+    spriteBackground.setPosition(270, 0);
+    spriteBackground.setScale(
+        float(((this->windowSize.x)) / (textureBackground.getSize().x)),
+        float(this->windowSize.y / textureBackground.getSize().y)
+    );
+    
+    std::vector<std::pair<NameItem,sf::RectangleShape>> itemShape;
+    std::vector<sf::Sprite> itemSprit;
+    std::vector<sf::Texture> itemTexture;
+    
+    
+    std::vector<std::pair<NameVillagers,sf::RectangleShape>> villagerShape;
+    std::vector<sf::Sprite> villagerSprit;
+    std::vector<sf::Texture> villagerTexture;
+    
+    std::vector<std::pair<NameMonster,sf::RectangleShape>> monsterShape;
+    std::vector<sf::Sprite> monsterSprit;
+    std::vector<sf::Texture> monsterTexture;
+    
+    std::vector<std::pair<NameHeroes,sf::RectangleShape>> heroShape;
+    std::vector<sf::Sprite> heroSprit;
+    std::vector<sf::Texture> heroTexture;
+    
+    this->setButtonClickedLocation(itemShape, getItem, itemSprit,itemTexture,-100, 1);
+    
+    this->setButtonClickedLocation(villagerShape, getvillager, villagerSprit,villagerTexture,150);
+    
+    this->setButtonClickedLocation(monsterShape, getmonster, monsterSprit,monsterTexture,150, -1);
+    
+    this->setButtonClickedLocation(heroShape, getHero, heroSprit, heroTexture,0, -2);
+
+    std::vector<NameItem> nameItems;
+        
+    while (this->event.key.code != sf::Keyboard::Escape) 
+    {
+        while (window.pollEvent(this->event)) { 
+
+        }
+        window.clear();
+        window.draw(spriteBackground);
+
+        for(size_t i = 0; i < 4; i++) {
+            this->window.draw(SpriteMVHI[i]);
+        }
+
+        for(const auto& i : itemSprit) {
+            window.draw(i);
+        }
+        for(const auto& [name, shape] : itemShape) {
+            window.draw(shape);
+        }
+        for(const auto& i : villagerSprit) {
+            window.draw(i);
+        }
+        for(const auto& [name, shape] : villagerShape) {
+            window.draw(shape);
+        }
+        for(const auto& i : monsterSprit) {
+            window.draw(i);
+        }
+        for(const auto& [name, shape] : monsterShape) {
+            window.draw(shape);
+        }
+        for(const auto& i : heroSprit) {
+            window.draw(i);
+        }
+        for(const auto& [name, shape] : heroShape) {
+            window.draw(shape);
+        }
+        this->window.display();
+    }
+}
+
 template<typename T>
 void Games::setButtonClickedLocation(std::vector<std::pair<T, sf::RectangleShape>>& part, const std::vector<T>& name, std::vector<sf::Sprite>& sprit, std::vector<sf::Texture>& texture,const int sizeimage, const int sizeHeight) {
     float x = 270 ;
