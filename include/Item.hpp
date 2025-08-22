@@ -5,11 +5,14 @@
 #include "Hero.hpp"
 #include "Location.hpp"
 #include "Map.hpp"
+#include <list>
 
 class Map;
 
 enum class TypeOwnership {
-    ARCHAEOLOGIST, MAYOR, NO_OWNERSHIP
+    ARCHAEOLOGIST, MAYOR, 
+    COURIER, SCIENTIST,
+    NO_OWNERSHIP
 };
 
 enum class TypeItem { 
@@ -50,7 +53,7 @@ private :
     
 public :
     
-    static std::vector<std::pair<NameItem, Item>> itemsInGame;
+    static std::list<std::pair<NameItem, Item>> itemsInGame;
     
     Item(TypeItem, Map&, NameItem, NameLocation, int, TypeOwnership = TypeOwnership::NO_OWNERSHIP);
     Item(Map&);
@@ -59,10 +62,14 @@ public :
     Item& operator=(const Item&) = default;
     Item& operator=(Item&&) = default;
 
+    int getPower() const;
     NameLocation getLocationItem() const;
     NameItem getNameItem() const;
     TypeItem getTypeItem()const;
     TypeOwnership getTypeOwnsership() const;
+    std::list<std::pair<NameItem, Item>> getItemsInGame() const;
+
+
     bool isCollected()const;
     void collectTrue();
     NameItem addItemInGame();

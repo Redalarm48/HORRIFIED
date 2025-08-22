@@ -58,7 +58,9 @@ void Item::removeItemInGame(const NameItem& nameItem) {
     });
     if(chek != itemsInGame.end() && chek2 != this->locationItem.map.end()) {
         chek2->second.removeItem(nameItem);
+        
     }
+    this->itemsInGame.erase(chek);
 }
 
 
@@ -266,6 +268,14 @@ void Item::removeAllItemLocation(const NameLocation& nameLocation) {
     }
 }
 
-std::vector<std::pair<NameItem, Item>> Item::itemsInGame;
+std::list<std::pair<NameItem, Item>> Item::getItemsInGame() const {
+    return itemsInGame;
+}
+
+int Item::getPower() const {
+    return this->power;
+}
+
+std::list<std::pair<NameItem, Item>> Item::itemsInGame;
 std::vector<ItemList> ItemList::itemlist;
 ItemList Item::itemList;
