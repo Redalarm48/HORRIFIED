@@ -1,6 +1,14 @@
 #include "Monster.hpp"
-
-Monster::Monster(const NameMonster nameMonster , int frenzyorder , Map& locationmonster) : nameMonster(nameMonster) , FrenzyOrder(frenzyorder) , Dead(false) , locationMonster(locationmonster){}
+#include "Games.hpp"
+Monster::Monster(const NameMonster& nameMonster, Map& locationmonster, const NameLocation& newNameLocationMonster) : nameMonster(nameMonster), locationMonster(locationmonster){
+     auto chek = std::find_if(locationmonster.map.begin(), locationmonster.map.end(), [&newNameLocationMonster](const auto& p) {
+        return p.first == newNameLocationMonster;
+        });
+        if(chek != locationMonster.map.end()) {
+            chek->second.addMonsters(nameMonster);
+            nameLocationMonster = newNameLocationMonster;
+        }
+}
 
 Monster::~Monster(){}
 

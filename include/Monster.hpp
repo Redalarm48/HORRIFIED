@@ -1,25 +1,33 @@
-#ifndef MONSTER_HPP
-#define MONSTER_HPP
+#pragma once
+
 #include "NameEnum.hpp"
 #include "Map.hpp"
+// #include "Games.hpp"
+#include "Hero.hpp"
 #include <iostream>
 #include <vector>
+#include <climits>
 
 class Map;
+class Villager;
+class Heroes;
+class Item;
+class Games;
 
 class Monster
 {
     private :
 
+        static int terrorLevel;
         const NameMonster nameMonster;
         NameLocation nameLocationMonster;
-        int FrenzyOrder;
+        static NameMonster FrenzyOrder;
         Map& locationMonster;
-        bool Dead;
+
 
     public :
 
-        Monster(const NameMonster, int, Map&);
+        Monster(const NameMonster&, Map&, const NameLocation&);
 
         virtual ~Monster();
 
