@@ -49,3 +49,7 @@ bool InvisibleMan::moveMonster(Villager& villager, Heroes& hero1, Heroes& hero2,
 
     throw std::invalid_argument("error move Invisible man");
 }
+
+void InvisibleMan::power(Villager& villager, Heroes& hero1, Heroes& hero2) {
+    this->moveMonster(villager, hero1, hero1, hero1, hero1, true);
+}
