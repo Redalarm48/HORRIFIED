@@ -790,3 +790,11 @@ std::string Games::getNameImage(const NameMonster& nameMonster) {
         throw std::invalid_argument("not found Name Monster or Default");
     }
 }
+
+
+std::string Games::getNameImage(const bool bol) {
+    if(bol)
+        return "../Horrified_Assets/Items/Coffins/SmashedCoffin.png";
+    else
+        return "../Horrified_Assets/Items/Coffins/Coffin.png";
+}
