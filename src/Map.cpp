@@ -99,7 +99,7 @@ void Map::addLoation(const NameLocation& nameLocation) {
     }
 
     else {
-        throw std::invalid_argument("");
+        throw std::invalid_argument("not found name location ");
     }
 }
 
@@ -175,27 +175,12 @@ void Map::negiborLocation() {
 }
 
 std::vector<NameHeroes> Map::getHeroesLocation(const NameLocation& nameLocation) const {
-    // std::vector<std::string> playersAtLocation;
-
     auto chek = std::find_if(map.begin(), map.end(), [&nameLocation](const auto& p) {
         return p.first == nameLocation;
     });
 
     if(chek != map.end()) {
-
-        
-        // for (const auto& pair : playerPositions) {
-        //     const std::string& playerName = pair.first;
-        //     auto loc = pair.second;
-            
-        //     if (loc && loc->getName() == nameLocation) {
-        //         playersAtLocation.push_back(playerName);
-        //     }
-        // }
-        
-        return chek->second.getNameHeroes();
-
-        // return playersAtLocation;
+                return chek->second.getNameHeroes();
     }
 }
 std::vector<NameMonster> Map::getMonsterLocation(const NameLocation& nameLocation) const {
@@ -342,7 +327,7 @@ NameLocation Map::chengNameLocationTheString(const std::string& nameLocation) {
     if (it != nameMap.end())
         return it->second;
     else
-        throw std::invalid_argument("");
+        throw std::invalid_argument("not found name locaiton");
 }
 
 std::string Map::chengNameLocationTheString(const NameLocation& nameLocaiton) {
@@ -394,9 +379,39 @@ std::vector<NameLocation> Map::getNeighbors(const NameLocation& nameLocation) co
         return result;
     }
     else {
-        throw std::invalid_argument("");
+        throw std::invalid_argument("not found neighbors");
     }
 } 
+
+bool Map::getInvisibleItemCollecte() const {
+    for(const auto& [name, map] : map) {
+        if( name == NameLocation::INN||
+            name == NameLocation::BARN||
+            name == NameLocation::INSTITUTE||
+            name == NameLocation::LABORATORY||
+            name == NameLocation::MANSION ) {
+                if(!map.getInvisibleItemCollecte()) {
+                    return false;
+                }
+        }
+    }
+    return true;
+}
+
+
+bool Map::getcoffinDestroyed() const {
+    for(const auto& [name, map] : map) {
+        if( name == NameLocation::CAVE||
+            name == NameLocation::CRYPT||
+            name == NameLocation::DUNGEON||
+            name == NameLocation::GRAVEYARD ) {
+                if(!map.getCoffindestroyed()) {
+                    return false;
+                }
+        }
+    }
+    return true;
+}
 
 template int Map::findShortestPath<int>(const NameLocation&, const NameLocation&);
 template NameLocation Map::findShortestPath<NameLocation>(const NameLocation&, const NameLocation&);

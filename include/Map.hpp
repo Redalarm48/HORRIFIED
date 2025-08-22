@@ -32,6 +32,9 @@ public:
 
     static Map& getInstance();
 
+    bool getcoffinDestroyed() const;
+    bool getInvisibleItemCollecte() const;
+
     std::vector<NameHeroes> getHeroesLocation(const NameLocation&) const;
     std::vector<NameMonster> getMonsterLocation(const NameLocation&) const;
     std::vector<NameItem> getItemsLocation(const NameLocation&) const;

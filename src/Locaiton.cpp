@@ -33,7 +33,10 @@ void Location::setInvivsibleItemCollecte() {
         this->nameLocation == NameLocation::LABORATORY||
         this->nameLocation == NameLocation::MANSION
     ) {
-        this->invisibleItemCollecte == true;
+        this->invisibleItemCollecte = true;
+    }
+    else {
+        throw std::invalid_argument("no location invisible man");
     }
 }
 
@@ -44,7 +47,10 @@ void Location::setCoffinDestroyed() {
         this->nameLocation == NameLocation::DUNGEON||
         this->nameLocation == NameLocation::GRAVEYARD
     ) {
-        this->coffinDestroyed == true;
+        this->coffinDestroyed = true;
+    }
+    else {
+        throw std::invalid_argument("no locaiton dracula");
     }
 }
 
@@ -56,7 +62,7 @@ bool Location::getInvisibleItemCollecte() const {
         this->nameLocation == NameLocation::LABORATORY||
         this->nameLocation == NameLocation::MANSION
     ) {
-    return this->invisibleItemCollecte;; 
+    return this->invisibleItemCollecte == true; 
     }
     else {
         throw std::invalid_argument("not fond name invisible item collecte ");
