@@ -34,7 +34,8 @@ public:
     PerkDeck();
     PerkDeck(const PerkCardType& type) : perkType(type) {}
 
-    PerkCardType getPerkType()const;
+    PerkCardType getPerkType() const;
+
     void initializeDeck();
     void addCard(const PerkCardType&, const int&);
     void shuffleDeck();
