@@ -373,24 +373,6 @@ void Games::startGame() {
         throw std::invalid_argument("not found image");
     }
     
-    this->villagerGames.initializeVillagers(NameVillagers::Maleva);
-    this->villagerGames.setVillagersPosition(NameVillagers::Maleva, NameLocation::CAMP);
-    this->villagerGames.initializeVillagers(NameVillagers::Dr_read);
-    this->villagerGames.setVillagersPosition(NameVillagers::Dr_read, NameLocation::HOSPITAL);
-    this->villagerGames.initializeVillagers(NameVillagers::Dr_crunly);
-
-    auto item = this->itemGames.addItemInGame();
-    this->itemGames.setItemsPosition(item, NameLocation::CAMP);
-    item = this->itemGames.addItemInGame();
-    this->itemGames.setItemsPosition(item, NameLocation::CAMP);
-    item = this->itemGames.addItemInGame();
-    this->itemGames.setItemsPosition(item, NameLocation::CAMP);
-    item = this->itemGames.addItemInGame();
-    this->itemGames.setItemsPosition(item, NameLocation::CAMP);
-    item = this->itemGames.addItemInGame();
-    this->itemGames.setItemsPosition(item, NameLocation::CAMP);
-    item = this->itemGames.addItemInGame();
-
     sf::Sprite backgroundSpriteMap(backgroundTextureMap);
     backgroundSpriteMap.setScale(
         float(this->windowSize.x-400) / (backgroundTextureMap.getSize().x),
@@ -398,7 +380,21 @@ void Games::startGame() {
     );
     while (this->window.isOpen()) {
         this->window.clear();
-        this->window.draw(backgroundSpriteMap);        
+        this->window.draw(backgroundSpriteMap);
+        
+        if(player1.hero1->canTakeAction() || player1.hero2->canTakeAction() || player1.turn == Turn::MONSTER) {
+        this->run(player1);
+        } 
+        else if(player2.hero1->canTakeAction() || player2.hero2->canTakeAction() || player2.turn == Turn::MONSTER) {
+            this->run(player2);
+        }
+        else {
+
+            this->player1.hero1->resetActions();
+            this->player1.hero2->resetActions();
+            this->player2.hero1->resetActions();
+            this->player2.hero2->resetActions();
+        }
         this->window.display();
     }
 }
@@ -425,7 +421,7 @@ void Games::setButtonAndImageAction(sf::RectangleShape& rect, sf::Texture& textu
 
 }
 
-void Games::run() {
+void Games::run(Players& player) {
 
     sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
     sf::Vector2f mousePositionf(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
@@ -435,19 +431,20 @@ void Games::run() {
     sf::Sprite spriteAction[6];
     sf::RectangleShape recAction[6];
     
-    if(player1.turn == Turn::HERO) {
+    if(player.turn == Turn::HERO) {
         
         this->setButtonAndImageAction(recAction[0],textureAction[0],spriteAction[0],"move.png",1,0);
         this->setButtonAndImageAction(recAction[1],textureAction[1],spriteAction[1],"guide.png",1,1);
         this->setButtonAndImageAction(recAction[2],textureAction[2],spriteAction[2],"advance.png",1,2);
-        this->setButtonAndImageAction(recAction[3],textureAction[3],spriteAction[3],"defeat.png",2,0);
-        this->setButtonAndImageAction(recAction[4],textureAction[4],spriteAction[4],"pickup.png",2,1);
+        this->setButtonAndImageAction(recAction[3],textureAction[3],spriteAction[3],"defeat.png",2,1);
+        this->setButtonAndImageAction(recAction[4],textureAction[4],spriteAction[4],"pickup.png",2,0);
         this->setButtonAndImageAction(recAction[5],textureAction[5],spriteAction[5],"specialAction.png",2,2);
         
         for(size_t i = 0; i < 6; ++i) {
             this->window.draw(spriteAction[i]);
             this->window.draw(recAction[i]);
         }
+
         
         for(size_t i = 0; i < 6; ++i) {
             
@@ -456,35 +453,37 @@ void Games::run() {
                 if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                     switch (i)
                     {
-                    case 0:
-                        this->moveGames(this->player1);
-                        // std::cout << player1.hero1.getLocationHero();
-                        // player1.hero2.move(this->villagerGames, NameLocation::CAMP, true);
-                        break;
-                    case 1:
-                    while (this->window.pollEvent(this->event))
-                    {
-                        std::cout << "h";
-                        /* code */
-                        
-                        for(const auto& [name, shape] : this->locations) {
-                            if(this->isMouseOver(shape, this->window)) {
-                                if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                                    this->clickedLocation(name, NameAction::GUIDE);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                        
-                    default:
+                        case 0:
+                            this->moveGames(player);
+                            break;
+                        case 1:
+                            this->guideGames();
+                            break;
+                        case 2:
+                            this->advanceGames(player);
+                            break;
+                        case 3:
+                            this->defeatGames(player);
+                            break;
+                        case 4:
+                            this->clickedLocation(NameLocation::CAMP, NameAction::PICKUP);
+                            break;
+                        default:
                         break;
                     }
                 }
             }
-
         }
-    }        
+        if(!player.hero1->canTakeAction() && !player.hero2->canTakeAction()) {
+            player.turn = Turn::MONSTER; // نوبت مانستر
+            return; // برگرد به حلقه اصلی
+        }
+
+    }
+    else if(player.turn == Turn::MONSTER) {
+        this->drawMonsterCard(MonsterCardType::FormOfTheBat);
+        player.turn = Turn::HERO;
+    }
     
     
 
@@ -511,6 +510,7 @@ void Games::run() {
             }
         }
     }
+
 
   
 }

@@ -22,10 +22,14 @@ struct Players
     Turn turn = Turn::HERO;
     Player player;
     std::string namePlayer;
-    Heroes hero1;
-    Heroes hero2;
-    Players(Map& map) : hero1{0, NameHeroes::ARCHAEOLOGIST, map, NameLocation::CAMP}, hero2{0, NameHeroes::MAYOR, map, NameLocation::CAVE} {
-    } 
+    std::shared_ptr<Heroes> hero1;
+    std::shared_ptr<Heroes> hero2;
+    Monster monster;
+    Players(Map& map) : hero1(std::make_shared<Archaeologist>(map)),
+        hero2(std::make_shared<Mayor>(map)),
+        monster(NameMonster::INVISIBLE_MAN, 3, map)
+        {}
+
 };
 
 class Games {
@@ -71,7 +75,7 @@ public:
     void startGame();
     void addLocations();
     void setButtonAndImageAction(sf::RectangleShape&,sf::Texture&, sf::Sprite&, const std::string&, const int, const int);
-    void run();
+    void run(Players&);
 
 
     void drawPrekCard(const PerkCardType&);
