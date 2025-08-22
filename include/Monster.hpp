@@ -8,6 +8,8 @@
 #include <vector>
 #include <climits>
 
+enum class DiceResult { None, Power, Attack };
+
 class Map;
 class Villager;
 class Heroes;
@@ -16,7 +18,7 @@ class Games;
 
 class Monster
 {
-    private :
+    private:
 
         static int terrorLevel;
         const NameMonster nameMonster;
@@ -38,6 +40,8 @@ class Monster
         Map& getLocationMonster() const;
 
         void setMonsterPosition(const NameLocation&);
+
+        DiceResult rollDice();
 
         bool cheknumberDistance(const NameLocation&);
 

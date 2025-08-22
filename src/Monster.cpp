@@ -42,6 +42,13 @@ Map& Monster::getLocationMonster() const {
     return this->locationMonster;
 }
 
+DiceResult Monster::rollDice() {
+    int r = rand() % 6;
+    if(r < 2) return DiceResult::None;
+    else if(r < 4) return DiceResult::Attack;
+    else return DiceResult::Power;
+}
+
 NameMonster Monster::getFrenzyOrder() const {
 
     return FrenzyOrder;
