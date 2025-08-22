@@ -76,7 +76,10 @@ public:
     void addLocations();
     void setButtonAndImageAction(sf::RectangleShape&,sf::Texture&, sf::Sprite&, const std::string&, const int, const int);
     void run(Players&);
-    void Games::setImageMVHI(sf::Texture&, sf::Sprite&, const std::string&, const int) {
+    void Games::setImageMVHI(sf::Texture&, sf::Sprite&, const std::string&, const int);
+
+    template<typename T>
+    void setButtonClickedLocation(std::vector<std::pair<T, sf::RectangleShape>>&, const std::vector<T>&, std::vector<sf::Sprite>&, std::vector<sf::Texture>&, const int, const int = 0);
 
 
     void drawPrekCard(const PerkCardType&);

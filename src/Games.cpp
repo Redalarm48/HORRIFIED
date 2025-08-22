@@ -529,6 +529,52 @@ void Games::setImageMVHI(sf::Texture& texture, sf::Sprite& sprite, const std::st
 }
 
 
+template<typename T>
+void Games::setButtonClickedLocation(std::vector<std::pair<T, sf::RectangleShape>>& part, const std::vector<T>& name, std::vector<sf::Sprite>& sprit, std::vector<sf::Texture>& texture,const int sizeimage, const int sizeHeight) {
+    float x = 270 ;
+    float y = this->windowSize.y / 2 + (sizeHeight * 300);
+    float width = this->windowSize.x - 270.f;
+    float height = this->windowSize.y / 4.f  ;
+    float partWidth = width / name.size();
+    int i = 0;
+
+    sprit.clear();
+    texture.clear();
+    texture.reserve(name.size());
+
+    
+    for(const auto& vec : name) {
+        sf::Texture tex;
+        if (!tex.loadFromFile(this->getNameImage(vec))) {
+            throw std::invalid_argument("not found image: ");
+        }
+        
+        texture.emplace_back(tex);
+
+        sf::Texture& finalTexture = texture.back();
+
+        sf::Sprite sprite(finalTexture);
+        sprite.setPosition(x + (i) * partWidth - (sizeimage / 2), y - (sizeimage/2));
+        
+        sprite.setScale(
+            float(300 + sizeimage) / finalTexture.getSize().x,
+            float(height + sizeimage) / finalTexture.getSize().y
+        );
+        sprit.emplace_back(sprite);
+
+
+
+        sf::RectangleShape rect;
+        rect.setSize(sf::Vector2f(partWidth, height));
+        rect.setPosition(x + (i) * partWidth, y);
+        rect.setFillColor(sf::Color(0,0,0,50));
+
+  
+        part.emplace_back(vec, rect);
+        ++i;
+    }
+}
+
 void Games::drawPrekCard(const PerkCardType& prekCardType) {
     std::string nameImagePerkCard = "../Horrified_Assets/Perk_Cards/";
     switch (prekCardType)
