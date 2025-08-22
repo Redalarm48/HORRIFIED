@@ -5,6 +5,10 @@
 #include "Dracula.hpp"
 #include "Game.hpp"
 
+PerkDeck::PerkDeck() {
+    this->initializeDeck();
+}
+
 void PerkDeck::initializeDeck() {
 
     addCard(PerkCardType::VisitFromDetective, 3);
@@ -28,6 +32,8 @@ void PerkDeck::shuffleDeck() {
     std::mt19937 g(rd());
     std::shuffle(cards.begin(), cards.end(), g);
 }
+
+
 
 PerkDeck PerkDeck::drawCard() {
     if(cards.empty()) {
@@ -82,6 +88,10 @@ bool PerkDeck::Hurry(Heroes& hero, const NameLocation& newNameLocationHero) cons
     }
     hero.setHeroesPosition(newNameLocationHero);
     return true;
+}
+
+PerkCardType PerkDeck::getPerkType() const {
+    return this->perkType;
 }
 
 std::vector<PerkDeck> PerkDeck::cards;

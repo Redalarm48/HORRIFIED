@@ -6,6 +6,7 @@
 #include <iostream>
 #include "Hero.hpp"
 #include "Map.hpp"
+#include "Monster.hpp"
 
 class Heroes;
 class Monster;
@@ -30,6 +31,10 @@ private:
     static std::vector<PerkDeck> inGameCards;
 
 public:
+    PerkDeck();
+    PerkDeck(const PerkCardType& type) : perkType(type) {}
+
+    PerkCardType getPerkType()const;
     void initializeDeck();
     void addCard(const PerkCardType&, const int&);
     void shuffleDeck();
