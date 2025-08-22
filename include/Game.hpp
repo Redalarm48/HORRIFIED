@@ -1,137 +1,137 @@
-#ifndef GAME_HPP
-#define GAME_HPP
+// #ifndef GAME_HPP
+// #define GAME_HPP
 
-#include <vector>
-#include <memory>
-#include <unordered_map>
-#include "Hero.hpp"
-#include "Map.hpp"
-#include "Monster.hpp"
-#include "Dracula.hpp"
-#include "InvisibleMan.hpp"
-#include "Item.hpp"
-#include "Villagers.hpp"
-#include "PerkCard.hpp"
-#include "MonsterCard.hpp"
-#include <unordered_set>
+// #include <vector>
+// #include <memory>
+// #include <unordered_map>
+// #include "Hero.hpp"
+// #include "Map.hpp"
+// #include "Monster.hpp"
+// #include "Dracula.hpp"
+// #include "InvisibleMan.hpp"
+// #include "Item.hpp"
+// #include "Villagers.hpp"
+// #include "PerkCard.hpp"
+// #include "MonsterCard.hpp"
+// #include <unordered_set>
 
-class Game {
-private:
-    // نقشهٔ بازی
-    Map& gameMap;
+// class Game {
+// private:
+//     // نقشهٔ بازی
+//     Map& gameMap;
 
-    // قهرمان‌ها
-    Mayor mayor;
-    Archaeologist archaeologist;
-    Heroes* currentHero;
+//     // قهرمان‌ها
+//     Mayor mayor;
+//     Archaeologist archaeologist;
+//     Heroes* currentHero;
 
-    // هیولاها
-    Dracula dracula;
-    InvisibleMan invisibleMan;
+//     // هیولاها
+//     Dracula dracula;
+//     InvisibleMan invisibleMan;
 
-    // هیولای Frenzied
-    Monster* frenziedMonster;
+//     // هیولای Frenzied
+//     Monster* frenziedMonster;
 
-    // سطح وحشت (۰ تا ۵)
-    int terrorLevel;
-
-
-    std::vector<Item*> itemBag;
-
-    std::vector<Item*> activeItems; // اشاره‌گر به آیتم‌های روی نقشه
-
-    // کارت‌ها
-    PerkDeck perkDeck;
-    MonsterDeck monsterDeck{ &dracula, &invisibleMan, &dracula };  // فرض کن فعلاً frenzy رو هم Dracula می‌گیریم
-
-    std::vector<std::string> draculaCoffinLocations = { "cave", "crypt", "dungeon", "graveyard" };
-
-    bool invisibleAdvanceDone = true;
-
-    // نوبت‌ها
-    bool isMayorTurn;
-
-    // مدیریت villager
-    Villager villagerManager;
-
-    // شمارشگر آیتم برای بازیابی آیتم‌های تمام‌شده
-    int itemIndex;
-
-    // کنترل پرک کارت‌هایی که در دست بازیکن‌ها هستند (در صورت نیاز به توسعه)
-    // std::unordered_map<std::string, std::vector<PerkCard>> playerPerks;
-    std::vector<Heroes*> heroes;
-
-    std::vector<std::pair<std::string ,std::string>> villagers;
-
-    std::string pekrcardName;
-
-    bool monsterPhaseTrue = true;
-    std::vector<Item*> allGameItems;
+//     // سطح وحشت (۰ تا ۵)
+//     int terrorLevel;
 
 
-public:
-    Game();
+//     std::vector<Item*> itemBag;
 
-    Map& gM();
+//     std::vector<Item*> activeItems; // اشاره‌گر به آیتم‌های روی نقشه
 
-    void run();
+//     // کارت‌ها
+//     PerkDeck perkDeck;
+//     MonsterDeck monsterDeck{ &dracula, &invisibleMan, &dracula };  // فرض کن فعلاً frenzy رو هم Dracula می‌گیریم
 
-    // راه‌اندازی اولیه
-    void initializeGame();
+//     std::vector<std::string> draculaCoffinLocations = { "cave", "crypt", "dungeon", "graveyard" };
 
-    // اجرای حلقه اصلی بازی
-    void startGameLoop();
+//     bool invisibleAdvanceDone = true;
 
-    // قرار دادن ۱۲ آیتم ابتدایی روی نقشه
-    void placeInitialItems();
+//     // نوبت‌ها
+//     bool isMayorTurn;
 
-    // دریافت آیتم از بین ۶۰ آیتم (به صورت چرخشی)
+//     // مدیریت villager
+//     Villager villagerManager;
+
+//     // شمارشگر آیتم برای بازیابی آیتم‌های تمام‌شده
+//     int itemIndex;
+
+//     // کنترل پرک کارت‌هایی که در دست بازیکن‌ها هستند (در صورت نیاز به توسعه)
+//     // std::unordered_map<std::string, std::vector<PerkCard>> playerPerks;
+//     std::vector<Heroes*> heroes;
+
+//     std::vector<std::pair<std::string ,std::string>> villagers;
+
+//     std::string pekrcardName;
+
+//     bool monsterPhaseTrue = true;
+//     std::vector<Item*> allGameItems;
 
 
-    // اجرای نوبت قهرمان
-    void heroTurn(Heroes& hero);
+// public:
+//     Game();
 
-    // منوی ترمینالی نوبت قهرمان
-    void displayHeroMenu(Heroes& hero);
+//     Map& gM();
 
-    // اجرای فاز هیولا
-    void monsterPhase();
+//     void run();
 
-    // پیاده‌سازی رویداد کارت مانستر
-    void resolveMonsterCard(const MonsterCard& card);
+//     // راه‌اندازی اولیه
+//     void initializeGame();
 
-    // اجرای تاس و افکت آن (با توجه به ترتیب strike)
-    void rollDiceAndResolve(const std::vector<Monster*>& order, int diceCount);
+//     // اجرای حلقه اصلی بازی
+//     void startGameLoop();
 
-    // بررسی شرایط برد و باخت
-    bool checkWinCondition() const;
-    bool checkLoseCondition() const;
+//     // قرار دادن ۱۲ آیتم ابتدایی روی نقشه
+//     void placeInitialItems();
 
-    // افزایش سطح وحشت
-    void increaseTerrorLevel();
+//     // دریافت آیتم از بین ۶۰ آیتم (به صورت چرخشی)
 
-    // اجرای کارت پرک
-    void usePerkCard(Heroes& hero, const PerkCard& card);
 
-    // جای‌گذاری یک Villager در مکان مشخص
-    void placeVillager(const std::string& name, const std::string& location, const std::string& safeZone);
-    Item& getNextItem();
-    std::string getRandomLocation() const;
-    void determineFirstPlayer();
-    void resolveMonsterEvent(const MonsterCard& card);
-    void rollDice(const MonsterCard& card);
-    void handleDraculaAttack();
-    void handleInvisibleManAttack();
-    void returnItemToBag(Item* item); 
-    void placeRandomItem(int count); 
-    void placeRandomItemAt(const std::string& location, int count);
-    std::string findLocationWithMostItems() const;
+//     // اجرای نوبت قهرمان
+//     void heroTurn(Heroes& hero);
 
-    void handleDefeatDracula(Monster* monster, Heroes& hero);
-    void handleAdvanceInvisibleMan(Heroes& hero);
+//     // منوی ترمینالی نوبت قهرمان
+//     void displayHeroMenu(Heroes& hero);
 
-    void setMonsterPhaseTrue(bool);
-    void setInvisibleAdvanceDone(bool);
-};
+//     // اجرای فاز هیولا
+//     void monsterPhase();
 
-#endif // GAME_HPP
+//     // پیاده‌سازی رویداد کارت مانستر
+//     void resolveMonsterCard(const MonsterCard& card);
+
+//     // اجرای تاس و افکت آن (با توجه به ترتیب strike)
+//     void rollDiceAndResolve(const std::vector<Monster*>& order, int diceCount);
+
+//     // بررسی شرایط برد و باخت
+//     bool checkWinCondition() const;
+//     bool checkLoseCondition() const;
+
+//     // افزایش سطح وحشت
+//     void increaseTerrorLevel();
+
+//     // اجرای کارت پرک
+//     void usePerkCard(Heroes& hero, const PerkCard& card);
+
+//     // جای‌گذاری یک Villager در مکان مشخص
+//     void placeVillager(const std::string& name, const std::string& location, const std::string& safeZone);
+//     Item& getNextItem();
+//     std::string getRandomLocation() const;
+//     void determineFirstPlayer();
+//     void resolveMonsterEvent(const MonsterCard& card);
+//     void rollDice(const MonsterCard& card);
+//     void handleDraculaAttack();
+//     void handleInvisibleManAttack();
+//     void returnItemToBag(Item* item); 
+//     void placeRandomItem(int count); 
+//     void placeRandomItemAt(const std::string& location, int count);
+//     std::string findLocationWithMostItems() const;
+
+//     void handleDefeatDracula(Monster* monster, Heroes& hero);
+//     void handleAdvanceInvisibleMan(Heroes& hero);
+
+//     void setMonsterPhaseTrue(bool);
+//     void setInvisibleAdvanceDone(bool);
+// };
+
+// #endif // GAME_HPP

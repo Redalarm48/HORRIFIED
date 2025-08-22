@@ -1,7 +1,7 @@
 #include <climits>
 #include "Dracula.hpp"
 
-Dracula::Dracula(Map& map) : Monster(NameMonster::DRACULA , map, NameLocation::CAVE) {}
+Dracula::Dracula(Map& map) : Monster(NameMonster::DRACULA , map, NameLocation::CRYPT) {}
 
 
 void Dracula::power(Villager& villager, Heroes& hero1, Heroes& hero2) {

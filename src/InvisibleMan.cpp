@@ -2,7 +2,7 @@
 #include <climits>
 
 
-InvisibleMan::InvisibleMan(Map& map) : Monster(NameMonster::INVISIBLE_MAN, map, NameLocation::GRAVEYARD){}
+InvisibleMan::InvisibleMan(Map& map) : Monster(NameMonster::INVISIBLE_MAN, map, NameLocation::INN){}
 
 
 bool InvisibleMan::moveMonster(Villager& villager, Heroes& hero1, Heroes& hero2, Heroes& hero3, Heroes& hero4, bool w) {
@@ -51,5 +51,8 @@ bool InvisibleMan::moveMonster(Villager& villager, Heroes& hero1, Heroes& hero2,
 }
 
 void InvisibleMan::power(Villager& villager, Heroes& hero1, Heroes& hero2) {
+    if(villager.getVillagers().empty()) {
+        return;
+    }
     this->moveMonster(villager, hero1, hero1, hero1, hero1, true);
 }
