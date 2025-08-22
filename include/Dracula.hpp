@@ -11,7 +11,7 @@ class Dracula : public Monster
         Dracula(Map& map);
 
         void power(Villager&, Heroes&, Heroes&) override;
-        
+        bool moveMonster(Villager&, Heroes&, Heroes&, Heroes&, Heroes&, bool = false) override;        
 
 
 };
