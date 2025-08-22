@@ -5,61 +5,25 @@
 #include "Dracula.hpp"
 #include "Game.hpp"
 
-inline std::ostream& operator<<(std::ostream& os, const PerkCardType& type) {
-    switch (type) {
-        case PerkCardType::VisitFromDetective:
-            os << "VisitFromDetective";
-            break;
-        case PerkCardType::
-            BreakOfDawn: os << "BreakOfDawn"; 
-            break;
-        case PerkCardType::Overstock:   
-            os << "Overstock"; 
-            break;
-        case PerkCardType::LateIntoTheNight:   
-            os << "LateIntoTheNight"; 
-            break;
-        case PerkCardType::Repel:   
-            os << "Repel"; 
-            break;
-        case PerkCardType::Hurry:   
-            os << "Hurry"; 
-            break;
-
-        default:                   
-            os << "UNKNOWN"; 
-            break;
-    }
-    return os;
-}
-PerkCard::PerkCard(PerkCardType perkType,const std::string& descriprion) {
-    this->perkType = perkType;
-    this->description = descriprion;
-}
-
-PerkCardType PerkCard::getType() const {
-    return perkType;
-}
-std::string PerkCard::getDescription() const {
-    return description;
+PerkDeck::PerkDeck() {
+    this->initializeDeck();
 }
 
 void PerkDeck::initializeDeck() {
 
-    addCard(PerkCardType::VisitFromDetective, "Place the Invisible Man at any location.", 3);
-    addCard(PerkCardType::BreakOfDawn, "Skip next monster phase. Draw 2 items.", 3);
-    addCard(PerkCardType::Overstock, "Each hero draws 1 item.", 4);
-    addCard(PerkCardType::LateIntoTheNight, "Current hero gets 2 extra actions.", 4);
-    addCard(PerkCardType::Repel, "Move each monster up to 2 spaces.", 3);
-    addCard(PerkCardType::Hurry, "Move each hero up to 2 spaces.", 3);
+    addCard(PerkCardType::VisitFromDetective, 3);
+    addCard(PerkCardType::BreakOfDawn, 3);
+    addCard(PerkCardType::Overstock, 4);
+    addCard(PerkCardType::LateIntoTheNight, 4);
+    addCard(PerkCardType::Repel, 3);
+    addCard(PerkCardType::Hurry, 3);
 
     shuffleDeck();
-
 }
 
-void PerkDeck::addCard(PerkCardType type, const std::string& desc, const int count) {
+void PerkDeck::addCard(const PerkCardType& type, const int& count) {
     for (int i = 0; i < count; i++ ) {
-        cards.emplace_back(type,desc);
+        cards.emplace_back(type);
     }
 }
 
@@ -69,75 +33,66 @@ void PerkDeck::shuffleDeck() {
     std::shuffle(cards.begin(), cards.end(), g);
 }
 
-PerkCard PerkDeck::drawCard() {
+
+
+PerkDeck PerkDeck::drawCard() {
     if(cards.empty()) {
         throw std::runtime_error("No more Perk cards!");
     }
-    PerkCard card = cards.back();
+    PerkDeck card = cards.back();
     cards.pop_back();
     inGameCards.emplace_back(card);
+    
     return card;
 }
 
 bool PerkDeck::isEmpty() {
     return cards.empty();
 }
-std::vector<PerkCard> PerkDeck::getInGamePerkCards() {
+std::vector<PerkDeck> PerkDeck::getInGamePerkCards() {
     return inGameCards;
 }
-std::ostream& operator<<(std::ostream& out, const PerkCard& perk) {
-    out << perk.perkType;
-    return out;
+
+void PerkDeck::visitFormTheDetective(Monster& invisibleMan, const NameLocation& newNameLocationInvisibleMan) const {
+    invisibleMan.setMonsterPosition(newNameLocationInvisibleMan);
 }
 
-void PerkDeck::visitFormTheDetective() {
-    std::string newLocationInvisibelMan;
-    std::cout << "Enter name location invisibelman: ";
-    std::cin >> newLocationInvisibelMan;
-
-    Map::setPlayerPosition("invisibleMan", newLocationInvisibelMan);
-    
+void PerkDeck::breakOfDawn(const Heroes& hero, Item& item) const {
+    auto itemcard = item.addItemInGame();
+    item.setItemsPosition(itemcard, hero.getLocationHero());
 }
 
-void PerkDeck::Hurry(Heroes& hero1, Heroes& hero2) {
+void PerkDeck::overstock(const Heroes& hero1, const Heroes& hero2, Item& item) const {
+    auto itemcard = item.addItemInGame();
+    item.setItemsPosition(itemcard, hero1.getLocationHero());
 
-    std::cout << "Hero1: \n";
-    hero1.move(true);
-    std::cout << "Choose the second path for the Hero1.\n";
-    hero1.move(true);
-    
-    std::cout << "Hero2: \n";
-    hero2.move(true);
-    std::cout << "Choose the second path for the Hero2.\n";
-    hero2.move(true);
-
+    itemcard = item.addItemInGame();
+    item.setItemsPosition(itemcard, hero2.getLocationHero());
 }
 
-void PerkDeck::Repel(Dracula& dracula, InvisibleMan& invisibleMan) {
-    dracula.move();
-    dracula.move();
-    invisibleMan.move();
-    invisibleMan.move();
-}
-
-void PerkDeck::breakOfDawn(Heroes& hero, Game& game) {
-    game.setMonsterPhaseTrue(false);  // Skip monster phase
-    std::cout << "Monster phase will be skipped.\n";
-    game.placeRandomItemAt(hero.getLocationHero(), 2);
-    std::cout << "You received 2 random items at your location.\n";
-}
-void PerkDeck::overstock(Game& game, Heroes& hero1, Heroes& hero2) {
-    game.placeRandomItemAt(hero1.getLocationHero(), 1);
-    game.placeRandomItemAt(hero2.getLocationHero(), 1);
-    std::cout << "Each hero received 1 item at their locations.\n";
-}
-void PerkDeck::lateIntoTheNight(Heroes& hero) {
+void PerkDeck::lateIntoTheNight(Heroes& hero) const {
     hero.decreaseAction();
-    std::cout << "You received 2 extra actions this trun!\n";
-
 }
 
+bool PerkDeck::Repel(Monster& monster, const NameLocation& newNameLocationMonster) const {
+    if(!monster.cheknumberDistance(newNameLocationMonster)) {
+        return false;
+    }
+    monster.setMonsterPosition(newNameLocationMonster);
+    return true;
+}
 
+bool PerkDeck::Hurry(Heroes& hero, const NameLocation& newNameLocationHero) const {
+    if(!hero.cheknumberDistance(newNameLocationHero)) {
+        return false;
+    }
+    hero.setHeroesPosition(newNameLocationHero);
+    return true;
+}
 
-std::vector<PerkCard> PerkDeck::cards;
-std::vector<PerkCard> PerkDeck::inGameCards;
+PerkCardType PerkDeck::getPerkType() const {
+    return this->perkType;
+}
+
+std::vector<PerkDeck> PerkDeck::cards;
+std::vector<PerkDeck> PerkDeck::inGameCards;

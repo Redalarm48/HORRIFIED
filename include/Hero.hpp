@@ -1,96 +1,91 @@
-#if !defined(HERO_H)
-#define HERO_H
+#pragma once
 #include "PerkCard.hpp"
 #include "Villagers.hpp"
 #include "Item.hpp"
 #include "Map.hpp"
+#include "NameEnum.hpp"
 #include <string>
 
-enum class itemType;
 enum class Status{
     Alive,
     Dade
 };
-
 class Map;
 class Item;
-enum class itemType;
-
+class Location;
+class Villager;
 
 class Heroes {
 private:
 
-    std::string nameHero;
-    PerkDeck perkCard;
-    Status statusHero;
+    const NameHeroes nameHero;
+    NameLocation nameLocationHeroes;
     Map& locationHero;
     int numberActionTaken;
     int maxActions;
-    std::vector<Item*> inventory;
-    std::vector<PerkCard> perkCards;
+    Status statusHero;
 
-    
-    static std::unordered_map<std::string, bool> invisibleItemCollected;
-    static std::unordered_map<std::string, bool> coffinDestroyed;
-
+    std::vector<std::pair<NameItem, NameLocation>> nameItemPickUpInvisibleMan;
+    std::vector<PerkDeck> perkCards;
     
 public:
-    Heroes(int,const std::string, Map&);
+    Heroes(int,const NameHeroes, Map&, const NameLocation&, PerkDeck&);
     virtual ~Heroes() = default;
 
-    std::string getName() const;
-    Status getStatus() const;
-    std::vector<PerkCard> getInGamePerkCards();
-    void setLocation(const std::string&, const std::string&);
 
-    Location* getLocationHeroPtr() const;
-    std::string getLocationHero() const;
+
+    std::string getName() const;
+    NameHeroes getNameHero() const;
+    std::string changNameHeroesTheString(const NameHeroes&);
+    std::vector<PerkDeck> getInGamePerkCards();
+    std::vector<std::pair<NameItem, NameLocation>> getNameItemPickUpInvisibleMan() const;
+
+    void setPerkCard(const PerkDeck&);
+
+    NameLocation getLocationHero() const;
     bool canTakeAction() const;
     void resetActions();
 
-    void move(bool = false);
-    void guide();
-    void pickUp(Item*);
-    void Advance(Game&);
-    void defeat();
+    bool cheknumberDistance(const NameLocation&);
+
+
+    void move(Villager&,const NameLocation&, bool, const std::vector<NameVillagers>&);
+    void guide(Villager&, const NameVillagers&);
+    void pickUp(Item&, const std::vector<NameItem>&);
+    bool defieat(Monster&, Item&);
+
+
     int getNumberActionTaken() const;
-    void showInventory() const;
-    void removeFromInventory(Item* item);
-    std::vector<Item*> getInventory();
-    bool removeItems(itemType type, int count);
-    bool hasItems(itemType type, int count) const;
-    void addPerkCard(const PerkCard& card);
-    void usePerkCard(int index);
-    const std::vector<PerkCard>& getPerkCards() const;
+
+    const std::vector<PerkDeck>& getPerkCards() const;
     void decreaseAction();
-    void increaseActionMax();
-    int getMaxAction()const;
-    void removePerkCard(int index);
 
 
-    static std::unordered_map<std::string, bool>& getInvisibleItemCollected();
-    static std::unordered_map<std::string, bool>& getcoffinDestroyed();
-
-    void handlePickUp( Map& map, const std::vector<Item*>& itemList);
-
-    void setNumberActionTaken(int num);
     void incrementAction();
-    void showCoffinStatus();
-    void handleAdvanceCoffin(const std::string& location);
+
+    void setHeroesPosition(const NameLocation&);
 
 };
 
 class Archaeologist : public Heroes {
 public:
-    Archaeologist(Map&);
+
+    Archaeologist(Map&, PerkDeck&);
+
     void specialAction(Map&, const std::vector<Item*>& itemList);
 };
 
 class Mayor : public Heroes {
 public:
-    Mayor(Map&);
+    Mayor(Map&, PerkDeck&);
 };
 
+class Courier : public Heroes {
+public:
+    Courier(Map&, PerkDeck&);
+};
 
-
-#endif 
+class Scientist : public Heroes {
+public:
+    Scientist(Map&, PerkDeck&);
+};

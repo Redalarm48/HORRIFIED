@@ -1,18 +1,18 @@
-#ifndef INVISIBLE_HPP
-#define INVISIBLE_HPP
-
+#pragma once
 #include "Monster.hpp"
 
 class InvisibleMan : public Monster
 {
 
+private:
+    bool chek = false;
+
     public :
     
         InvisibleMan(Map& map);
+        
 
-        void usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) override;
-        void move( const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) override;
-        void move();
+        bool moveMonster(Villager&,Heroes&, Heroes&, Heroes&, Heroes&, bool = false) override;
+        void power(Villager&, Heroes&, Heroes&) override;
 };
 
-#endif

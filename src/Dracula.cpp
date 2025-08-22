@@ -1,74 +1,64 @@
 #include <climits>
 #include "Dracula.hpp"
 
-Dracula::Dracula(Map& map) : Monster("Dracula" , 1 , map) {}
+Dracula::Dracula(Map& map) : Monster(NameMonster::DRACULA , map, NameLocation::CRYPT) {}
 
-void Dracula::usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers)
-        {
-            
-            getMap().setPlayerPosition(h.getName() , getLocationMonster());
-            std::cout << "Dracula Hypnotized someone , Last Hero in charge moves to the Dracula.\n";
-            //باید آخرین قهرمان آخرین بازیکنی که بازی کرده منتقل بشه
 
-        }
+void Dracula::power(Villager& villager, Heroes& hero1, Heroes& hero2) {
+    if(hero1.getLocationHero() != this->getNameLocationMonster()) {
+        hero1.setHeroesPosition(this->getNameLocationMonster());
+    }
+    if(hero2.getLocationHero() != this->getNameLocationMonster()) {
+        hero2.setHeroesPosition(this->getNameLocationMonster());
+    }
+}
 
-void Dracula::move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) {
-    std::string currentPos = getMap().getPlayerPosition("Dracula");
-    std::string closestTarget;
+
+bool Dracula::moveMonster(Villager& villager, Heroes& mayor, Heroes& archaeologist, Heroes& corier, Heroes& scientist, bool w) {
+    if(getNameLocationMonster() == mayor.getLocationHero() ||
+       getNameLocationMonster() == archaeologist.getLocationHero() ||
+       getNameLocationMonster() == corier.getLocationHero() ||
+       getNameLocationMonster() == scientist.getLocationHero()) {
+        return true;
+    }
+    std::vector<std::pair<NameLocation, int>> targets;
+   
+
+    for(auto& v : villager.getVillagers()) {
+        if(v.second.getLocationVillager() == getNameLocationMonster()) {
+            return true;
+        } 
+            targets.emplace_back(v.second.getLocationVillager(), 0);
+    }
+
+
+    targets.emplace_back(mayor.getLocationHero(), 0);
+    targets.emplace_back(archaeologist.getLocationHero(), 0);
+    targets.emplace_back(corier.getLocationHero(), 0);
+    targets.emplace_back(scientist.getLocationHero(), 0);
+   
     int minDist = INT_MAX;
 
-
-    for (const auto& hero : heroes) {
-        std::string targetPos = getMap().getPlayerPosition(hero->getName());
-        int dist = getMap().findShortestPath(currentPos, targetPos).size();
-        if (dist < minDist && dist > 1) {
-            minDist = dist;
-            closestTarget = targetPos;
+    for(auto& [name, number] : targets) {
+        try {
+            number = getLocationMonster().findShortestPath<int>(getNameLocationMonster(), name);
+            if(number < minDist) {
+                minDist = number;
+            }
+        } catch(...) {
+        }
+    }
+    for(auto& [name, number] : targets) {
+        if(number == minDist) {
+            this->setMonsterPosition(getLocationMonster().findShortestPath<NameLocation>(getNameLocationMonster(), name));
+            if(this->getNameLocationMonster() == name) {
+                return true;
+            }
+            return false;
         }
     }
 
+    throw std::invalid_argument("error move dracula");
 
-    for (const auto& villager : villagers) {
-        std::string targetPos = getMap().getPlayerPosition(villager.first);
-        int dist = getMap().findShortestPath(currentPos, targetPos).size();
-        if (dist < minDist && dist > 1) {
-            minDist = dist;
-            closestTarget = targetPos;
-        }
-    }
-
-    if (!closestTarget.empty()) {
-        auto path = getMap().findShortestPath(currentPos, closestTarget);
-        if (path.size() >= 2) {
-            std::string nextStep = path;
-            getMap().setPlayerPosition("Dracula", nextStep);
-            std::cout << "Dracula" << " moved toward " << closestTarget << " to " << nextStep << "\n";
-        }
-    }
 }
 
-void Dracula::move() {
-
-    auto current = getLocationMonsterPtr();
-    if(!current) {
-        std::cout << "Heo location unknwon";
-        return;
-    }
-    // std::string n = "h";    
-
-    std::cout << "Current location: " << current->getName() << "\nNeighbors: \n";
-    
-    auto neighbors = current->getNeighbors();
-    for(size_t i = 0; i < neighbors.size(); ++i) {
-        std::cout << i+1 << "." << neighbors[i]->getName() << "\n";
-    }
-
-    std::cout << "choose a location to move to (number): ";
-    std::string newLocationHero;
-    std::cin >> newLocationHero;
-
-    // Location* newLocation = neighbors[newLocationHero - 1];
-    getMap().setPlayerPosition("Dracula" , newLocationHero);
-    std::cout << "Dracula" << " moved to " << newLocationHero << ".\n";
-
-}

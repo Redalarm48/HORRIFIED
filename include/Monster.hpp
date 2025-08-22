@@ -1,41 +1,54 @@
-#ifndef MONSTER_HPP
-#define MONSTER_HPP
+#pragma once
 
-#include "Item.hpp"
+#include "NameEnum.hpp"
 #include "Map.hpp"
-#include "Villagers.hpp"
+// #include "Games.hpp"
 #include "Hero.hpp"
 #include <iostream>
 #include <vector>
+#include <climits>
+
+enum class DiceResult { None, Power, Attack };
+
+class Map;
+class Villager;
+class Heroes;
+class Item;
+class Games;
 
 class Monster
 {
+    private:
 
-    private :
-
-        std::string Name;
-        int FrenzyOrder;
+        static int terrorLevel;
+        const NameMonster nameMonster;
+        NameLocation nameLocationMonster;
+        static NameMonster FrenzyOrder;
         Map& locationMonster;
-        bool Dead;
+
 
     public :
 
-        Monster(const std:: string& name , int frenzyorder , Map& locationmonster);
+        Monster(const NameMonster&, Map&, const NameLocation&);
 
         virtual ~Monster();
 
-        std::string getNameM() const;
-        int getFrenzyOrder() const;
-        bool isDead() const;
 
-        void Defeated();
-        Location* getLocationMonsterPtr() const;
-        std::string getLocationMonster() const;
-        Map& getMap() const;
+        NameMonster getNameM() const;
+        NameMonster getFrenzyOrder() const;
+        NameLocation getNameLocationMonster() const;
+        Map& getLocationMonster() const;
 
-        virtual void usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers);
-        virtual void move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers);
+        void setMonsterPosition(const NameLocation&);
+
+        DiceResult rollDice();
+
+        void removeMonster();
+
+
+        virtual bool moveMonster(Villager&, Heroes&, Heroes&, Heroes&, Heroes&, bool = false) = 0;
+        virtual void power(Villager&, Heroes&, Heroes&) = 0;
+        void strike(int, Villager&, Heroes&, Heroes&, Heroes&, Heroes&, Item&, Games*);
+        bool cheknumberDistance(const NameLocation&);
 
 };
-
-#endif

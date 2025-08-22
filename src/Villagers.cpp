@@ -3,205 +3,212 @@
 #include <cctype>
 
 
-Villager::Villager(Map& locationVillager) : locationVillager(locationVillager) {}
+Villager::Villager(Map& map, PerkDeck& perkDeck,const NameLocation& locationVillager, const NameVillagers& nameVillager, const NameLocation& safeLocationVillager) : perkDeck(perkDeck), nameLocationVillagers(locationVillager), nameVillager(nameVillager), safeLocationVillager(safeLocationVillager), locationVillager(map) {}
 
-void Villager::setNameVillager(const std::string& nameVillage) {
-    this->nameVillager = nameVillage; 
+Villager::Villager(Map& locationVIllager, PerkDeck& perkDeck): perkDeck(perkDeck), locationVillager(locationVIllager) , nameVillager(NameVillagers::Default), safeLocationVillager(NameLocation::Default) {}
+// Villager::Villager(Map& locationVIllager) : locationVillager(locationVillager){}
+
+void Villager::setVillagersPosition(const NameLocation& newNameLocationVillagers) {
+    if(this->nameLocationVillagers == newNameLocationVillagers) {
+        return;
+    }
+    auto chek = std::find_if(locationVillager.map.begin(), locationVillager.map.end(), [&newNameLocationVillagers](const auto& p) {
+        return p.first == newNameLocationVillagers;
+    });
+    auto chek2 = std::find_if(locationVillager.map.begin(), locationVillager.map.end(), [this](const auto& p) {
+        return p.first == nameLocationVillagers;
+    });
+
+    if(chek != locationVillager.map.end() && chek2 != this->locationVillager.map.end()) {
+        chek->second.addVillagers(nameVillager);
+        chek2->second.removeVillagers(nameVillager);
+        nameLocationVillagers = newNameLocationVillagers;
+    }
+    else  {
+        throw std::invalid_argument("not found VIllager or location");
+    }
+}
+void Villager::setVillagersPosition(const NameVillagers& nameVillager, const  NameLocation newNameLocationVillager, Heroes& hero) {
+    auto chek = std::find_if(villagers.begin(), villagers.end(), [&nameVillager](const auto& p) {
+        return p.first == nameVillager;
+    });
+    if(chek != villagers.end()) {
+        chek->second.setVillagersPosition(newNameLocationVillager);
+        (this->chekSafeLocationVillager(nameVillager, hero));
+    }
+    else {
+        throw std::invalid_argument(" ");
+    }
 }
 
-std::string Villager::getNameVillager() const {
-    return nameVillager;
-}
-
-std::string Villager::getLocationVillager() const {
-    return locationVillager.getPlayerPosition(nameVillager);
-}
-
-std::string Villager::getSafeLocationVillager() const {
-    return safeLocationVillager;
-}
-
-void Villager::addVillager(const std::string& nameVillager, const std::string& locationVillager, const std::string& safeLocationVillager) {
-    this->locationVillager.setPlayerPosition(nameVillager, locationVillager);
-    nameAndsafeLocationVilager.emplace_back(nameVillager, safeLocationVillager, locationVillager);
-}
-
-void Villager::initializeVillagers(NameVillagers nameVillager) {
+std::string Villager::chengNameVillagerTheString(const NameVillagers& nameVillager) {
     switch (nameVillager)
     {
     case NameVillagers::Dr_crunly :
-        addVillager("Dr.crunly","percinct", "laboratory");
+        return "Dr.crunly";
         break;
     
     case NameVillagers::Maleva :
-        addVillager("Maleva","shop", "camp");
+        return "Maleva";
         break;
 
     case NameVillagers::Fritz :
-        addVillager("Fritz","institute", "tower");
+        return "Fritz";
         break;
 
     case NameVillagers::Maria :
-        addVillager("Maria","camp", "barn");
+        return "Maria";
         break;
 
     case NameVillagers::Prof_pearson :
-        addVillager("Prof.pearson","museum", "cave");
+        return "Prof_pearson";
         break;
 
     case NameVillagers::Dr_read :
-        addVillager("Dr.read","camp", "institute");
+        return "Dr.read";
         break;
     case NameVillagers::WilnureAndChick:
-        addVillager("Wilbur & Chick","percinct", "docks");
-    
-
-    default:
-        // throw
+        return "Wilnure & Chick";
+        break;
+        case NameVillagers::Default:
+        return "default";
         break;
     }
-
-}
-void Villager::removeVillager(const std::string& nameVilager) {
-    this->locationVillager.setPlayerPosition(nameVilager, "brake");
-    Villager::updateVillager(nameVilager, "break");
-    PerkDeck::drawCard();
+    return "no";
 }
 
-std::vector<std::string> Villager::moveLocation(const std::string& location) {
-    std::vector<std::string> villagersAtLocation;
+NameVillagers Villager::chengNameVillager(const std::string& nameVillagersString) {
 
-    if(nameAndsafeLocationVilager.empty()) {
-        return {};
+    if(nameVillagersString == "Dr.crunly") {
+        return NameVillagers::Dr_crunly;
     }
-    while (true)
+    else if(nameVillagersString == "Maleva") {
+        return NameVillagers::Maleva;
+    }
+    else if(nameVillagersString == "Fritz") {
+        return NameVillagers::Fritz;
+    }
+    else if(nameVillagersString == "Maria") {
+        return NameVillagers::Maria;
+    }
+    else if(nameVillagersString == "Prof.perarson") {
+        return NameVillagers::Prof_pearson;
+    }
+    else if(nameVillagersString == "Dr.read") {
+        return NameVillagers::Dr_read;
+    }
+    else if(nameVillagersString == "Wilnure & Chick") {
+        return NameVillagers::WilnureAndChick;
+    }
+    else {
+        throw std::bad_alloc();
+    }
+}
+
+
+NameVillagers Villager::getNameVillager() const {
+    return nameVillager;
+}
+
+NameLocation Villager::getLocationVillager() const {
+
+    return nameLocationVillagers;
+}
+
+NameLocation Villager::getSafeLocationVillager() const {
+    return safeLocationVillager;
+}
+
+std::list<std::pair<NameVillagers, Villager>> Villager::getVillagers() const {
+    return villagers;
+}
+
+
+
+void Villager::addVillager(const NameVillagers& nameVillager, const NameLocation& nameLocationVillagerr, const NameLocation& safeLocationVillagerr) {
+    Villager newVillager(locationVillager,perkDeck,nameLocationVillagerr, nameVillager, safeLocationVillagerr);
+    villagers.emplace_back(nameVillager, newVillager);
+    auto chek = std::find_if(this->locationVillager.map.begin(), this->locationVillager.map.end(),[&nameLocationVillagerr](const auto& p) {
+        return p.first == nameLocationVillagerr;
+    }) ;
+    if(chek == this->locationVillager.map.end()) {
+        throw std::invalid_argument("not fount locaiton villagere");
+    }
+    chek->second.addVillagers(nameVillager);
+}
+
+void Villager::initializeVillagers(const NameVillagers& nameVillager) {
+    switch (nameVillager)
     {
-        
-        
-        std::cout << "Do you want to move the villagers with the hero? (yes,no): ";
-        
-        std::string yesOrNO;
-        std::cin >> yesOrNO;
-        std::transform(yesOrNO.begin(), yesOrNO.end(), yesOrNO.begin(), ::tolower);
-        
-        
-        if(yesOrNO == "no") {
-            return {};
-        }
-        else if(yesOrNO == "yes") {
-            break;
-        }
-        std::cout << "Invalid input, Please enter 'yes' or 'no'\n";
-    }
+    case NameVillagers::Dr_crunly :
+        addVillager(NameVillagers::Dr_crunly, NameLocation::PRECINCT, NameLocation::LABORATORY);
+        break;
     
-    for(auto& i : nameAndsafeLocationVilager) {
-        if(std::get<2>(i) == location) {
-            villagersAtLocation.push_back(std::get<0>(i));
-            std::cout <<"-"<< std::get<0>(i) << std::endl;
-        }
+    case NameVillagers::Maleva :
+        addVillager(NameVillagers::Maleva, NameLocation::SHOP, NameLocation::CAMP);
+        break;
+
+    case NameVillagers::Fritz :
+        addVillager(NameVillagers::Fritz, NameLocation::INSTITUTE, NameLocation::TOWER);
+        break;
+
+    case NameVillagers::Maria :
+        addVillager(NameVillagers::Maria, NameLocation::CAMP, NameLocation::BARN);
+        break;
+
+    case NameVillagers::Prof_pearson :
+        addVillager(NameVillagers::Prof_pearson, NameLocation::MUSEUM, NameLocation::CAVE);
+        break;
+
+    case NameVillagers::Dr_read :
+        addVillager(NameVillagers::Dr_read, NameLocation::CAMP, NameLocation::INSTITUTE);
+        break;
+    case NameVillagers::WilnureAndChick:
+        addVillager(NameVillagers::WilnureAndChick, NameLocation::PRECINCT, NameLocation::DOCKS);
+        break;
+
+    default:
+        throw std::invalid_argument("");
+        break;
+
     }
 
-    if(villagersAtLocation.empty()) {
-        std::cout << "There are no villagers in this place." << std::endl;
-        return {};
+}
+void Villager::removeVillager(const NameVillagers& nameVilager) {
+    auto chekNameVillager = std::find_if(this->villagers.begin(), this->villagers.end(), [&nameVilager](const auto& p) {
+        return p.first == nameVilager;
+    });
+    if(chekNameVillager == this->villagers.end()) {
+        throw std::invalid_argument("not found name villager");
     }
-
-    int numberVillager;
-    if(villagersAtLocation.size() ==1) {
-        numberVillager = 1;
+    auto nameLocationVillagerRemove = chekNameVillager->second.nameLocationVillagers;
+    auto chek = std::find_if(locationVillager.map.begin(), locationVillager.map.end(), [&nameLocationVillagerRemove](const auto& p) {
+        return p.first == nameLocationVillagerRemove;
+    });
+    if(chek != locationVillager.map.end()) {
+        chek->second.removeVillagers(nameVilager);
+        villagers.erase(chekNameVillager);
     }
     else {
-        std::cout << "Enter the number of ordinary people you want to select: ";
-        std::cin >> numberVillager;
+        throw std::invalid_argument("not found name location villager");
     }
-
-    
-    if(numberVillager > villagersAtLocation.size() || numberVillager <= 0) {
-        std::cout << "eshtebah!!!!!1" << std::endl;
-        return {};
-    }
-
-    std::vector<std::string> nameVillagerMove;
-
-    std::cout << "Enter the name Villager move: ";
-
-    for(int i = 0; i < numberVillager; ++i) {
-        std::string name;
-        std::cin >> name;
-        nameVillagerMove.push_back(name);
-    }
-
-    for (const std::string& name : nameVillagerMove) {
-        if (std::find(villagersAtLocation.begin(), villagersAtLocation.end(), name) == villagersAtLocation.end()) {
-            std::cout << "name '" << name << "' was not found!\n";
-            return {};
-        }
-    }
-
-    return nameVillagerMove;
 }
 
-std::string Villager::guideVillager(std::vector<std::string> location) {
-    std::vector<std::string> chekNameVillager;
-    bool trueOrfalse = true;
-   
-    for(auto& j : location) {
-        std::cout << j << ":";
-        for(auto& i : nameAndsafeLocationVilager) {
-            if(std::get<2>(i) == j) {
-                chekNameVillager.push_back(std::get<0>(i));
-                std::cout << std::get<0>(i) << ",";
-            }
+
+void Villager::chekSafeLocationVillager(const NameVillagers& nameVilager, Heroes& hero) {
+    auto chek = std::find_if(villagers.begin(), villagers.end(), [this](const auto& p) {
+        return p.first == nameVillager;
+    });
+    if(chek != villagers.end()) {
+        if(chek->second.getSafeLocationVillager() == chek->second.getLocationVillager()) {
+            chek->second.removeVillager(nameVilager);
+            hero.setPerkCard(this->perkDeck.drawCard());
         }
-        std::cout << std::endl;
-    }
-    std::cout << "Enter the name of the villager you want to take to the hero's location: ";
-    std::string nameVillagerMove;
-    std::cin >> nameVillagerMove;
-    if (std::find(chekNameVillager.begin(), chekNameVillager.end(), nameVillagerMove) == chekNameVillager.end()) {
-        std::cout << "Villager not found";
-        return "";
     }
     else {
-        return nameVillagerMove;
-    }
-}
-void Villager::chekSafeLocationVillager(const std::string& nameVilager , Heroes& h) {
-    for(auto& chek : nameAndsafeLocationVilager) {
-        if(nameVilager == std::get<0>(chek)) {
-            auto locationLiveVilager = locationVillager.getPlayerPosition(nameVilager);
-            // std::cout << locationLiveVilager << "\n";
-            if(std::get<1>(chek) == locationLiveVilager) {
-                std::cout << "Villager " << nameVilager << " safe location." << std::endl;
-                removeVillager(nameVilager);
-                h.addPerkCard(PerkDeck::drawCard());
-
-            }
-        }
+        throw std::invalid_argument("");
     }
 }
 
+std::list<std::pair<NameVillagers, Villager>> Villager::villagers;
 
-
-std::vector<std::pair<std::string, std::string>> Villager::getActiveVillagers() const {
-    std::vector<std::pair<std::string, std::string>> result;
-    
-    for (const auto& pair : nameAndsafeLocationVilager) {
-        std::string currentLocation = locationVillager.getPlayerPosition(std::get<0>(pair));
-        if (currentLocation != "brake") {
-            result.emplace_back(std::get<0>(pair), currentLocation);
-        }
-    }
-    
-    return result;
-}
-
-void Villager::updateVillager(const std::string& nameVillager, const std::string& newLocationVillalger) {
-    for (auto& villager : nameAndsafeLocationVilager) {
-        if (std::get<0>(villager) == nameVillager) {
-            std::get<2>(villager) = newLocationVillalger;
-            return;
-        }
-    }
-}
-std::vector<std::tuple<std::string, std::string, std::string>> Villager::nameAndsafeLocationVilager;

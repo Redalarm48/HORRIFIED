@@ -1,5 +1,4 @@
-#ifndef DRACULA_HPP
-#define DRACULA_HPP
+#pragma once
 
 #include "Monster.hpp"
 #include "Hero.hpp"
@@ -11,10 +10,8 @@ class Dracula : public Monster
 
         Dracula(Map& map);
 
-        void usePower(Heroes &h ,const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) override;
-        void move(const std::vector<Heroes*>& heroes, const std::vector<std::pair<std::string, std::string>>& villagers) override;
-        void move();
+        void power(Villager&, Heroes&, Heroes&) override;
+        bool moveMonster(Villager&, Heroes&, Heroes&, Heroes&, Heroes&, bool = false) override;
+
 
 };
-
-#endif
