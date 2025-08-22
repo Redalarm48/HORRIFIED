@@ -45,6 +45,7 @@ class Monster
 
         void removeMonster();
 
+
         virtual bool moveMonster(Villager&, Heroes&, Heroes&, Heroes&, Heroes&, bool = false) = 0;
         virtual void power(Villager&, Heroes&, Heroes&) = 0;
         void strike(int, Villager&, Heroes&, Heroes&, Heroes&, Heroes&, Item&, Games*);

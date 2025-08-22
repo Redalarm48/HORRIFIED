@@ -211,10 +211,12 @@ std::vector<NameVillagers> Map::getVillagerLocaiton(const NameLocation& nameLoca
     }
 }
 
+
 std::vector<Location*> Map::getNeighborLocation(const NameLocation& nameLocation) const {
     auto chek = std::find_if(map.begin(), map.end(), [&nameLocation](const auto& p) {
         return p.first == nameLocation;
     });
+
 
     if(chek != map.end()) {
         return chek->second.getNeighbors();
@@ -280,12 +282,15 @@ T Map::findShortestPath(const NameLocation& start, const NameLocation& end) {
     if (parent.find(end) == parent.end())
         throw std::invalid_argument("No path found");
 
+
     std::vector<NameLocation> path;
     for (NameLocation at = end; at != start; at = parent[at]) {
         path.push_back(at);
+
     }
     path.push_back(start);
     std::reverse(path.begin(), path.end());
+
 
     if (path.size() >= 1) {
         // برگرداندن اسم مکان دوم در مسیر (قدم بعدی)
@@ -295,6 +300,7 @@ T Map::findShortestPath(const NameLocation& start, const NameLocation& end) {
             return path[1];
         } else {
             static_assert(sizeof(T) == 0, "Unsupported type for findShortestPath");
+
         }
     }
     throw std::runtime_error("Path too short");

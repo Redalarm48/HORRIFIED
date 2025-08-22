@@ -84,7 +84,9 @@ void Heroes::move(Villager& villager,const NameLocation& newNameLocationHero, bo
 
     auto neighbors = locationHero.getNeighborLocation(nameLocationHeroes);
     
+
     bool chek = false;
+
 
     for(const auto& neighbor: neighbors) {
         if (neighbor->getNameLocation() == newNameLocationHero) {
@@ -111,7 +113,9 @@ void Heroes::move(Villager& villager,const NameLocation& newNameLocationHero, bo
 
 void Heroes::guide(Villager& villager, const NameVillagers& nameVillager) {  
 
+
     villager.setVillagersPosition(nameVillager, this->getLocationHero(), *this);
+
 
     incrementAction();
 }
@@ -153,13 +157,16 @@ bool Heroes::defieat(Monster& monster, Item& item) {
         typeOnserShip = TypeOwnership::MAYOR;
         break;
     
+
     default:
         throw std::invalid_argument(" ");
         break;
+
     }
     int chekNumberItem = 0;
     std::vector<Item> advanceItem;
     if(monster.getNameM() == NameMonster::DRACULA) {
+
 
         for(auto& [name,item] : item.getItemsInGame()) {
             if(chekNumberItem >= 6) {
@@ -171,6 +178,7 @@ bool Heroes::defieat(Monster& monster, Item& item) {
                     advanceItem.emplace_back(item);
                 }
             }
+
         }
 
         if(chekNumberItem < 6) {
@@ -244,6 +252,7 @@ Archaeologist::Archaeologist(Map& map, PerkDeck& perkDeck) : Heroes(1,NameHeroes
 
 Mayor::Mayor(Map& map, PerkDeck& perkDeck) : Heroes(1,NameHeroes::MAYOR, map, NameLocation::THEATRE, perkDeck) {
     // بدنه سازنده
+
 }
 
 Scientist::Scientist(Map& map, PerkDeck& perkDeck) : Heroes(4,NameHeroes::SCIENTIST, map, NameLocation::INSTITUTE, perkDeck) {

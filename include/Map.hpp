@@ -32,6 +32,7 @@ public:
 
     static Map& getInstance();
 
+
     bool getcoffinDestroyed() const;
     bool getInvisibleItemCollecte() const;
 
@@ -48,6 +49,7 @@ public:
     template <class T>
     T findShortestPath(const NameLocation&, const NameLocation&);
     std::vector<NameLocation> getAllLocationNames() const; 
+
 
 
 };

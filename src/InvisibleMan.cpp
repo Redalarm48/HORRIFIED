@@ -54,5 +54,7 @@ void InvisibleMan::power(Villager& villager, Heroes& hero1, Heroes& hero2) {
     if(villager.getVillagers().empty()) {
         return;
     }
+
     this->moveMonster(villager, hero1, hero1, hero1, hero1, true);
 }
+

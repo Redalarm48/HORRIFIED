@@ -139,6 +139,7 @@ NameMonster Monster::getFrenzyOrder() const {
     return FrenzyOrder;
 }
 
+
 NameLocation Monster::getNameLocationMonster() const {
     return nameLocationMonster;
 }
@@ -152,3 +153,4 @@ bool Monster::cheknumberDistance(const NameLocation& nameLocation) {
 
 
 NameMonster Monster::FrenzyOrder = NameMonster::DRACULA;
+

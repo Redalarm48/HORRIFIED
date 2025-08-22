@@ -15,3 +15,4 @@ private:
         bool moveMonster(Villager&,Heroes&, Heroes&, Heroes&, Heroes&, bool = false) override;
         void power(Villager&, Heroes&, Heroes&) override;
 };
+

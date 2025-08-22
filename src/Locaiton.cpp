@@ -1,13 +1,17 @@
+
 #include "Location.hpp"
 #include "Item.hpp"
 Location::Location(const NameLocation nameLocaiton) {
     this->invisibleItemCollecte = false;
     this->coffinDestroyed = false;
+
     this->nameLocation = nameLocaiton;
 }
 
 const NameLocation Location::getNameLocation() const {
     return this->nameLocation;
+
+
 }
 const std::vector<NameHeroes> Location::getNameHeroes() const {
     return this->heroes;
@@ -21,6 +25,7 @@ const std::vector<NameItem> Location::getNameItems() const {
 const std::vector<NameVillagers> Location::getNameVillagers() const {
     return this->villagers;
 }
+
 const std::vector<Location*>& Location::getNeighbors() const {
     return neighbors;
 }
@@ -121,6 +126,7 @@ void Location::removeMonsters(const NameMonster& nameMonsters) {
         throw std::invalid_argument("The monster you are looking for could not be found");
     }
 }
+
 void Location::removeItem(const NameItem& nameItem) {
     auto chek = std::find(items.begin(), items.end(), nameItem);
     if(chek != items.end()) {

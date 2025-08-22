@@ -189,9 +189,11 @@ void ItemList::shuffleItem() {
     std::shuffle(itemlist.begin(), itemlist.end(), g);
 }
 
+
 ItemList ItemList::addItemInGame() {
     if(itemlist.empty()) {
         throw std::runtime_error("No more Item");
+
     }
     ItemList itemAdd = itemlist.back();
     itemlist.pop_back();
@@ -272,6 +274,7 @@ std::list<std::pair<NameItem, Item>> Item::getItemsInGame() const {
     return itemsInGame;
 }
 
+
 int Item::getPower() const {
     return this->power;
 }
@@ -279,3 +282,4 @@ int Item::getPower() const {
 std::list<std::pair<NameItem, Item>> Item::itemsInGame;
 std::vector<ItemList> ItemList::itemlist;
 ItemList Item::itemList;
+

@@ -124,6 +124,7 @@ std::list<std::pair<NameVillagers, Villager>> Villager::getVillagers() const {
 }
 
 
+
 void Villager::addVillager(const NameVillagers& nameVillager, const NameLocation& nameLocationVillagerr, const NameLocation& safeLocationVillagerr) {
     Villager newVillager(locationVillager,perkDeck,nameLocationVillagerr, nameVillager, safeLocationVillagerr);
     villagers.emplace_back(nameVillager, newVillager);
@@ -169,6 +170,7 @@ void Villager::initializeVillagers(const NameVillagers& nameVillager) {
     default:
         throw std::invalid_argument("");
         break;
+
     }
 
 }

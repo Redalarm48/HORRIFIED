@@ -1,3 +1,4 @@
+
 // #include "Game.hpp"
 // #include <iostream>
 // #include <algorithm>
@@ -133,7 +134,7 @@
 //     { 
 
 //     std::cout << "Heroes win!\n";
-    
+
 //     }
 //     else
 //     {
@@ -142,6 +143,7 @@
     
 //     }
     
+
 // }
 
 // void Game::heroTurn(Heroes& hero) {
@@ -399,6 +401,7 @@
 //                     archaeologist.specialAction(gameMap, allGameItems);
 //                     archaeologist.incrementAction();
 //                     break;
+
                 
 //                 case 9: 
 //                     return;
@@ -446,6 +449,7 @@
 //             if(!invisibleMan.isDead())
 //                 {gameMap.setPlayerPosition("Dracula", "crypt");}
             
+
 //             if(!frenziedMonster->isDead())
 //                 {frenziedMonster->move(heroes , villagers);}
 
@@ -471,6 +475,7 @@
 //             else {
 //                 std::cout << "No items on map for Invisible Man to steal.\n";
 //             }
+
             
 //             placeRandomItem(2);
 //             return;
@@ -541,6 +546,7 @@
 //                 {frenziedMonster->move(heroes , villagers);}
 //             return;
          
+
 //     }
 // }
 
@@ -828,3 +834,4 @@
 //     startGameLoop();
 
 // }
+

@@ -54,10 +54,12 @@ public:
     void pickUp(Item&, const std::vector<NameItem>&);
     bool defieat(Monster&, Item&);
 
+
     int getNumberActionTaken() const;
 
     const std::vector<PerkDeck>& getPerkCards() const;
     void decreaseAction();
+
 
     void incrementAction();
 
@@ -67,7 +69,9 @@ public:
 
 class Archaeologist : public Heroes {
 public:
+
     Archaeologist(Map&, PerkDeck&);
+
     void specialAction(Map&, const std::vector<Item*>& itemList);
 };
 

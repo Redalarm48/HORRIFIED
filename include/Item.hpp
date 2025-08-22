@@ -40,7 +40,9 @@ public:
 class Item
 {
 
+
 private :
+
 
     static ItemList itemList;
     Map& locationItem;

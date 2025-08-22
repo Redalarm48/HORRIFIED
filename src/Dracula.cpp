@@ -31,6 +31,7 @@ bool Dracula::moveMonster(Villager& villager, Heroes& mayor, Heroes& archaeologi
             targets.emplace_back(v.second.getLocationVillager(), 0);
     }
 
+
     targets.emplace_back(mayor.getLocationHero(), 0);
     targets.emplace_back(archaeologist.getLocationHero(), 0);
     targets.emplace_back(corier.getLocationHero(), 0);

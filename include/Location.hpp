@@ -11,8 +11,10 @@
 class Location {
 
 private:
+
     bool invisibleItemCollecte;
     bool coffinDestroyed;
+
 
     NameLocation nameLocation;
     
@@ -31,6 +33,7 @@ public:
     const std::vector<NameItem> getNameItems() const;
     const std::vector<NameVillagers> getNameVillagers() const;
     const std::vector<Location*>& getNeighbors() const;
+
 
     void setInvivsibleItemCollecte();
     void setCoffinDestroyed();
