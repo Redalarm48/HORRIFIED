@@ -76,6 +76,7 @@ public:
     void addLocations();
     void setButtonAndImageAction(sf::RectangleShape&,sf::Texture&, sf::Sprite&, const std::string&, const int, const int);
     void run(Players&);
+    void Games::setImageMVHI(sf::Texture&, sf::Sprite&, const std::string&, const int) {
 
 
     void drawPrekCard(const PerkCardType&);

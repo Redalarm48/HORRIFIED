@@ -516,6 +516,19 @@ void Games::run(Players& player) {
 }
 
 
+void Games::setImageMVHI(sf::Texture& texture, sf::Sprite& sprite, const std::string& nameImage, const int loc) {
+    if(!texture.loadFromFile("../Horrified_Assets/Action/" + nameImage)) {
+        throw std::invalid_argument("not found image");
+    }
+    sprite.setTexture(texture);
+    sprite.setPosition(0, this->windowSize.y / 2 + (loc * 300));
+    sprite.setScale(
+        float(270) / (texture.getSize().x),
+        float(this->windowSize.y / 4) / (texture.getSize().y)
+    );
+}
+
+
 void Games::drawPrekCard(const PerkCardType& prekCardType) {
     std::string nameImagePerkCard = "../Horrified_Assets/Perk_Cards/";
     switch (prekCardType)
