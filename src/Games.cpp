@@ -776,3 +776,17 @@ std::string Games::getNameImage(const NameHeroes& nameHero) {
     }
 
 }
+
+
+std::string Games::getNameImage(const NameMonster& nameMonster) {
+    std::string nameImageMonster = "../Horrified_Assets/Monsters/";
+    switch (nameMonster)
+    {
+    case NameMonster::DRACULA:
+        return nameImageMonster + "Dracula.png";
+    case NameMonster::INVISIBLE_MAN:
+        return nameImageMonster + "InvisibleMan.png";        
+    default:
+        throw std::invalid_argument("not found Name Monster or Default");
+    }
+}
