@@ -38,7 +38,11 @@ NameMonster Monster::getNameM() const {
     return nameMonster;
 }
 
-int Monster::getFrenzyOrder() const {
+Map& Monster::getLocationMonster() const {
+    return this->locationMonster;
+}
+
+NameMonster Monster::getFrenzyOrder() const {
 
     return FrenzyOrder;
 }

@@ -33,8 +33,9 @@ class Monster
 
 
         NameMonster getNameM() const;
-        int getFrenzyOrder() const;
-        bool isDead() const;
+        NameMonster getFrenzyOrder() const;
+        NameLocation getNameLocationMonster() const;
+        Map& getLocationMonster() const;
 
         void setMonsterPosition(const NameLocation&);
 
