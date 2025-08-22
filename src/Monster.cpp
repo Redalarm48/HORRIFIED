@@ -51,6 +51,82 @@ Map& Monster::getLocationMonster() const {
     return this->locationMonster;
 }
 
+void Monster::strike(int diceCount, Villager& villager,
+                     Heroes& mayor, Heroes& archaeologist,
+                     Heroes& courier, Heroes& scientist, Item& items, Games* game) 
+{
+    auto diceResult = rollDice();
+
+    switch (DiceResult::Attack)
+    {
+    case DiceResult::Attack: {
+        if(this->nameMonster == NameMonster::DRACULA) {
+            game->cout("Equal monster dice (!)");
+            for (auto& [name, map] : this->locationMonster.map) {
+                if(name == this->nameLocationMonster) {
+                    Heroes* hero;
+                    if(!map.getNameHeroes().empty()) {
+                        TypeOwnership type;
+                        switch (map.getNameHeroes().back()) {
+                            case NameHeroes::MAYOR:
+                            hero = &mayor;
+                            type =TypeOwnership::MAYOR;
+                            break;
+                            case NameHeroes::ARCHAEOLOGIST:
+                            hero = &archaeologist;
+                            type =TypeOwnership::ARCHAEOLOGIST;
+                            break;
+                            case NameHeroes::COURIER:
+                            hero = &courier;
+                            type =TypeOwnership::COURIER;
+                            break;
+                            case NameHeroes::SCIENTIST:
+                            hero = &scientist;
+                            type =TypeOwnership::SCIENTIST;
+                            break;
+                            default:
+                            throw std::invalid_argument("not found hero");
+                            break;
+                        }
+                        bool hasItem = false;
+                        for (const auto& [nameItem, item] : items.getItemsInGame()) {
+                            if (item.getTypeOwnsership() == type) {
+                                hasItem = true;
+                                game->cout("Do you want to spend an item to fight the monster?");
+                                if (game->yesOrNo()) {
+                                    items.removeItemInGame(nameItem);
+                                    return;
+                                }
+                                else {                                
+                                    hero->setHeroesPosition(NameLocation::HOSPITAL);
+                                    game->cout("Hero has no items! Sent to hospital.");
+                                    
+                                }
+                                break;
+                            }
+                            else {
+                                hero->setHeroesPosition(NameLocation::HOSPITAL);
+                                game->cout("Hero has no items! Sent to hospital.");
+                            }
+                        }
+                        
+                    }
+                }
+            }
+            break;
+        }
+    }
+        case DiceResult::Power: {
+        game->cout("Equal monster dice (*)");
+        this->power(villager, mayor, scientist);
+    }
+    
+    default:
+        break;
+    }
+
+}
+
 DiceResult Monster::rollDice() {
     int r = rand() % 6;
     if(r < 2) return DiceResult::None;
@@ -63,21 +139,16 @@ NameMonster Monster::getFrenzyOrder() const {
     return FrenzyOrder;
 }
 
-bool Monster::isDead() const{
-    return Dead;
-}
-
-
-void Monster::Defeated(){
-    Dead = true;
-}
-
 NameLocation Monster::getNameLocationMonster() const {
     return nameLocationMonster;
 }
 
 bool Monster::cheknumberDistance(const NameLocation& nameLocation) {
+    int numberDistance = this->locationMonster.findShortestPath<int>(this->nameLocationMonster, nameLocation);
     return (
-        this->locationMonster.findShortestPath((this->locationMonster.findShortestPath(this->nameLocationMonster, nameLocation)),nameLocation) == nameLocation
+        numberDistance == 2
     );
 }
+
+
+NameMonster Monster::FrenzyOrder = NameMonster::DRACULA;
